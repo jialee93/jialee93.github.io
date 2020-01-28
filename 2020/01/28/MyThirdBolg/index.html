@@ -58,7 +58,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190529105226461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019052910525070.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-01-28T04:11:44.000Z">
-<meta property="article:modified_time" content="2020-01-28T04:13:49.674Z">
+<meta property="article:modified_time" content="2020-01-28T06:10:53.862Z">
 <meta property="article:author" content="Jia Li">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -199,7 +199,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-01-28 12:11:44 / 修改时间：12:13:49" itemprop="dateCreated datePublished" datetime="2020-01-28T12:11:44+08:00">2020-01-28</time>
+              <time title="创建时间：2020-01-28 12:11:44 / 修改时间：14:10:53" itemprop="dateCreated datePublished" datetime="2020-01-28T12:11:44+08:00">2020-01-28</time>
             </span>
 
           
@@ -234,7 +234,7 @@
 <script type="math/tex; mode=display">
 \operatorname{MLP}=l(w)=\log [P(y | X ; w)]=\log \left[\prod_{i} P\left(y^{i} | x^{i} ; w\right)\right]</script><p>通过假设$y^{i}$的不同概率分布，即可得到不同的模型（即变成已知模型形式，拟合模型参数的问题，<font color="#000066">w的写法是前面加分号，表示它是某一固定参数值，而不是概率条件！</font>）。例如若假设$y^{i} \sim N\left(w^{T} x^{i}, \sigma^{2}\right)$的高斯分布（$x^{i}$也是一系列随机向量，随机向量的每个分量都对$y^{i}$有影响，若随机向量的维度很大，可以认为$y^{i}$服从正态分布，而一般正态分布可以转化成标准正态分布求解），则有：</p>
 <script type="math/tex; mode=display">
-l(w)=\log \left[\prod_{i} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(y^{i}-w^{T} x^{i}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{i}\left(y^{i}-w^{T} x^{i}\right)^{2}+C</script><p>式子中$C$是常数项，常数项和系数项不影响求最大值，因而可令$J(w ; X, y)=-l(w)$即可得到线性回归的代价函数。这里我们可以看到，<font color=purple face=bold>$&lt;$服从正态分布的极大似然估计方法和均方误差最小化求解线性回归的结果是一样的！</font> </p>
+l(w)=\log \left[\prod_{i} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(y^{i}-w^{T} x^{i}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{i}\left(y^{i}-w^{T} x^{i}\right)^{2}+C</script><p>式子中$C$是常数项，常数项和系数项不影响求最大值，因而可令$J(w ; X, y)=-l(w)$即可得到线性回归的代价函数。这里我们可以看到，<font color=purple face=bold>使用假设$y^{i}$服从正态分布的极大似然估计方法和均方误差最小化求解线性回归的结果是一样的！</font> </p>
 <p><br></p>
 <h3 id="在最大后验概率估计中"><a href="#在最大后验概率估计中" class="headerlink" title="在最大后验概率估计中"></a>在最大后验概率估计中</h3><p>将权重$w$看作随机变量，也具有某种分布，从而有：</p>
 <script type="math/tex; mode=display">
