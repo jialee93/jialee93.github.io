@@ -156,11 +156,6 @@
     <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
 
   </li>
-        <li class="menu-item menu-item-sitemap">
-
-    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>Sitemap</a>
-
-  </li>
   </ul>
 
 </nav>
@@ -172,6 +167,7 @@
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
+  <div class="reading-progress-bar"></div>
 
 
     <main class="main">
@@ -302,7 +298,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-01-28 21:56:59" itemprop="dateModified" datetime="2020-01-28T21:56:59+08:00">2020-01-28</time>
+                <time title="Modified: 2020-01-29 09:43:37" itemprop="dateModified" datetime="2020-01-29T09:43:37+08:00">2020-01-29</time>
               </span>
 
           <br>
@@ -330,10 +326,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+          点击阅读前文前, 首页能看到的文章的简短描述，可以在信息头加入description实现此功能
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/01/27/hello-world/#more" rel="contents">
+              <a class="btn" href="/2020/01/27/hello-world/">
                 Read more &raquo;
               </a>
             </div>
@@ -417,10 +413,11 @@
 
       
           <p><a href="https://zhuanlan.zhihu.com/p/96408719" target="_blank" rel="noopener" title="Permalink to 一个 Pytorch 训练实践 （分布式训练 + 半精度/混合精度训练）">Source</a></p>
-<h3 id="内容速览"><a href="#内容速览" class="headerlink" title="内容速览"></a>内容速览</h3><ol>
-<li>‘train.py’: single training process on one GPU only.</li>
-<li>‘train_parallel.py’: signle training process on multiple GPUs using <strong>Dataparallel</strong> (包括不同GPU之间的负载均衡).</li>
-<li>‘train_distributed.py’ (<strong>recommended</strong>): multiple training processes on multiple GPUs using <strong>Nvidia Apex</strong> &amp; <strong>Distributed Training:</strong></li>
+<h3 id="内容速览">内容速览</h3>
+<ol type="1">
+<li>'train.py': single training process on one GPU only.</li>
+<li>'train_parallel.py': signle training process on multiple GPUs using <strong>Dataparallel</strong> (包括不同GPU之间的负载均衡).</li>
+<li>'train_distributed.py' (<strong>recommended</strong>): multiple training processes on multiple GPUs using <strong>Nvidia Apex</strong> &amp; <strong>Distributed Training:</strong></li>
 </ol>
 <p><code>python -m torch.distributed.launch --nproc_per_node=4 train_distributed.py</code></p>
           <!--noindex-->
@@ -584,6 +581,7 @@
   <span class="post-meta-divider">|</span>
   <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.0
   </div>
+
 
         
 
