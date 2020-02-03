@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Pytorch中的Batch Normalization layer踩坑</title>
+    <url>/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/</url>
+    <content><![CDATA[<h2 id="注意momentum的定义">1. 注意momentum的定义</h2>
+<p>Pytorch中的BN层的动量平滑和常见的动量法计算方式是相反的，默认的momentum=0.1 <span class="math display">\[
+\hat{x}_{\text { new }}=(1-\text { momentum }) \times \hat{x}+\text { momemtum } \times x_{t}
+\]</span> BN层里的表达式为： <span class="math display">\[
+y=\frac{x-\mathrm{E}[x]}{\sqrt{\operatorname{Var}[x]+\epsilon}} * \gamma+\beta
+\]</span> 其中<em>γ</em>和<em>β</em>是可以学习的参数。在Pytorch中，BN层的类的参数有：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">CLASS torch.nn.BatchNorm2d(num_features, eps=<span class="number">1e-05</span>, momentum=<span class="number">0.1</span>, affine=<span class="literal">True</span>, track_running_stats=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>每个参数具体含义参见文档，需要注意的是，affine定义了BN层的参数<em>γ</em>和<em>β</em>是否是可学习的(不可学习默认是常数1和0).</p>
+<h2 id="注意bn层中含有统计数据数值即均值和方差">2. 注意BN层中含有统计数据数值，即均值和方差</h2>
+<p><strong>track_running_stats</strong> – a boolean value that when set to <code>True</code>, this module tracks the running mean and variance, and when set to <code>False</code>, this module does not track such statistics and always uses batch statistics in both training and eval modes. Default: <code>True</code></p>
+<p>在训练过程中model.train()，train过程的BN的统计数值—均值和方差是<strong>通过当前batch数据估计的</strong>。</p>
+<p>并且测试时，model.eval()后，若track_running_stats=True，模型此刻所使用的统计数据是Running status 中的，即通过指数衰减规则，积累到当前的数值。否则依然使用基于当前batch数据的估计值。</p>
+<h2 id="bn层的统计数据更新是在每一次训练阶段model.train后的forward方法中自动实现的而不是在梯度计算与反向传播中更新optim.step中完成">3. BN层的统计数据更新是在每一次训练阶段model.train()后的forward()方法中自动实现的，<strong>而不是</strong>在梯度计算与反向传播中更新optim.step()中完成</h2>
+<h2 id="冻结bn及其统计数据">4. 冻结BN及其统计数据</h2>
+<p>从上面的分析可以看出来，正确的冻结BN的方式是在模型训练时，把BN单独挑出来，重新设置其状态为eval (在model.train()之后覆盖training状态）.</p>
+<p>解决方案：<a href="https://discuss.pytorch.org/t/freeze-batchnorm-layer-lead-to-nan/8385" target="_blank" rel="noopener">转载自</a></p>
+<blockquote>
+<p>You should use apply instead of searching its children, while named_children() doesn’t iteratively search submodules.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_bn_eval</span><span class="params">(m)</span>:</span></span><br><span class="line">    classname = m.__class__.__name__</span><br><span class="line">    <span class="keyword">if</span> classname.find(<span class="string">'BatchNorm'</span>) != <span class="number">-1</span>:</span><br><span class="line">      m.eval()</span><br><span class="line"></span><br><span class="line">model.apply(set_bn_eval)</span><br></pre></td></tr></table></figure>
+<p>或者，重写module中的train()方法：<a href="https://discuss.pytorch.org/t/how-to-train-with-frozen-batchnorm/12106/8" target="_blank" rel="noopener">转载自</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, mode=True)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Override the default train() to freeze the BN parameters</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        super(MyNet, self).train(mode)</span><br><span class="line">        <span class="keyword">if</span> self.freeze_bn:</span><br><span class="line">            print(<span class="string">"Freezing Mean/Var of BatchNorm2D."</span>)</span><br><span class="line">            <span class="keyword">if</span> self.freeze_bn_affine:</span><br><span class="line">                print(<span class="string">"Freezing Weight/Bias of BatchNorm2D."</span>)</span><br><span class="line">        <span class="keyword">if</span> self.freeze_bn:</span><br><span class="line">            <span class="keyword">for</span> m <span class="keyword">in</span> self.backbone.modules():</span><br><span class="line">                <span class="keyword">if</span> isinstance(m, nn.BatchNorm2d):</span><br><span class="line">                    m.eval()</span><br><span class="line">                    <span class="keyword">if</span> self.freeze_bn_affine:</span><br><span class="line">                        m.weight.requires_grad = <span class="literal">False</span></span><br><span class="line">                        m.bias.requires_grad = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h2 id="fixfrozen-batch-norm-when-training-may-lead-to-runtimeerror-expected-scalar-type-half-but-found-float">5. Fix/frozen Batch Norm when training may lead to RuntimeError: expected scalar type Half but found Float</h2>
+<p>解决办法：<a href="https://github.com/NVIDIA/apex/issues/122" target="_blank" rel="noopener">转载自</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.nn <span class="keyword">import</span> init</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> models</span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"><span class="keyword">from</span> apex.fp16_utils <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fix_bn</span><span class="params">(m)</span>:</span></span><br><span class="line">    classname = m.__class__.__name__</span><br><span class="line">    <span class="keyword">if</span> classname.find(<span class="string">'BatchNorm'</span>) != <span class="number">-1</span>:</span><br><span class="line">        m.eval()</span><br><span class="line"></span><br><span class="line">model = models.resnet50(pretrained=<span class="literal">True</span>)</span><br><span class="line">model.cuda()</span><br><span class="line">model = network_to_half(model)</span><br><span class="line">model.train()</span><br><span class="line">model.apply(fix_bn) <span class="comment"># fix batchnorm</span></span><br><span class="line">input = Variable(torch.FloatTensor(<span class="number">8</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).cuda().half())</span><br><span class="line">output = model(input)</span><br><span class="line">output_mean = torch.mean(output)</span><br><span class="line">output_mean.backward()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Please do</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">def fix_bn(m):</span><br><span class="line"> classname &#x3D; m.__class__.__name__</span><br><span class="line"> if classname.find(&#39;BatchNorm&#39;) !&#x3D; -1:</span><br><span class="line">     m.eval().half()</span><br></pre></td></tr></table></figure>
+<p>Reason for this is, for regular training it is better (performance-wise) <font color="#dd0000">to <strong>use cudnn batch norm, which requires its weights to be in fp32</strong>, thus batch norm modules are not converted to half in <code>network_to_half</code>. However, cudnn does not support batchnorm backward in the eval mode</font> , which is what you are doing, and to use pytorch implementation for this, weights have to be of the same type as inputs.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>pytorch</tag>
+        <tag>机器学习</tag>
+        <tag>深度学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>L1，L2正则化的理解</title>
     <url>/2020/01/28/L1%E5%92%8CL2%E6%AD%A3%E5%88%99%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/</url>
     <content><![CDATA[<p>摘录自：</p>
@@ -65,7 +108,7 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
 </section>
 ]]></content>
       <categories>
-        <category>Study</category>
+        <category>科研</category>
       </categories>
       <tags>
         <tag>机器学习</tag>
@@ -89,6 +132,9 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
 ]]></content>
+      <categories>
+        <category>软件工具</category>
+      </categories>
       <tags>
         <tag>测试专用</tag>
       </tags>
@@ -126,6 +172,9 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
 <p>“Simple Pose: Rethinking and Improving a Bottom-up Approach for Multi-Person Pose Estimation”</p>
 <p><a href="https://link.zhihu.com/?target=https%253A//arxiv.org/abs/1911.10529">https://arxiv.org/abs/1911.10529​arxiv.org</a></p>
 ]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
       <tags>
         <tag>pytorch</tag>
       </tags>
