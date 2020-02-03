@@ -155,9 +155,10 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
+    <title>hexo实用技巧随记</title>
     <url>/2020/01/27/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+    <content><![CDATA[<p>详情见我的博客 <a href="https://blog.csdn.net/xiaojiajia007/article/details/104105250" target="_blank" rel="noopener">hexo实用技巧随记</a></p>
+<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
 <h2 id="quick-start">Quick Start</h2>
 <h3 id="create-a-new-post">Create a new post</h3>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
@@ -177,6 +178,7 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
       </categories>
       <tags>
         <tag>测试专用</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
 </search>
