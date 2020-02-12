@@ -46,21 +46,25 @@
   };
 </script>
 
-  <meta name="description" content="hexo简单入门配置和使用">
+  <meta name="description" content="简述Apex的安装使用以及pip install本地安装">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo实用技巧随记">
-<meta property="og:url" content="https://jialee93.github.io/2020/01/27/hello-world/index.html">
+<meta property="og:title" content="Apex相关（同时涉及egg-info的说明）">
+<meta property="og:url" content="https://jialee93.github.io/2020/02/12/Apex%E7%9B%B8%E5%85%B3/index.html">
 <meta property="og:site_name" content="小佳の博客 Jia&#39;s Blog">
-<meta property="og:description" content="hexo简单入门配置和使用">
+<meta property="og:description" content="简述Apex的安装使用以及pip install本地安装">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-01-27T13:35:07.946Z">
-<meta property="article:modified_time" content="2020-02-03T12:48:16.382Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190911164622328.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200212185619928.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-02-12T11:08:18.000Z">
+<meta property="article:modified_time" content="2020-02-12T11:11:22.470Z">
 <meta property="article:author" content="Jia Li">
-<meta property="article:tag" content="测试专用">
-<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="pytorch">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="环境配置">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190911164622328.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 
-<link rel="canonical" href="https://jialee93.github.io/2020/01/27/hello-world/">
+<link rel="canonical" href="https://jialee93.github.io/2020/02/12/Apex%E7%9B%B8%E5%85%B3/">
 
 
 <script id="page-configurations">
@@ -72,7 +76,7 @@
   };
 </script>
 
-  <title>hexo实用技巧随记 | 小佳の博客 Jia's Blog</title>
+  <title>Apex相关（同时涉及egg-info的说明） | 小佳の博客 Jia's Blog</title>
   
 
 
@@ -212,7 +216,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="https://jialee93.github.io/2020/01/27/hello-world/">
+    <link itemprop="mainEntityOfPage" href="https://jialee93.github.io/2020/02/12/Apex%E7%9B%B8%E5%85%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/touxiang1.jpg">
@@ -225,7 +229,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          hexo实用技巧随记
+          Apex相关（同时涉及egg-info的说明）
         </h1>
 
         <div class="post-meta">
@@ -234,30 +238,24 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-01-27 21:35:07" itemprop="dateCreated datePublished" datetime="2020-01-27T21:35:07+08:00">2020-01-27</time>
+              <time title="Created: 2020-02-12 19:08:18 / Modified: 19:11:22" itemprop="dateCreated datePublished" datetime="2020-02-12T19:08:18+08:00">2020-02-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-03 20:48:16" itemprop="dateModified" datetime="2020-02-03T20:48:16+08:00">2020-02-03</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E8%BD%AF%E4%BB%B6%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index">
-                    <span itemprop="name">软件工具</span>
+                  <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index">
+                    <span itemprop="name">科研</span>
                   </a>
                 </span>
             </span>
 
           
-            <span id="/2020/01/27/hello-world/" class="post-meta-item leancloud_visitors" data-flag-title="hexo实用技巧随记" title="Views">
+            <span id="/2020/02/12/Apex%E7%9B%B8%E5%85%B3/" class="post-meta-item leancloud_visitors" data-flag-title="Apex相关（同时涉及egg-info的说明）" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -272,8 +270,8 @@
       </span>
       <span class="post-meta-item-text">Valine: </span>
     
-    <a title="valine" href="/2020/01/27/hello-world/#comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2020/01/27/hello-world/" itemprop="commentCount"></span>
+    <a title="valine" href="/2020/02/12/Apex%E7%9B%B8%E5%85%B3/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/12/Apex%E7%9B%B8%E5%85%B3/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -283,16 +281,16 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>374</span>
+              <span>4k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>4 mins.</span>
             </span>
-            <div class="post-description">hexo简单入门配置和使用</div>
+            <div class="post-description">简述Apex的安装使用以及pip install本地安装</div>
 
         </div>
       </header>
@@ -303,21 +301,51 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>详情见我的博客 <a href="https://blog.csdn.net/xiaojiajia007/article/details/104105250" target="_blank" rel="noopener">hexo实用技巧随记</a></p>
-<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="quick-start">Quick Start</h2>
-<h3 id="create-a-new-post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="run-server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="generate-static-files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="deploy-to-remote-sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h2 id="what-is-the-difference-between-fusedadam-optimizer-in-nvidia-amp-package-with-the-adam-optimizer-in-pytorch">What is the difference between FusedAdam optimizer in Nvidia AMP package with the Adam optimizer in Pytorch?</h2>
+<p><a href="https://discuss.pytorch.org/t/fusedadam-optimizer-in-nvidia-amp-package/47544" target="_blank" rel="noopener">摘录自</a></p>
+<p>The Adam optimizer in Pytorch (like all Pytorch optimizers) carries out optimizer.step() by looping over parameters, and launching a series of kernels for each parameter. This can require hundreds of small launches that are mostly bound by CPU-side Python looping and kernel launch overhead, resulting in poor device utilization. Currently, the FusedAdam implementation in Apex flattens the parameters for the optimization step, then carries out the optimization step itself via a fused kernel that combines all the Adam operations. In this way, the loop over parameters as well as the internal series of Adam operations for each parameter are fused such that optimizer.step() requires only a few kernel launches.</p>
+<p>The current implementation (in Apex master) is brittle and only works with Amp opt_level O2. I’ve got a WIP branch to make it work for any opt_level (<a href="https://github.com/NVIDIA/apex/pull/351" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/351</a>). I recommend waiting until this is merged then trying it.</p>
+<h2 id="how-to-use-tensor-cores">How to use Tensor Cores</h2>
+<p><a href="https://github.com/NVIDIA/apex/issues/221" target="_blank" rel="noopener">摘录自</a></p>
+<p><strong>Convolutions:</strong> For cudnn versions 7.2 and ealier, <span class="citation" data-cites="vaibhav0195">@vaibhav0195</span> is correct: input channels, output channels, and batch size should be multiples of 8 to use tensor cores. However, this requirement is lifted for cudnn versions 7.3 and later. For cudnn 7.3 and later, you don't need to worry about making your channels/batch size multiples of 8 to enable Tensor Core use.</p>
+<p><strong>GEMMs (fully connected layers):</strong> For matrix A x matrix B, where A has size [I, J] and B has size [J, K], I, J, and K must be multiples of 8 to use Tensor Cores. This requirement exists for all cublas and cudnn versions. This means that for bare fully connected layers, the batch size, input features, and output features must be multiples of 8, and for RNNs, you usually (but not always, it can be architecture-dependent depending on what you use for encoder/decoder) need to have batch size, hidden size, embedding size, and dictionary size as multiples of 8.</p>
+<p><strong>It may also help to set torch.backends.cudnn.benchmark=True</strong> at the top of your script, which enables pytorch‘s autotuner. Each time pytorch encounters a new set of convolution parameters, it will test all available cudnn algorithms to find the fastest one, then cache that choice to reuse whenever it encounters the same set of convolution parameters again. The first iteration of your network will be slower as pytorch tests all the cudnn algorithms for each convolution, but the second iteration and later iterations will likely be faster.</p>
+<h2 id="fp16半精度带来的精度误差">FP16半精度带来的精度误差</h2>
+<figure>
+<img src="https://img-blog.csdnimg.cn/20190911164622328.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><figcaption>在这里插入图片描述</figcaption>
+</figure>
+<h2 id="install-nvidia-apex">Install Nvidia Apex</h2>
+<p>若第一次安装需要把项目从github克隆到本地</p>
+<h3 id="clean-the-old-install-before-rebuilding">Clean the old install before rebuilding:</h3>
+<blockquote>
+<p>pip uninstall apex cd apex_repo_dir rm -rf build (if present) rm -rf apex.egg-info (if present)</p>
+</blockquote>
+<h3 id="install-package">Install package：</h3>
+<p>注：<strong>--no-cache-dir功能: 不使用缓存在pip目录下的cache中的文件</strong></p>
+<blockquote>
+<p>pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ 或者 python setup.py install --cuda_ext --cpp_ext</p>
+</blockquote>
+<h3 id="扩展1.-pip-install---editable-.-vs-python-setup.py-develop">扩展1. <code>pip install --editable .</code> vs <code>python setup.py develop</code></h3>
+<p><a href="https://stackoverflow.com/questions/30306099/pip-install-editable-vs-python-setup-py-develop" target="_blank" rel="noopener">转载自</a> Try to avoid calling setup.py directly, it will not properly tell pip that you've installed your package.</p>
+<p><strong>With pip install -e</strong>:</p>
+<p>其中 -e 选项全称是--editable. For local projects, the “SomeProject.egg-info” directory is created relative to the project path (<strong>相对于此项目目录的路径</strong>). This is one advantage over just using setup.py develop, which creates the “egg-info” directly relative the current working directory (<strong>相对于当前工作环境目录的路径</strong>).</p>
+<h3 id="扩展2.-弄懂一个命令-pip3-install---editable-.traintest">扩展2. 弄懂一个命令 <code>pip3 install --editable '.[train,test]'</code></h3>
+<p><a href="https://github.com/vita-epfl/openpifpaf/blob/21baabf9c6bbd0bea3e8e465a726abfa8dbeeccf/setup.py#L76" target="_blank" rel="noopener">例子在这里</a> When you then did <code>pip install --editable .</code>, the command installs the Python package in the current directory (signified by the dot .) with the optional dependencies needed for training and testing ('[train,test]'). 上面的安装命令中，-e选项全称是--editable，也就是可编辑的意思，以可继续开发的模式进行安装，<font color="#dd00dd"> '.' 表示当前目录，也就是setup.py存在的 那个目录，此时pip install将会把包安装在当前文件目录下，而不是安装到所使用的python环境中的-site-packages。</font> [train,test] 只是我们举的一个例字，是可选参数，在setup.py中可以找到这两个选项（也可能叫其他名字或者根本就没有）之下包含了哪些第三方包。</p>
+<h3 id="扩展3.-关于egg-info">扩展3. 关于egg-info</h3>
+<p>注意⚠️：选则本地安装<code>pip install .</code>成功安装完成后，apex.egg-info文件夹可以只处于当前项目文件夹下而不是安装在系统环境中，只需要在当前使用的python虚拟环境-site-packages中一个指向该egg-info文件的超链接即可(这个是在本地安装自动的行为，不需要我们关心操作)，这样就能找到使用Apex包时所需的apex.egg-info文件夹里的信息。</p>
+<h3 id="ps-如果遇到cuda版本不兼容的问题解决办法见升级pytoch-1.3后-cuda10.1不匹配版本的警告已经消失">PS: 如果遇到Cuda版本不兼容的问题，解决办法见（升级pytoch 1.3后 cuda10.1不匹配版本的警告已经消失）：</h3>
+<p><a href="https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952" target="_blank" rel="noopener">https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952</a></p>
+<p>如果没有出现其他error，可以直接使用上面链接的建议，删除版本检查抛出的报错。见以下讨论：</p>
+<p><a href="https://github.com/NVIDIA/apex/issues/350" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/issues/350</a></p>
+<p><a href="https://github.com/NVIDIA/apex/pull/323" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/323</a></p>
+<h3 id="apex的使用">Apex的使用</h3>
+<h4 id="命令行启动训练">命令行启动训练</h4>
+<p>---也是如何Pycharm运行时添加命令行参数的例子</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m torch.distributed.launch --nproc_per_node=4 train_distributed.py</span><br></pre></td></tr></table></figure>
+<h4 id="不使用命令行运行而是使用pycharm启动同步夸卡训练的配置">不使用命令行运行，而是使用Pycharm启动同步夸卡训练的配置</h4>
+<figure>
+<img src="https://img-blog.csdnimg.cn/20200212185619928.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /><figcaption>在这里插入图片描述</figcaption>
+</figure>
 
     </div>
 
@@ -351,7 +379,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://jialee93.github.io/2020/01/27/hello-world/" title="hexo实用技巧随记">https://jialee93.github.io/2020/01/27/hello-world/</a>
+    <a href="https://jialee93.github.io/2020/02/12/Apex%E7%9B%B8%E5%85%B3/" title="Apex相关（同时涉及egg-info的说明）">https://jialee93.github.io/2020/02/12/Apex相关/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -362,8 +390,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E6%B5%8B%E8%AF%95%E4%B8%93%E7%94%A8/" rel="tag"># 测试专用</a>
-              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/pytorch/" rel="tag"># pytorch</a>
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" rel="tag"># 环境配置</a>
           </div>
 
         
@@ -371,11 +400,11 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2020/01/28/%E4%B8%80%E4%B8%AA%20Pytorch%20%E8%AE%AD%E7%BB%83%E5%AE%9E%E8%B7%B5%20%EF%BC%88%E5%88%86%E5%B8%83%E5%BC%8F%E8%AE%AD%E7%BB%83%20+%20%E5%8D%8A%E7%B2%BE%E5%BA%A6_%E6%B7%B7%E5%90%88%E7%B2%BE%E5%BA%A6%E8%AE%AD%E7%BB%83%EF%BC%89/" rel="next" title="一个 Pytorch 训练实践 (分布式训练 + 半精度_混合精度训练)">
-      一个 Pytorch 训练实践 (分布式训练 + 半精度_混合精度训练) <i class="fa fa-chevron-right"></i>
+    <a href="/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/" rel="prev" title="Pytorch中的Batch Normalization layer踩坑">
+      <i class="fa fa-chevron-left"></i> Pytorch中的Batch Normalization layer踩坑
     </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -436,7 +465,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#quick-start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#what-is-the-difference-between-fusedadam-optimizer-in-nvidia-amp-package-with-the-adam-optimizer-in-pytorch"><span class="nav-number">1.</span> <span class="nav-text">What is the difference between FusedAdam optimizer in Nvidia AMP package with the Adam optimizer in Pytorch?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#how-to-use-tensor-cores"><span class="nav-number">2.</span> <span class="nav-text">How to use Tensor Cores</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fp16半精度带来的精度误差"><span class="nav-number">3.</span> <span class="nav-text">FP16半精度带来的精度误差</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#install-nvidia-apex"><span class="nav-number">4.</span> <span class="nav-text">Install Nvidia Apex</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#clean-the-old-install-before-rebuilding"><span class="nav-number">4.1.</span> <span class="nav-text">Clean the old install before rebuilding:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#install-package"><span class="nav-number">4.2.</span> <span class="nav-text">Install package：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展1.-pip-install---editable-.-vs-python-setup.py-develop"><span class="nav-number">4.3.</span> <span class="nav-text">扩展1. pip install --editable . vs python setup.py develop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展2.-弄懂一个命令-pip3-install---editable-.traintest"><span class="nav-number">4.4.</span> <span class="nav-text">扩展2. 弄懂一个命令 pip3 install --editable &#39;.[train,test]&#39;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#扩展3.-关于egg-info"><span class="nav-number">4.5.</span> <span class="nav-text">扩展3. 关于egg-info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-如果遇到cuda版本不兼容的问题解决办法见升级pytoch-1.3后-cuda10.1不匹配版本的警告已经消失"><span class="nav-number">4.6.</span> <span class="nav-text">PS: 如果遇到Cuda版本不兼容的问题，解决办法见（升级pytoch 1.3后 cuda10.1不匹配版本的警告已经消失）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apex的使用"><span class="nav-number">4.7.</span> <span class="nav-text">Apex的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#命令行启动训练"><span class="nav-number">4.7.1.</span> <span class="nav-text">命令行启动训练</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不使用命令行运行而是使用pycharm启动同步夸卡训练的配置"><span class="nav-number">4.7.2.</span> <span class="nav-text">不使用命令行运行，而是使用Pycharm启动同步夸卡训练的配置</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
