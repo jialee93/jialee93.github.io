@@ -1,0 +1,45 @@
+---
+title: about
+date: 2020-01-28 20:11:18
+---
+
+My school home page is [here](http://home.ustc.edu.cn/~jialee/)
+
+Jia Lee (Chinese name: 李佳 Li Jia)
+
+Ph.D. Student
+
+<img src="http://home.ustc.edu.cn/~jialee//photos/me.png" alt="img" style="zoom: 33%;" />
+
+## Biography
+
+Jia Li was born in 1993. He received his B.E. degree in automation from Hefei University of Technology, Hefei, China in 2016. He is currently pursuing his Ph.D. degree with the Department of Automation, University of Science and Technology of China. His research interests are in computer vision and machine learning. 
+
+E-mail: <jialee@mail.ustc.edu.cn>
+
+## Publications:
+
+[1] **J. Li** and Z. Wang, “Local Regression Based Hourglass Network for Hand Pose Estimation from a Single Depth Image.,” ICPR, 2018.
+
+[2] **J. Li** and Z. Wang, “Real-Time Traffic Sign Recognition Based on Efficient CNNs in the Wild,” IEEE Transactions on Intelligent Transportation Systems, vol. PP, no. 99, pp. 1–10, Jun. 2018.
+
+[3] W. Su, H. Zhang, **J. Li**, W. Yang, and Z. Wang, “Monocular Depth Estimation as Regression of Classification using Piled Residual Networks.,” ACM Multimedia, 2019.
+
+[4] **J. Li**, W. Su, and Z. Wang, “Simple Pose - Rethinking and Improving a Bottom-up Approach for Multi-Person Pose Estimation.,” AAAI, 2020.
+
+## **Earlier 早期学业成绩**
+
+### **本科阶段**
+
+于合肥工业大学信息工程系自动化专业学习，学业成绩本科四年专业第一，全院系第一，获得本科阶段全部学年国家奖学金，合肥工业大学数学竞赛第一名，美国数学建模竞赛二等奖（排序一），全国大学生英语竞赛二等奖等奖项。
+
+### **研究生阶段**
+
+于中国科学技术大学自动化系学习，获得硕士研究生国家奖学金，中科大首届唐立新奖学金等。
+
+## I love traveling
+
+![雪日黄山](http://home.ustc.edu.cn/~jialee//photos/IMG_20200117_103530.jpeg)
+
+![鲜翠欲滴](http://home.ustc.edu.cn/~jialee//photos/IMG_20200117_123041.jpeg)
+
