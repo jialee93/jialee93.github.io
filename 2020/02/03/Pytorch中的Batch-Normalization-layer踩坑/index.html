@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/flower.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/flower.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/flower-16x16.png">
+  <link rel="mask-icon" href="/images/flower.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hellojialee.github.io').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="解惑Pytorch中BN层的原理与使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pytorch中的Batch Normalization layer踩坑">
+<meta property="og:url" content="https://hellojialee.github.io/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/index.html">
+<meta property="og:site_name" content="小佳の博客 Jia&#39;s Blog">
+<meta property="og:description" content="解惑Pytorch中BN层的原理与使用">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-03T09:59:17.000Z">
+<meta property="article:modified_time" content="2020-02-03T10:03:48.181Z">
+<meta property="article:author" content="Jia Li">
+<meta property="article:tag" content="pytorch">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="深度学习">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hellojialee.github.io/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Pytorch中的Batch Normalization layer踩坑 | 小佳の博客 Jia's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小佳の博客 Jia's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hellojialee.github.io/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang1.jpg">
+      <meta itemprop="name" content="Jia Li">
+      <meta itemprop="description" content="Be happy, be healthy!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小佳の博客 Jia's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Pytorch中的Batch Normalization layer踩坑
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-02-03 17:59:17 / Modified: 18:03:48" itemprop="dateCreated datePublished" datetime="2020-02-03T17:59:17+08:00">2020-02-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A7%91%E7%A0%94/" itemprop="url" rel="index">
+                    <span itemprop="name">科研</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/" class="post-meta-item leancloud_visitors" data-flag-title="Pytorch中的Batch Normalization layer踩坑" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+            <div class="post-description">解惑Pytorch中BN层的原理与使用</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="注意momentum的定义">1. 注意momentum的定义</h2>
+<p>Pytorch中的BN层的动量平滑和常见的动量法计算方式是相反的，默认的momentum=0.1 <span class="math display">\[
+\hat{x}_{\text { new }}=(1-\text { momentum }) \times \hat{x}+\text { momemtum } \times x_{t}
+\]</span> BN层里的表达式为： <span class="math display">\[
+y=\frac{x-\mathrm{E}[x]}{\sqrt{\operatorname{Var}[x]+\epsilon}} * \gamma+\beta
+\]</span> 其中<em>γ</em>和<em>β</em>是可以学习的参数。在Pytorch中，BN层的类的参数有：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CLASS torch.nn.BatchNorm2d(num_features, eps=<span class="number">1e-05</span>, momentum=<span class="number">0.1</span>, affine=<span class="literal">True</span>, track_running_stats=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>每个参数具体含义参见文档，需要注意的是，affine定义了BN层的参数<em>γ</em>和<em>β</em>是否是可学习的(不可学习默认是常数1和0).</p>
+<h2 id="注意bn层中含有统计数据数值即均值和方差">2. 注意BN层中含有统计数据数值，即均值和方差</h2>
+<p><strong>track_running_stats</strong> – a boolean value that when set to <code>True</code>, this module tracks the running mean and variance, and when set to <code>False</code>, this module does not track such statistics and always uses batch statistics in both training and eval modes. Default: <code>True</code></p>
+<p>在训练过程中model.train()，train过程的BN的统计数值—均值和方差是<strong>通过当前batch数据估计的</strong>。</p>
+<p>并且测试时，model.eval()后，若track_running_stats=True，模型此刻所使用的统计数据是Running status 中的，即通过指数衰减规则，积累到当前的数值。否则依然使用基于当前batch数据的估计值。</p>
+<h2 id="bn层的统计数据更新是在每一次训练阶段model.train后的forward方法中自动实现的而不是在梯度计算与反向传播中更新optim.step中完成">3. BN层的统计数据更新是在每一次训练阶段model.train()后的forward()方法中自动实现的，<strong>而不是</strong>在梯度计算与反向传播中更新optim.step()中完成</h2>
+<h2 id="冻结bn及其统计数据">4. 冻结BN及其统计数据</h2>
+<p>从上面的分析可以看出来，正确的冻结BN的方式是在模型训练时，把BN单独挑出来，重新设置其状态为eval (在model.train()之后覆盖training状态）.</p>
+<p>解决方案：<a href="https://discuss.pytorch.org/t/freeze-batchnorm-layer-lead-to-nan/8385" target="_blank" rel="noopener">转载自</a></p>
+<blockquote>
+<p>You should use apply instead of searching its children, while named_children() doesn’t iteratively search submodules.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_bn_eval</span><span class="params">(m)</span>:</span></span><br><span class="line">    classname = m.__class__.__name__</span><br><span class="line">    <span class="keyword">if</span> classname.find(<span class="string">'BatchNorm'</span>) != <span class="number">-1</span>:</span><br><span class="line">      m.eval()</span><br><span class="line"></span><br><span class="line">model.apply(set_bn_eval)</span><br></pre></td></tr></table></figure>
+<p>或者，重写module中的train()方法：<a href="https://discuss.pytorch.org/t/how-to-train-with-frozen-batchnorm/12106/8" target="_blank" rel="noopener">转载自</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, mode=True)</span>:</span></span><br><span class="line">        <span class="string">"""</span></span><br><span class="line"><span class="string">        Override the default train() to freeze the BN parameters</span></span><br><span class="line"><span class="string">        """</span></span><br><span class="line">        super(MyNet, self).train(mode)</span><br><span class="line">        <span class="keyword">if</span> self.freeze_bn:</span><br><span class="line">            print(<span class="string">"Freezing Mean/Var of BatchNorm2D."</span>)</span><br><span class="line">            <span class="keyword">if</span> self.freeze_bn_affine:</span><br><span class="line">                print(<span class="string">"Freezing Weight/Bias of BatchNorm2D."</span>)</span><br><span class="line">        <span class="keyword">if</span> self.freeze_bn:</span><br><span class="line">            <span class="keyword">for</span> m <span class="keyword">in</span> self.backbone.modules():</span><br><span class="line">                <span class="keyword">if</span> isinstance(m, nn.BatchNorm2d):</span><br><span class="line">                    m.eval()</span><br><span class="line">                    <span class="keyword">if</span> self.freeze_bn_affine:</span><br><span class="line">                        m.weight.requires_grad = <span class="literal">False</span></span><br><span class="line">                        m.bias.requires_grad = <span class="literal">False</span></span><br></pre></td></tr></table></figure>
+<h2 id="fixfrozen-batch-norm-when-training-may-lead-to-runtimeerror-expected-scalar-type-half-but-found-float">5. Fix/frozen Batch Norm when training may lead to RuntimeError: expected scalar type Half but found Float</h2>
+<p>解决办法：<a href="https://github.com/NVIDIA/apex/issues/122" target="_blank" rel="noopener">转载自</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn</span><br><span class="line"><span class="keyword">from</span> torch.nn <span class="keyword">import</span> init</span><br><span class="line"><span class="keyword">from</span> torchvision <span class="keyword">import</span> models</span><br><span class="line"><span class="keyword">from</span> torch.autograd <span class="keyword">import</span> Variable</span><br><span class="line"><span class="keyword">from</span> apex.fp16_utils <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fix_bn</span><span class="params">(m)</span>:</span></span><br><span class="line">    classname = m.__class__.__name__</span><br><span class="line">    <span class="keyword">if</span> classname.find(<span class="string">'BatchNorm'</span>) != <span class="number">-1</span>:</span><br><span class="line">        m.eval()</span><br><span class="line"></span><br><span class="line">model = models.resnet50(pretrained=<span class="literal">True</span>)</span><br><span class="line">model.cuda()</span><br><span class="line">model = network_to_half(model)</span><br><span class="line">model.train()</span><br><span class="line">model.apply(fix_bn) <span class="comment"># fix batchnorm</span></span><br><span class="line">input = Variable(torch.FloatTensor(<span class="number">8</span>, <span class="number">3</span>, <span class="number">224</span>, <span class="number">224</span>).cuda().half())</span><br><span class="line">output = model(input)</span><br><span class="line">output_mean = torch.mean(output)</span><br><span class="line">output_mean.backward()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Please do</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def fix_bn(m):</span><br><span class="line"> classname &#x3D; m.__class__.__name__</span><br><span class="line"> if classname.find(&#39;BatchNorm&#39;) !&#x3D; -1:</span><br><span class="line">     m.eval().half()</span><br></pre></td></tr></table></figure>
+<p>Reason for this is, for regular training it is better (performance-wise) <font color="#dd0000">to <strong>use cudnn batch norm, which requires its weights to be in fp32</strong>, thus batch norm modules are not converted to half in <code>network_to_half</code>. However, cudnn does not support batchnorm backward in the eval mode</font> , which is what you are doing, and to use pytorch implementation for this, weights have to be of the same type as inputs.</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Donate me via WeChatPay or AliPay.</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/weixin_pay.jpg" alt="Jia Li WechatPay">
+        <p>WechatPay</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/ali_pay.jpg" alt="Jia Li AliPay">
+        <p>AliPay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Jia Li
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://hellojialee.github.io/2020/02/03/Pytorch%E4%B8%AD%E7%9A%84Batch-Normalization-layer%E8%B8%A9%E5%9D%91/" title="Pytorch中的Batch Normalization layer踩坑">https://hellojialee.github.io/2020/02/03/Pytorch中的Batch-Normalization-layer踩坑/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pytorch/" rel="tag"># pytorch</a>
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" rel="tag"># 深度学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/28/L1%E5%92%8CL2%E6%AD%A3%E5%88%99%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/" rel="prev" title="L1，L2正则化的理解">
+      <i class="fa fa-chevron-left"></i> L1，L2正则化的理解
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/12/Apex%E7%9B%B8%E5%85%B3/" rel="next" title="Apex相关（同时涉及egg-info的说明）">
+      Apex相关（同时涉及egg-info的说明） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#注意momentum的定义"><span class="nav-number">1.</span> <span class="nav-text">1. 注意momentum的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意bn层中含有统计数据数值即均值和方差"><span class="nav-number">2.</span> <span class="nav-text">2. 注意BN层中含有统计数据数值，即均值和方差</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bn层的统计数据更新是在每一次训练阶段model.train后的forward方法中自动实现的而不是在梯度计算与反向传播中更新optim.step中完成"><span class="nav-number">3.</span> <span class="nav-text">3. BN层的统计数据更新是在每一次训练阶段model.train()后的forward()方法中自动实现的，而不是在梯度计算与反向传播中更新optim.step()中完成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#冻结bn及其统计数据"><span class="nav-number">4.</span> <span class="nav-text">4. 冻结BN及其统计数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#fixfrozen-batch-norm-when-training-may-lead-to-runtimeerror-expected-scalar-type-half-but-found-float"><span class="nav-number">5.</span> <span class="nav-text">5. Fix&#x2F;frozen Batch Norm when training may lead to RuntimeError: expected scalar type Half but found Float</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jia Li"
+      src="/images/touxiang1.jpg">
+  <p class="site-author-name" itemprop="name">Jia Li</p>
+  <div class="site-description" itemprop="description">Be happy, be healthy!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hellojialee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hellojialee" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hellojialee@gmail.com" title="E-Mail → mailto:hellojialee@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/xiaojiajia007" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;xiaojiajia007" rel="noopener" target="_blank"><i class="fa fa-fw fa-codiepie"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/wu-ming-27-88-90" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;wu-ming-27-88-90" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia Li</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="Symbols count total">30k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">27 mins.</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.0
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'hcHrBNtFBdqhBMIhjL67LT0t-gzGzoHsz',
+      appKey: 'Pe1HEgFp3AUcNCQ7dpQ3HRE4',
+      placeholder: "欢迎讨论留言！",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
