@@ -96,8 +96,8 @@ y=\frac{x-\mathrm{E}[x]}{\sqrt{\operatorname{Var}[x]+\epsilon}} * \gamma+\beta
         <category>科研</category>
       </categories>
       <tags>
-        <tag>机器学习</tag>
         <tag>pytorch</tag>
+        <tag>机器学习</tag>
         <tag>深度学习</tag>
       </tags>
   </entry>
