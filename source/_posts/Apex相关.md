@@ -6,6 +6,7 @@ tags:
 	- pytorch
 	- python
 	- 环境配置
+	- 编译
 categories: 科研
 ---
 

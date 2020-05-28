@@ -39,7 +39,7 @@ E-mail: <hellojialee@gmail.com>
 
 ## Hometown
 
-![home](http://home.ustc.edu.cn/~jialee//photos//WechatIMG9.jpeg)
+![River](http://home.ustc.edu.cn/~jialee//photos//WechatIMG9.jpeg)
 
 ## Love Traveling
 
@@ -47,7 +47,7 @@ E-mail: <hellojialee@gmail.com>
 
 ![Huangshan](http://home.ustc.edu.cn/~jialee//photos/IMG_20200117_123041.jpeg)
 
-##Have a Nice Day!
+## Have a Nice Day :)
 
 ![Beijing](http://home.ustc.edu.cn/~jialee//photos/IMG_20180824_150824.jpg)
 
