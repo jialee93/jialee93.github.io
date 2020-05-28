@@ -1,6 +1,594 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Pytorch实用指南</title>
+    <url>/2020/05/28/Pytorch%E5%AE%9E%E7%94%A8%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/84784982" target="_blank" rel="noopener">Source</a></p>
+<h1 id="网络模型构建">网络模型构建</h1>
+<h2 id="nn.sequential和nn.modulelist的区别">1. nn.Sequential和nn.ModuleList的区别</h2>
+<p>简而言之就是，nn.Sequential类似于Keras中的贯序模型，它是Module的子类，在构建数个网络层之后会自动调用forward()方法，从而有网络模型生成。而nn.ModuleList仅仅类似于pytho中的list类型，只是将一系列层装入列表，并没有实现forward()方法，因此也不会有网络模型产生的副作用。两者使用的一个很好的例子如链接：<a href="https://www.cnblogs.com/hellcat/p/8477195.html" target="_blank" rel="noopener" class="uri">https://www.cnblogs.com/hellcat/p/8477195.html</a></p>
+<p>另外需要注意的是，网络中需要训练的参数一定要被正确地注册，比如如果使用了普通list, dict等，之后一定要用nn.Sequential或者nn.ModuleList包装一下，这样才能将模型参数顺利被优化器识别。否则，运行时不会报错，但是没有被注册的参数将不会被训练！</p>
+<h2 id="nn.modulelist可以由多维下标索引但用嵌套的list初始化时需注意">2. nn.ModuleList可以由多维下标索引，但用嵌套的list初始化时需注意</h2>
+<p>注意： 比如下面self.outs定义了具有二维索引的modulelist，需要注意的是，内层list也要加nn.ModuleList包装，这样内层list内部就是可迭代的Module subclass对象， 否则内层就是普通的list，不满足输入参数的类型要求，会报错。</p>
+<pre><code>class PoseNet(nn.Module):
+    def __init__(self, nstack, inp_dim, oup_dim, bn=False, increase=128, **kwargs):
+        &quot;&quot;&quot; Pack or initialize the trainable parameters of the network&quot;&quot;&quot;
+        super(PoseNet, self).__init__()
+        self.pre = nn.Sequential(
+            Conv(3, 64, 7, 2, bn=bn),
+            Conv(64, 128, bn=bn),
+            nn.MaxPool2d(2, 2))
+
+        self.outs = nn.ModuleList(
+            [nn.ModuleList([Conv(inp_dim, oup_dim, 1, relu=False, bn=False) for j in range(4)]) for i in range(nstack)])</code></pre>
+<h1 id="网络结构可视化">网络结构可视化</h1>
+<h2 id="网络结构可视化-1">1. 网络结构可视化</h2>
+<pre><code>def make_dot(var, params=None):
+    &quot;&quot;&quot; Produces Graphviz representation of PyTorch autograd graph
+    Blue nodes are the Variables that require grad, orange are Tensors
+    saved for backward in torch.autograd.Function
+    Args:
+        var: output Variable
+        params: dict of (name, Variable) to add names to node that
+            require grad (TODO: make optional)
+    &quot;&quot;&quot;
+    if params is not None:
+        assert isinstance(params.values()[0], Variable)
+        param_map = {id(v): k for k, v in params.items()}
+
+    node_attr = dict(style=&#39;filled&#39;,
+                     shape=&#39;box&#39;,
+                     align=&#39;left&#39;,
+                     fontsize=&#39;12&#39;,
+                     ranksep=&#39;0.1&#39;,
+                     height=&#39;0.2&#39;)
+    dot = Digraph(node_attr=node_attr, graph_attr=dict(size=&quot;12,12&quot;))
+    seen = set()
+
+    def size_to_str(size):
+        return &#39;(&#39; + (&#39;, &#39;).join([&#39;%d&#39; % v for v in size]) + &#39;)&#39;
+
+    def add_nodes(var):
+        if var not in seen:
+            if torch.is_tensor(var):
+                dot.node(str(id(var)), size_to_str(var.size()), fillcolor=&#39;orange&#39;)
+            elif hasattr(var, &#39;variable&#39;):
+                u = var.variable
+                name = param_map[id(u)] if params is not None else &#39;&#39;
+                node_name = &#39;%s\n %s&#39; % (name, size_to_str(u.size()))
+                dot.node(str(id(var)), node_name, fillcolor=&#39;lightblue&#39;)
+            else:
+                dot.node(str(id(var)), str(type(var).__name__))
+            seen.add(var)
+            if hasattr(var, &#39;next_functions&#39;):
+                for u in var.next_functions:
+                    if u[0] is not None:
+                        dot.edge(str(id(u[0])), str(id(var)))
+                        add_nodes(u[0])
+            if hasattr(var, &#39;saved_tensors&#39;):
+                for t in var.saved_tensors:
+                    dot.edge(str(id(t)), str(id(var)))
+                    add_nodes(t)
+
+    add_nodes(var.grad_fn)
+    return dot
+
+# plot the model
+# net = PoseNet(nstack=4, inp_dim=256, oup_dim=68)
+# x = Variable(torch.randn(1, 3, 512, 512))  # x的shape为(batch，channels，height，width)
+# y = net(x)
+# g = make_dot(y)
+# g.view()</code></pre>
+<h2 id="类似于keras-打印网络每层输出的形状shape">2. 类似于keras, 打印网络每层输出的形状shape</h2>
+<p>更新：推荐使用增强版工具 <a href="https://github.com/nmhkahn/torchsummaryX" target="_blank" rel="noopener"><strong>torchsummaryX</strong></a>，它可以同时给出输出shape，参数数目，以及乘加运算数目等</p>
+<p>Improved visualization tool of <a href="https://github.com/sksq96/pytorch-summary" target="_blank" rel="noopener">torchsummary</a>. Here, it visualizes kernel size, output shape, # params, and Mult-Adds. Also the torchsummaryX can handle RNN, Recursive NN, or model with multiple inputs.</p>
+<hr />
+<p>使用模仿keras中的summary()函数，<strong>torchsummary</strong> <a href="https://www.jianshu.com/p/97c626d33924" target="_blank" rel="noopener">转载自</a></p>
+<pre><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torchsummary import summary
+
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(1, 10, kernel_size=5)
+        self.conv2 = nn.Conv2d(10, 20, kernel_size=5)
+        self.conv2_drop = nn.Dropout2d()
+        self.fc1 = nn.Linear(320, 50)
+        self.fc2 = nn.Linear(50, 10)
+
+    def forward(self, x):
+        x = F.relu(F.max_pool2d(self.conv1(x), 2))
+        x = F.relu(F.max_pool2d(self.conv2_drop(self.conv2(x)), 2))
+        x = x.view(-1, 320)
+        x = F.relu(self.fc1(x))
+        x = F.dropout(x, training=self.training)
+        x = self.fc2(x)
+        return F.log_softmax(x, dim=1)
+
+device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;) # PyTorch v0.4.0
+model = Net().to(device)
+
+summary(model, (1, 28, 28))
+
+&gt;&gt;&gt;&gt;&gt;:
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 10, 24, 24]             260
+            Conv2d-2             [-1, 20, 8, 8]           5,020
+         Dropout2d-3             [-1, 20, 8, 8]               0
+            Linear-4                   [-1, 50]          16,050
+            Linear-5                   [-1, 10]             510
+================================================================
+Total params: 21,840
+Trainable params: 21,840
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.06
+Params size (MB): 0.08
+Estimated Total Size (MB): 0.15
+----------------------------------------------------------------</code></pre>
+<h2 id="pytorch中layer的输出shape的尺寸取整">3. pytorch中layer的输出shape的尺寸取整</h2>
+<p>默认使用的是向下取整(floor)，如：</p>
+<pre><code>self.conv8_2 = nn.Conv2d(256, 512, kernel_size=3, padding=1, stride=2)  # (batch_size, 512, 38, 38)
+
+# (H + 2*p - d(ks - 1) - 1) / 2 + 1
+# (38 + 12 - 6*(3 - 1) -1 ) / 2 + 1 = 19.5 向下取整 19
+self.conv6 = nn.Conv2d(512, 1024, kernel_size=3, padding=6, dilation=6)  # (batch_size, 1024, 19, 19)</code></pre>
+<p>Maxpooling层也是默认使用向下取整。如果想使用向上取整(ceil)，需要设置取整模式 ceil_mode=True， 默认是False</p>
+<pre><code>nn.MaxPool2d(kernel_size=2, stride=2),  # (batch_size, 256, 37, 37), 想变成38*38可以使用　ceil_mode=True</code></pre>
+<h2 id="超级给力的网络结构可视化工具netron-和-hiddenlayer">4. 超级给力的网络结构可视化工具：Netron 和 hiddenlayer</h2>
+<p>前者是一款在浏览器中使用的可视化工具，可以使用pip安装，然后在命令行中输入netron或者netron -b [model file]。需要把模型转换onnx模型。</p>
+<pre><code>import torch.onnx
+
+net = Hourglass2(2, 32, 1, Residual)
+dummy_input = Variable(torch.randn(1, 32, 128, 128))
+torch.onnx.export(net, dummy_input, &quot;model.onnx&quot;)</code></pre>
+<p>后者是在jupyter notebook内使用的，例子如下：</p>
+<p>Netron: <a href="https://github.com/lutzroeder/netron" target="_blank" rel="noopener" class="uri">https://github.com/lutzroeder/netron</a></p>
+<p>hiddenlayer: <a href="https://github.com/waleedka/hiddenlayer/blob/master/demos/pytorch_graph.ipynb" target="_blank" rel="noopener">https://github.com/waleedka/hiddenlayer/blob/master/demos/pytorch_graph.ipynb</a></p>
+<h2 id="计算网络模型的参数量和浮点运算数">5. 计算网络模型的参数量和浮点运算数</h2>
+<p>使用第三方库thop</p>
+<pre><code>from thop import profile
+from thop import clever_format
+
+dummy_input = torch.randn(1, 256, 128, 128)
+flops, params = profile(MyNetwork, inputs=(dummy_input,))
+flops, params = clever_format([flops, params], &quot;%.3f&quot;)
+print(flops, params)</code></pre>
+<h1 id="tensor的操作">Tensor的操作</h1>
+<h2 id="tensor.view和tensor.permute-permute变换">１. Tensor.view和Tensor.permute (permute:变换)</h2>
+<p>torch中的view类似与numpy中的reshape，但不同的是前者会与变换后的tensor共享内存，而后者不共享不会影响原始数组。</p>
+<p>torch中的permute类似与numpy中的transpose. <strong>注意：</strong>view只能用在contiguous的variable上。如果在view之前用了transpose, permute等，需要用contiguous()来返回一个contiguous copy。</p>
+<p>一个在SSD中的例子：</p>
+<pre><code> y_loc = self.loc_layers[i](x)
+            batch_size = y_loc.size(0)  # int
+            # 此处y_loc的shape是(batch_size, anchor*4, Hi, Wi), pytorch的数据结构为(N, C, H, W)
+            y_loc = y_loc.permute(0, 2, 3, 1).contiguous()
+            # 此处y_loc的shape是(batch_size, Hi, Wi, anchor*4)
+            # 要先把4放到最后，然后再改变shape 变成 ##### (batch_size, anchor_all_number, 4) ######,  anchor_all_number代表anchor的总数
+            # permute可以对任意高维矩阵进行转置. 但没有 torch.permute() 这个调用方式， 只能 Tensor.permute()。
+            # view只能用在contiguous的variable上。如果在view之前用了transpose, permute等，需要用contiguous()来返回一个contiguous copy。
+            y_loc = y_loc.view(batch_size, -1, 4)</code></pre>
+<h2 id="若前面有一个tensor输入需要梯度则后面的输出也需要梯度">２. 若前面有一个tensor输入需要梯度，则后面的输出也需要梯度</h2>
+<pre><code>x = torch.zeros((1), requires_grad=True)
+# 若前面有一个输入需要梯度，则后面的输出也需要梯度。有的版本这里是默认值false
+# 注：　Tensor变量的requires_grad的属性默认为False,若一个节点requires_grad被设置为True，那么所有依赖它的节点的requires_grad都为True。</code></pre>
+<h2 id="tensor之间要是同一个数据类型dtype才能运算因此有时需要进行类型转换">３. Tensor之间要是同一个数据类型<strong>dtype</strong>才能运算，因此有时需要进行类型转换</h2>
+<p>比如即便都是int类型，但是一个是int16，一个是int32也需要先转换然后才能进行运算。使用Tensor.<code>to(torch.float32)进行转换。</code></p>
+<pre><code># 因为loc_loss是float32，而num_matched_box是int64，没办法直接除所以转换一下
+# 这里是不会损失数据的，因为假如batch_size=32,每个图片8732个，就只有8732*32=279424
+# num_matched_boxes最大的值不会超过float32的表示范围的
+num_matched_boxes = num_matched_boxes.to(torch.float32)  # Tensor dtype and/or device 转换
+loc_loss /= num_matched_boxes   # 除以的是正样本的数目</code></pre>
+<h2 id="tensor的clone和copy_的区别">４. Tensor的clone和copy_的区别：</h2>
+<p>copy_()不会追踪梯度，而clone会追踪并进行梯度的反向传播</p>
+<p>Unlike copy_(), clone is recorded in the computation graph. Gradients propagating to the cloned tensor will propagate to the original tensor.</p>
+<h2 id="tensor初始化">５. Tensor初始化</h2>
+<h3 id="a.-torch.tensor和torch.from_numpy效果不同">a. torch.tensor和torch.from_numpy()效果不同</h3>
+<p>torch.tensor会重新拷贝原始数据，返回新的数据。如果不想拷贝，即内存相关联，对numpy array来说可以使用torch.from_numpy()。</p>
+<p>可以直接用list数据进行初始化，并且对list中某一个元素是tuple还是list都无所谓，如：</p>
+<p>x= [(1,2,3,4), [5,6,7,8]] # x[0]是tuple而x[1]是list torch.tensor(x) Out[20]: tensor([[ 1, 2, 3, 4], [ 5, 6, 7, 8]])</p>
+<h2 id="data和detach的区别">６. data和detach()的区别</h2>
+<p>推荐使用detach()，这样万一需要在反向传播时需要记录变量，可以报错指出，避免Tensor.data没有报错，但是计算错误的情况。</p>
+<p><a href="https://zhuanlan.zhihu.com/p/38475183" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/38475183</a></p>
+<blockquote>
+<p><em>"However, .data can be unsafe in some cases. Any changes on x.data wouldn’t be tracked by autograd, and the computed gradients would be incorrect if x is needed in a backward pass. A safer alternative is to use x.detach(), which also returns a Tensor that shares data with requires_grad=False, but will have its in-place changes reported by autograd if x is needed in backward."</em></p>
+</blockquote>
+<p><strong>Any in-place change on x.detach() will cause errors when x is needed in backward, so .detach() is a safer way for the exclusion of subgraphs from gradient computation. <a href="https://github.com/pytorch/pytorch/issues/6990" target="_blank" rel="noopener" class="uri">https://github.com/pytorch/pytorch/issues/6990</a></strong></p>
+<h2 id="pytorch中损失函数对tensor操作的reducesize_average参数说明">7. pytorch中损失函数对tensor操作的reduce,size_average参数说明</h2>
+<p>参考：<a href="https://blog.csdn.net/u013548568/article/details/81532605" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/u013548568/article/details/81532605</a></p>
+<p>以及 <a href="https://zhuanlan.zhihu.com/p/91485607" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/91485607</a></p>
+<p>size_average是说是不是对一个batch里面的所有的数据求均值</p>
+<hr />
+<p><strong>Reduce </strong> <strong>size_average </strong> * 意义* True True 对batch里面的数据取均值loss.mean() True False 对batch里面的数据求和loss.sum() False – returns a loss per batch element instead, 这个时候忽略size_average参数</p>
+<hr />
+<p>reduction : 可选的参数有：‘none’ | ‘elementwise_mean’ | ‘sum’, 正如参数的字面意思</p>
+<hr />
+<p>假设输入和target的大小分别是NxCxWxH，那么一旦reduce设置为False，loss的大小为NxCxWxH，返回每一个元素的loss</p>
+<p><strong>reduction代表了上面的reduce和size_average双重含义，这也是文档里为什么说reduce和size_average要被Deprecated 的原因</strong></p>
+<p>例子：</p>
+<pre><code>import torch
+import torch.nn as nn
+
+# ----------------------------------- MSE loss
+
+# 生成网络输出 以及 目标输出
+output = torch.ones(2, 2, requires_grad=True) * 0.5
+target = torch.ones(2, 2)
+
+# 设置三种不同参数的L1Loss
+reduce_False = nn.MSELoss(size_average=True, reduce=False) # 等效于reduction=&#39;none&#39;
+size_average_True = nn.MSELoss(size_average=True, reduce=True) # 等效于reduction=&#39;mean&#39;
+size_average_False = nn.MSELoss(size_average=False, reduce=True) # 等效于reduction=&#39;sum&#39;
+
+o_0 = reduce_False(output, target)
+o_1 = size_average_True(output, target)
+o_2 = size_average_False(output, target)
+
+print(&#39;\nreduce=False, 输出同维度的loss:\n{}\n&#39;.format(o_0))
+print(&#39;size_average=True，\t求平均:\t{}&#39;.format(o_1))
+print(&#39;size_average=False，\t求和:\t{}&#39;.format(o_2))</code></pre>
+<p>输出：</p>
+<pre><code>reduce=False, 输出同维度的loss:
+tensor([[0.2500, 0.2500],
+        [0.2500, 0.2500]], grad_fn=&lt;MseLossBackward&gt;)
+
+size_average=True，  求平均:    0.25
+
+size_average=False， 求和: 1.0</code></pre>
+<h2 id="将tensor以及model迁移至cuda上">8. 将tensor以及model迁移至cuda上</h2>
+<p><strong>将数据迁移到cuda上必须reassign，tensor.cuda()不是in-place操作，而是返回一个新的在cuda上的tensor。而网络模型不需要reassign.</strong></p>
+<h3 id="a.-迁移tensor">a. 迁移tensor</h3>
+<p><strong>问题：</strong>Hi, this works, <code>a = torch.LongTensor(1).random_(0, 10).to("cuda")</code>. but this won’t work:</p>
+<p><strong>回答：</strong></p>
+<p>If you are pushing tensors to a device or host, <strong>you have to reassign them:</strong></p>
+<pre><code>a = a.to(device=&#39;cuda&#39;)</code></pre>
+<h3 id="b.-迁移模型">b. 迁移模型</h3>
+<p><code>nn.Module</code>s push all parameters, buffers and submodules recursively and don’t need the assignment.</p>
+<blockquote>
+<p>model.cuda()</p>
+</blockquote>
+<h2 id="对feature-map-即也是tensor做尺寸上的缩放">9. 对feature map (即也是tensor)做尺寸上的缩放</h2>
+<blockquote>
+<p><code>torch.nn.functional.``interpolate</code>(<em>input</em>, <em>size=None</em>, <em>scale_factor=None</em>, <em>mode='nearest'</em>, <em>align_corners=None</em>)</p>
+</blockquote>
+<p>默认的<em>align_corners=None就是和Opencv中的缩放规则保持一致，默认使用几何中心对齐，以此消除量化误差（或者说</em>计算出的灰度值也相对于源图像偏左偏上）<em>。</em></p>
+<p>若做缩放，需要在缩放后图像 的位置上找到对应的 原始图像位置上 的像素值，有以下</p>
+<p>SrcX=(dstX+0.5)* (srcWidth/dstWidth) -0.5 SrcY=(dstY+0.5) * (srcHeight/dstHeight)-0.5</p>
+<p>具体参考我的另一篇博客：</p>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/100150726" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/100150726</a></p>
+<h2 id="模型的普通类成员变量和pytorch中自动注册的parameter或者buffer区别">10. 模型的普通类成员变量和Pytorch中自动注册的Parameter或者buffer区别</h2>
+<p><a href="https://zhuanlan.zhihu.com/p/89442276" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/89442276</a></p>
+<p>模型中需要保存下来的参数包括两种:</p>
+<p>一种是反向传播需要被optimizer更新的，称之为 parameter 一种是反向传播不需要被optimizer更新，称之为 buffer，它只能在forward中被更新。</p>
+<p>第一种参数我们可以通过 model.parameters() 返回；第二种参数我们可以通过 model.buffers() 返回。因为我们的模型保存的是 state_dict 返回的 OrderDict，所以这两种参数不仅要满足是否需要被更新的要求，还会被保存到OrderDict。而<strong>普通的类成员变量属性是无法自动保存到模型的 OrderDict中去的。</strong></p>
+<p>模型进行设备移动时，模型中注册的参数(Parameter和buffer)会同时进行移动，比如使用model.cuda()之后注册的参数parameter和buffer会自动迁移到cuda上去，<strong>而普通成员变量不会自动设备移动</strong>。</p>
+<h1 id="pytorch训练数据准备">pytorch训练数据准备</h1>
+<h2 id="dataloader-类">1. DataLoader 类</h2>
+<h3 id="参数说明-摘录自">参数说明 <a href="https://blog.csdn.net/weixin_42236288/article/details/80893882%C2%A0" target="_blank" rel="noopener">摘录自</a></h3>
+<p>1. dataset：加载的数据集(Dataset对象) 2. batch_size：batch size 3. shuffle:：是否将数据打乱 4. sampler： 样本抽样，后续会详细介绍 5. num_workers：使用多进程加载的进程数，0代表不使用多进程 6. collate_fn： 如何将多个样本数据拼接成一个batch，一般使用默认的拼接方式即可 7. pin_memory：是否将数据保存在pin memory区，pin memory中的数据转到GPU会快一些 8. drop_last：dataset中的数据个数可能不是batch_size的整数倍，drop_last为True会将多出来不足一个batch的数据丢弃</p>
+<h3 id="对于-pin_memory-的解释摘录自">对于 pin_memory 的解释：<a href="https://oldpan.me/archives/pytorch-to-use-multiple-gpus" target="_blank" rel="noopener">摘录自</a></h3>
+<p><strong>pin_memory就是锁页内存</strong></p>
+<blockquote>
+<p>pin_memory就是锁页内存，创建DataLoader时，设置pin_memory=True，则意味着生成的Tensor数据最开始是属于内存中的锁页内存，这样将内存的Tensor转义到GPU的显存就会更快一些。 主机中的内存，有两种存在方式，一是锁页，二是不锁页，锁页内存存放的内容在任何情况下都不会与主机的虚拟内存进行交换（注：虚拟内存就是硬盘），而不锁页内存在主机内存不足时，数据会存放在虚拟内存中。显卡中的显存全部是锁页内存,当计算机的内存充足的时候，可以设置pin_memory=True。当系统卡住，或者交换内存使用过多的时候，设置pin_memory=False。因为pin_memory与电脑硬件性能有关，pytorch开发者不能确保每一个炼丹玩家都有高端设备，因此pin_memory默认为False。</p>
+</blockquote>
+<h2 id="多进程读取hdf5文件支持的不好以及解决办法">2. 多进程读取HDF5文件支持的不好以及解决办法</h2>
+<p>DataLoader中多进程高效处理hdf5文件：</p>
+<p><a href="https://discuss.pytorch.org/t/dataloader-when-num-worker-0-there-is-bug/25643" target="_blank" rel="noopener">摘录自</a></p>
+<p><strong>My recommendations:</strong></p>
+<blockquote>
+<ul>
+<li>Use HDF5 in version 1.10 (better multiprocessing handling),</li>
+<li>Because an opened HDF5 file isn’t pickleable and to send Dataset to workers’ processes it needs to be serialised with pickle, you can’t open the HDF5 file in <code>__init__</code>. Open it in <code>__getitem__</code>and <strong>store as the singleton!</strong>. Do not open it each time as it introduces huge overhead.</li>
+<li>Use <code>DataLoader</code> with <code>num_workers</code> &gt; 0 (reading from hdf5 (i.e. hard drive) is slow) and <code>batch_sampler</code> (random access to hdf5 (i.e. hard drive) is slow).</li>
+</ul>
+</blockquote>
+<p><strong>Sample code:</strong></p>
+<pre><code>class H5Dataset(torch.utils.data.Dataset):
+    def __init__(self, path):
+        self.file_path = path
+        self.dataset = None
+        with h5py.File(self.file_path, &#39;r&#39;) as file:
+            self.dataset_len = len(file[&quot;dataset&quot;])
+
+    def __getitem__(self, index):
+        if self.dataset is None:
+            self.dataset = h5py.File(self.file_path, &#39;r&#39;)[&quot;dataset&quot;]
+        return self.dataset[index]
+
+    def __len__(self):
+        return self.dataset_len</code></pre>
+<p><strong>如何安装HDF5 1.10以及对应的python hdf5的包呢？ 查看<a href="https://blog.csdn.net/xiaojiajia007/article/details/87873443" target="_blank" rel="noopener">我的另一个博客</a></strong></p>
+<p><strong>使用命令行环境变量HDF5_DIR=/usr/local/hdf5 pip install h5py。具体如下：</strong></p>
+<p>Then you should be fine. Install HDF5 1.10 from source into somewhere you want to. The .tar is here: https://www.hdfgroup.org/HDF5/release/obtainsrc5110.html Follow the install readme but basically you just need to give it a directory with: &gt; ./configure --prefix=/usr/local/h5py before you make.</p>
+<p>Now install with you anaconda version of python. You may want to make a separate environment using conda but that's your call.</p>
+<p>Remove the h5py you have with anaconda using &gt; conda uninstall h5py or &gt; pip uninstall h5py</p>
+<p>Then use pip to reinstall h5py but pointing to the HDF5 library you made from source. From here: http://docs.h5py.org/en/latest/build.html <strong>&gt; HDF5_DIR=/usr/local/hdf5 pip install h5py</strong></p>
+<p>Then you should be good. Open up a python terminal and test if you can use SWMR mode: &gt; import h5py &gt; f = h5py.File("./swmr.h5", 'a', libver='latest', swmr=True)</p>
+<h2 id="多进程准备数据随机种子seed的问题">3. 多进程准备数据<strong>随机种子seed</strong>的问题</h2>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/87881231" target="_blank" rel="noopener">参见我另一个博客</a></p>
+<h2 id="如何加速训练数据准备并载入gpu训练">4. 如何加速训练数据准备并载入GPU训练</h2>
+<p>参考一个知乎博客，data_prefetcher： <a href="https://zhuanlan.zhihu.com/p/80695364" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/80695364</a></p>
+<p>以及Pytorch论坛上的一个讨论： <a href="https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/19?u=jia_lee" target="_blank" rel="noopener">https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/19?u=jia_lee</a></p>
+<h1 id="pytorch中训练阶段">Pytorch中训练阶段</h1>
+<h2 id="stochastic-weight-averaging-in-pytorch">1. Stochastic Weight Averaging in PyTorch</h2>
+<p>这是一种model weight average策略，类似于模型集成，常常用来刷指标，提高模型的泛化精度。详细说明请见我的单独博客：</p>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/90748115" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90748115</a></p>
+<h2 id="通过梯度积累变相增大batch-size">2. 通过梯度积累变相增大batch size</h2>
+<p><a href="https://www.zhihu.com/question/303070254/answer/573037166" target="_blank" rel="noopener">详情请见 PyTorch中在反向传播前为什么要手动将梯度清零？ - Pascal的回答 - 知乎</a> 但是需要注意的是，因为BN层的参数是在 forward()阶段更新的，这样积累梯度并没有增大BN layers的实际batch size。可以通过减少BN层的 momentum 值，让BN层动态更新统计参数时能够记住更长。</p>
+<h1 id="pytorch-测试阶段">Pytorch 测试阶段</h1>
+<h2 id="正确的测试预测时间计时代码">1. 正确的测试（预测）时间计时代码</h2>
+<pre><code>torch.cuda.synchronize() # 等待当前设备上所有流中的所有核心完成
+start = time.time() 
+result = model(input) 
+torch.cuda.synchronize() 
+end = time.time()</code></pre>
+<p>在pytorch里面，程序的执行都是异步的。如果没有torch.cuda.synchronize() ，测试的时间会很短，因为执行完end=time.time()程序就退出了，后台的cu也因为python的退出退出了，如果采用torch.cuda.synchronize() ，代码会同步cu的操作，等待gpu上的操作都完成了再继续成形end = time.time() 原文：https://blog.csdn.net/u013548568/article/details/81368019</p>
+<h2 id="训练测试两个阶段需要注意设置不同状态-参考">2. 训练，测试两个阶段需要注意设置不同状态 <a href="https://discuss.pytorch.org/t/model-eval-vs-with-torch-no-grad/19615/10" target="_blank" rel="noopener">参考</a></h2>
+<h3 id="a.-model.train和model.val">a. model.train()和model.val()</h3>
+<p>比如BN和Dropout</p>
+<p>During eval <code>Dropout</code> is deactivated and just passes its input. During the training the probability <code>p</code> is used to drop activations. Also, the activations are scaled with <code>1./p</code> as otherwise the expected values would differ between training and eval.</p>
+<pre><code>drop = nn.Dropout()
+x = torch.ones(1, 10)
+
+# Train mode (default after construction)
+drop.train()
+print(drop(x))
+
+# Eval mode
+drop.eval()
+print(drop(x))</code></pre>
+<h3 id="b.-测试val时不光要设置model.eval-为了防止内存爆炸应该追加torch.no_grad">b. 测试（val)时不光要设置<code>model.eval()</code> ，为了防止内存爆炸，应该追加<code>torch.no_grad()</code></h3>
+<ul>
+<li><code>model.eval()</code> will notify all your layers that you are in eval mode, that way, batchnorm or dropout layers will work in eval model instead of training mode.</li>
+<li><code>torch.no_grad():</code> impacts the autograd engine and deactivate it. It will reduce memory usage and speed up computations but you won’t be able to backprop (which you don’t want in an eval script). 注意，<code>torch.no_grad()是</code>context manager。</li>
+</ul>
+<h2 id="dropout里需要设置训练标志位否则会踩坑">3. Dropout里需要设置训练标志位，否则会踩坑</h2>
+<h3 id="使用f.dropout-nn.functional.dropout-的时候需要设置它的可选参数training-state">使用F.dropout ( nn.functional.dropout )的时候需要设置它的可选参数training state</h3>
+<p>这个状态参数与模型整体的一致，否则就是out=out，没有效果，具体说明见链接 <a href="https://www.zhihu.com/question/67209417/answer/302434279" target="_blank" rel="noopener">查看</a></p>
+<pre><code>Class DropoutFC(nn.Module):
+   def __init__(self):
+       super(DropoutFC, self).__init__()
+       self.fc = nn.Linear(100,20)
+
+   def forward(self, input):
+       out = self.fc(input)
+       out = F.dropout(out, p=0.5, training=self.training) # set dropout&#39;s training sate
+       return out
+
+Net = DropoutFC()
+Net.train()
+
+# train the Net
+#作者：雷杰
+#链接：https://www.zhihu.com/question/67209417/answer/302434279</code></pre>
+<h3 id="或者直接使用nn.dropout即利用包装后的layer">或者直接使用nn.Dropout()，即利用包装后的layer</h3>
+<p>nn.Dropout()实际上是对F.dropout的一个包装, 也将self.training传入了)</p>
+<pre><code>Class DropoutFC(nn.Module):
+  def __init__(self):
+      super(DropoutFC, self).__init__()
+      self.fc = nn.Linear(100,20)
+      self.dropout = nn.Dropout(p=0.5)
+
+  def forward(self, input):
+      out = self.fc(input)
+      out = self.dropout(out)
+      return out
+Net = DropoutFC()
+Net.train()
+
+# train the Net</code></pre>
+<h2 id="多gpu模型权重的保存与加载">4. 多GPU模型权重的保存与加载</h2>
+<p>Instead of deleting the “module.” string from all the state_dict keys, you can save your model with: <code>torch.save(model.module.state_dict(), path_to_file)</code> instead of <code>torch.save(model.state_dict(), path_to_file)</code> <strong><em>that way you don’t get the “module.” string to begin with…</em></strong></p>
+<pre><code># original saved file with DataParallel
+state_dict = torch.load(&#39;myfile.pth.tar&#39;)
+# 把所有的张量加载到CPU中
+# torch.load(&#39;tensors.pt&#39;, map_location=lambda storage, loc: storage)
+
+# create new OrderedDict that does not contain `module.`
+from collections import OrderedDict
+new_state_dict = OrderedDict()
+for k, v in state_dict.items():
+    name = k[7:] # remove `module.`
+    new_state_dict[name] = v
+# load params
+model.load_state_dict(new_state_dict)
+
+############## 还有一个可用的封装更好的函数
+# 加载模型，解决命名和维度不匹配问题,解决多个gpu并行
+def load_state_keywise(model, model_path):
+    model_dict = model.state_dict()
+    pretrained_dict = torch.load(model_path, map_location=&#39;cpu&#39;)
+    key = list(pretrained_dict.keys())[0]
+    # 1. filter out unnecessary keys
+    # 1.1 multi-GPU -&gt;CPU
+    if (str(key).startswith(&#39;module.&#39;)):
+        pretrained_dict = {k[7:]: v for k, v in pretrained_dict.items() if
+                           k[7:] in model_dict and v.size() == model_dict[k[7:]].size()}
+    else:
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if
+                           k in model_dict and v.size() == model_dict[k].size()}
+    # 2. overwrite entries in the existing state dict
+    model_dict.update(pretrained_dict)
+    # 3. load the new state dict
+    model.load_state_dict(model_dict)
+
+ ################## 更简单直接的方式 ##################
+# Instead of deleting the “module.” string from all the state_dict keys, you can save your model with:
+
+torch.save(model.module.state_dict(), path_to_file)
+# instead of
+
+torch.save(model.state_dict(), path_to_file)
+
+# that way you don’t get the “module.” string to begin with…</code></pre>
+<h2 id="恢复保存的优化器状态optimizer-checkpoint-resume继续优化">5. 恢复保存的优化器状态(optimizer checkpoint resume)，继续优化</h2>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/88417329" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/88417329</a></p>
+<h2 id="载入模型权重gpu内存被额外占用的bug解决">6. 载入模型权重GPU内存被额外占用的bug解决</h2>
+<h3 id="分布式多进程中的这种情况的现象是对于同一个python进程pid号相同会两次占用固定大小的gpu内存">分布式/多进程中的这种情况的现象是，对于同一个python进程（pid号相同）会两次占用固定大小的gpu内存</h3>
+<p>观察到的现象是python进程多于预期应有的进程数。比如我们单机多卡分布式训练，已经完成了网络模型的in-place参数设备转换，即network.cuda()，现在我们有4块GPU，我们在程序中的每一个进程分配一块GPU时本来应该只有4个进程，每个进程占用一定的GPU显存，但实际情况如所示：</p>
+<pre><code>Processes: GPU Memory |
+| GPU PID Type Process name Usage |
+|=============================================================================|
+| 0 1291 G /usr/lib/xorg/Xorg 153MiB |
+| 0 2549 G fcitx-qimpanel 14MiB |
+| 0 21740 G compiz 138MiB |
+| 0 22840 C /home/jia/.virtualenvs/phoenix/bin/python 6097MiB | 
+| 0 22841 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现
+| 0 22842 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现
+| 0 22843 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现
+| 0 23207 G /opt/teamviewer/tv_bin/TeamViewer 24MiB |
+| 0 23985 G .../Software/pycharm-2019.2.4/jbr/bin/java 12MiB |
+| 1 22841 C /home/jia/.virtualenvs/phoenix/bin/python 6129MiB |
+| 2 22842 C /home/jia/.virtualenvs/phoenix/bin/python 6227MiB |
+| 3 22843 C /home/jia/.virtualenvs/phoenix/bin/python 6229MiB</code></pre>
+<p>原因：在同一个cuda上之后不使用的内存将会被自动销毁并回收，但是对于不同GPU之间目前没有自动的内存管理机制??，如果某一个进程在cuda0上实例化的tensor x，在另一个使用cuda2的进程中使用了，但cuda2上的进程并没有对tensor x进行内存销毁回收，造成GPU内存的占用。</p>
+<p>解决办法：在当前进程中销毁不在同一个cuda上的内存垃圾，或者载入权重时使用torch.load(model_path, <strong>map_location='cpu'</strong>)</p>
+<h3 id="gpu预训练保存的权值可以直接载入到cpu下的网络模型network中并且载入之后network的参数会移到预训练权值所在的device上">GPU预训练保存的权值可以直接载入到CPU下的网络模型network中，并且载入之后network的参数会移到预训练权值所在的device上</h3>
+<p>如下图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200108114844390.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" /></p>
+<p>这个行为挺诡异，按照正常的设计逻辑，本来CPU的模型直接载入GPU预训练权值应该会因为device不同而报错（cpu, cuda0)但结果并没有，可以成功载入，并且载入之后CPU下的模型network的device也变成cuda0了。甚至我们可以仅仅载入某一layer的权值，那么这一layer的weight.data将变到cuda0上，而其没有载入更改的layer的weight.data仍然在cpu上！</p>
+<p>解决办法同上一种情况，把GPU预训练权值map到cpu上之后再network.load_state_dict()。</p>
+<h1 id="pytorch的内存优化和加速">Pytorch的内存优化和加速</h1>
+<p><strong>有一个 pytorch提速指南： <a href="https://zhuanlan.zhihu.com/p/39752167" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/39752167</a></strong></p>
+<p><strong>可以参考 <a href="https://blog.csdn.net/jacke121/article/details/81329679%C2%A0" target="_blank" rel="noopener">原文</a></strong></p>
+<h2 id="使用inplace减少内存开辟从而压缩内存需求">1. 使用inplace减少内存开辟，从而压缩内存需求</h2>
+<p>对于in-place operation的解读，见：<a href="https://blog.csdn.net/u012436149/article/details/80819523" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/u012436149/article/details/80819523</a></p>
+<p>以及：<a href="https://blog.csdn.net/york1996/article/details/81835873" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/york1996/article/details/81835873</a></p>
+<p>如，ReLu(inplace=True)</p>
+<p>在官方问文档中由这一段话：</p>
+<blockquote>
+<p>如果你使用了in-place operation而没有报错的话，那么你可以确定你的梯度计算是正确的。<strong>因为Pytorch在内存占用和执行速度上做了很多算法优化，哪些需要保留梯度不能使用in-place覆盖就显得不那么显而易见了，不能单纯地用原始梯度反向传播过程来决定。</strong></p>
+</blockquote>
+<p>inplace只是可以节省存储tensor的内存，但是PYTORCH中的自动微分机制仍然能够追踪，对于内存来说inplace可能是同一个对象，但是对于autograd来说，依然是两个不同的对象。 一个例子：<a href="https://discuss.pytorch.org/t/why-relu-inplace-true-does-not-give-error-in-official-resnet-py-but-it-gives-error-in-my-code/21004/3" target="_blank" rel="noopener">resnet</a></p>
+<blockquote>
+<p><strong><code>inplace</code> means that it will not allocate new memory and change tensors inplace</strong>. <strong>But from the autograd point of view, you have two different tensors (even though they actually share the same memory)</strong>. One is the output of conv (or batchnorm for resnet) and one is the output of the relu.</p>
+</blockquote>
+<h2 id="torch.backends.cudnn.benchmark-true">2. torch.backends.cudnn.benchmark = True</h2>
+<p>在程序刚开始加这条语句可以提升一点训练速度，没什么额外开销。</p>
+<h2 id="torch.cuda.empty_cache">3. torch.cuda.empty_cache()</h2>
+<p>因为每次迭代都会引入点临时变量，会导致训练速度越来越慢，基本呈线性增长。开发人员还不清楚原因，但如果周期性的使用torch.cuda.empty_cache()的话就可以解决这个问题。</p>
+<h2 id="使用checkpoint分阶段计算这样可以在显卡上放下更大的网络">4. 使用checkpoint分阶段计算，这样可以在显卡上放下更大的网络</h2>
+<p>知乎回答的一个例子：https://www.zhihu.com/question/274635237/answer/574193034</p>
+<h2 id="尝试nvidia-apex-16位浮点数扩展">5. 尝试Nvidia Apex 16位浮点数扩展</h2>
+<p>温馨提示：我的另一篇博客<a href="https://mp.csdn.net/console/editor/html/84784982" target="_blank" rel="noopener">pip install, python setup.py, egg-info的说明--以Nvidia Apex安装为例</a></p>
+<h3 id="clean-the-old-install-before-rebuilding">Clean the old install before rebuilding:</h3>
+<blockquote>
+<p>pip uninstall apex cd apex_repo_dir rm -rf build (if present) rm -rf apex.egg-info (if present)</p>
+</blockquote>
+<h3 id="install-package">Install package：</h3>
+<blockquote>
+<p>pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./</p>
+<p># --no-cache-dir 清除安装缓存文件</p>
+</blockquote>
+<p>或者</p>
+<blockquote>
+<p>python setup.py install --cuda_ext --cpp_ext</p>
+</blockquote>
+<h3 id="ps-如果遇到cuda版本不兼容的问题解决办法见若pytorch升级到1.3cuda10.1则没有这个error了">ps: 如果遇到Cuda版本不兼容的问题，解决办法见：（若pytorch升级到1.3，cuda10.1则没有这个error了）</h3>
+<p><a href="https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952" target="_blank" rel="noopener">https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952</a></p>
+<p>如果没有出现其他error，可以直接使用上面链接的建议，删除版本检查抛出的报错。</p>
+<p>讨论：</p>
+<p><a href="https://github.com/NVIDIA/apex/issues/350" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/issues/350</a></p>
+<p><a href="https://github.com/NVIDIA/apex/pull/323" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/323</a></p>
+<h2 id="pytorch内存泄露僵尸进程解决办法-原文链接">6. Pytorch内存泄露（僵尸进程）解决办法 <a href="https://blog.csdn.net/liuyifang0810680/article/details/79628394%C2%A0" target="_blank" rel="noopener">原文链接</a></h2>
+<p>nvidia-smi 发现内存泄露问题，即没有进程时，内存被占用</p>
+<blockquote>
+<p>fuser -v /dev/nvidia* 发现僵尸进程</p>
+<p>ps x |grep python|awk '{print $1}'|xargs kill 杀死所有僵尸进程</p>
+</blockquote>
+<p>命令解读：</p>
+<p>ps x: show all process of current user</p>
+<p>grep python: to get process that has python in command line</p>
+<p>awk '{print $1}': to get the related process pidxargs kill`: to kill the process</p>
+<p>note: make sure you don’t kill other processes! do ps x |grep python first.</p>
+<h2 id="相关的进程和内存管理bash-cmd-命令行命令">7. 相关的进程和内存管理bash cmd (命令行命令）</h2>
+<p>nvidia-smi -l xxx 监控GPU，动态刷新信息（默认5s刷新一次），按Ctrl+C停止，可指定刷新频率，以秒为单位；</p>
+<p>watch -n 1 nvidia-smi <strong>实时监控GPU</strong>； watch -n 1 lscpu实时监控CPU，watch是周期性的执行下个程序 ps -elf进程查看， <strong>ps -elf | grep python 查看Python子进程</strong>，这个也是命令比较实用，能够用在监视其他基于python解释器运行的进程， kill -9 [PID]杀死进程PID。</p>
+<blockquote>
+<blockquote>
+<p><strong>watch -n 5 -t -d=cumulative 'command'</strong></p>
+</blockquote>
+<p>watch是周期性的执行下个程序，并全屏显示执行结果</p>
+<p>-n 每隔5秒周期执行一次</p>
+<p>-t 开头的间隔时间和信息等不显示</p>
+<p><strong>-d=cumulative 发生变动的地方高亮</strong></p>
+</blockquote>
+<h2 id="如何才能使用-tensor-core">8. 如何才能使用 Tensor Core</h2>
+<p><strong>Convolutions</strong>: For cudnn versions 7.2 and ealier, <span class="citation" data-cites="vaibhav0195">@vaibhav0195</span> is correct: input channels, output channels, and batch size should be multiples of 8 to use tensor cores. However, this requirement is lifted for cudnn versions 7.3 and later. <strong>For cudnn 7.3 and later, you don't need to worry about making your channels/batch size multiples of 8 to enable Tensor Core use</strong>.</p>
+<p><strong>GEMMs (fully connected layers)</strong>: For matrix A x matrix B, where A has size [I, J] and B has size [J, K], I, J, and K must be multiples of 8 to use Tensor Cores. This requirement exists for all cublas and cudnn versions. This means that for <strong>bare fully connected layers, the batch size, input features, and output features must be multiples of 8</strong>, and** for RNNs, you usually (but not always, it can be architecture-dependent depending on what you use for encoder/decoder) need to have batch size, hidden size, embedding size, and dictionary size as multiples of 8.**</p>
+<h2 id="apex的fused-adam的特点是模型参数更新迭代得比pytorch中原生的adam快"><strong>9. Apex的Fused Adam的特点是模型参数更新迭代得比Pytorch中原生的Adam快</strong></h2>
+<p>What is the difference between FusedAdam optimizer in Nvidia AMP package with the Adam optimizer in Pytorch?</p>
+<p><a href="https://discuss.pytorch.org/t/fusedadam-optimizer-in-nvidia-amp-package/47544" target="_blank" rel="noopener">摘录自</a></p>
+<blockquote>
+<p>The Adam optimizer in Pytorch (like all Pytorch optimizers) carries out optimizer.step() by looping over parameters, and launching a series of kernels for each parameter. This can require hundreds of small launches that are mostly bound by CPU-side Python looping and kernel launch overhead, resulting in poor device utilization. Currently, the FusedAdam implementation in Apex flattens the parameters for the optimization step, then carries out the optimization step itself via a fused kernel that combines all the Adam operations. In this way, the loop over parameters as well as the internal series of Adam operations for each parameter are fused such that optimizer.step() requires only a few kernel launches.</p>
+<p>The current implementation (in Apex master) is brittle and only works with Amp opt_level O2. I’ve got a WIP branch to make it work for any opt_level (<a href="https://github.com/NVIDIA/apex/pull/351" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/351</a>). I recommend waiting until this is merged then trying it.</p>
+</blockquote>
+<h1 id="pytorch-使用陷阱易错点"><strong>Pytorch 使用陷阱，易错点</strong></h1>
+<h2 id="tensor.expand-expand_as是共享内存的只是原始数据的一个视图-view并没有在扩展的axis上有新的数据复制牵一发动全身"><strong>1. Tensor.expand, expand_as是共享内存的，只是原始数据的一个视图 view，并没有在扩展的axis上有新的数据复制，牵一发动全身！</strong></h2>
+<p><strong>为了避免对 expand() 后对某个channel操作会影响原始tensor的全部元素，需要使用clone()</strong></p>
+<p>如果没有clone()，对mask_miss的某个通道赋值后，所有通道上的tensor都会变成1！</p>
+<blockquote>
+<p># Notice! expand does not allocate more memory but just make the tensor look as if you expanded it. # You should call .clone() on the resulting tensor if you plan on modifying it # https://discuss.pytorch.org/t/very-strange-behavior-change-one-element-of-a-tensor-will-influence-all-elements/41190</p>
+</blockquote>
+<pre><code>mask = mask_miss.expand_as(sxing).clone()            # type: torch.Tensor
+mask[:, :, -2, :, :] = 1   # except for person mask channel</code></pre>
+<h2 id="损失计算图因为pytorch的动态机制越来越大直到耗尽内存">2. 损失计算图因为Pytorch的动态机制越来越大，直到耗尽内存</h2>
+<p>摘录自</p>
+<p>常见的原因有</p>
+<h3 id="在循环中使用全局变量当做累加器且累加梯度信息">在循环中使用全局变量当做累加器，且累加梯度信息</h3>
+<p>举个例子，下面的代码中</p>
+<pre><code>total_loss=0
+for i in range(10000):
+  optimizer.zero_grad()
+  output=model(input)
+  loss=criterion(output)
+  loss.backward() # 计算的梯度自动叠加到各个权重的grad上，并且计算完成后销毁计算图！！！
+  optimizer.step()
+  total_loss+=loss
+  #这里total_loss是跨越循环的变量，起着累加的作用，
+  #loss变量是带有梯度的tensor，会保持历史梯度信息，在循环过程中会不断积累梯度信息到tota_loss，占用内存</code></pre>
+<p>以上例子的修正方法是在循环中的最后一句修改为：</p>
+<p>total_loss+=float(loss)</p>
+<p>或者 total_loss += loss.item() # tensor.item()是取张量的python数值</p>
+<p>利用类型变换解除梯度信息，这样，多次累加不会累加梯度信息。</p>
+<h3 id="局部变量逗留导致内存泄露">局部变量逗留导致内存泄露</h3>
+<p>局部变量通常在变量作用域之外会被Python自动销毁，在作用域之内，不需要的临时变量可以使用del x来销毁。</p>
+<h3 id="list数据类型不断append增长了计算图大小">list数据类型，不断append增长了计算图大小</h3>
+<h2 id="pytorch中的batch-normalization-layer踩坑">3. Pytorch中的Batch Normalization layer踩坑</h2>
+<p>详情查看我的另一篇博客：<a href="https://blog.csdn.net/xiaojiajia007/article/details/90115174" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90115174</a></p>
+<h2 id="优化器的权值衰减weight_decay项导致的隐蔽bug即是的网络的权值不断减少至0">4. 优化器的权值衰减weight_decay项导致的隐蔽bug，即是的网络的权值不断减少至0</h2>
+<p>摘录自：<a href="https://zhuanlan.zhihu.com/p/91485607" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/91485607</a></p>
+<p>我们都知道weight_decay指的是权值衰减，（<strong>注意：权值衰减不等价于在原损失的基础上加上一个L2惩罚项！具体说明见下面那条笔记</strong>），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。</p>
+<p>这次的坑是这样的，在训练一个ResNet50的时候，网络的高层部分layer4暂时没有用到，因此也并不会有梯度回传，于是我就放心地将ResNet50的所有参数都传递给Optimizer进行更新了，想着layer4应该能保持原来的权重不变才对。但是实际上，尽管layer4没有梯度回传，但是weight_decay的作用仍然存在，它使得layer4权值越来越小，趋向于0。后面需要用到layer4的时候，发现输出异常（接近于0），才注意到这个问题的存在。</p>
+<p>虽然这样的情况可能不容易遇到，但是还是要谨慎：暂时不需要更新的权值，一定不要传递给Optimizer，避免不必要的麻烦。</p>
+<h2 id="l2正则不等于权值衰减">5. L2正则不等于权值衰减</h2>
+<p>权值衰减（Weight Decay）：在网络权值通过损失函数更新后，直接再减去权值本身的一个倍数，可以写成 W(t+1)’ = W(t+1)-W(t)；</p>
+<p>而 L2正则（L2 Regulation）：在原有的算是函数基础上，添加了网络权值平方和*一个倍数，L' = L+∑w^2.</p>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/104045066" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/104045066</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" /></p>
+<p>在Pytorch中，对于SGD优化器，两者是等效的，但是对于Adam优化器，两者作用有差别，对于Adam会有耦合的错误。</p>
+<p>我看到有的开源项目中(<a href="https://github.com/leoxiaobin/deep-high-resolution-net.pytorch/blob/master/lib/utils/utils.py#L60" target="_blank" rel="noopener">链接</a>)，SGD使用weight decay，而Adam中没有使用weight decay。</p>
+<p>具体分析见下面两个文章：</p>
+<p><a href="https://zhuanlan.zhihu.com/p/40814046" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/40814046</a>，</p>
+<p><a href="https://zhuanlan.zhihu.com/p/63982470" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/63982470</a></p>
+<h2 id="torch.sqrt在0处的左导数没有定义会返回nan换用-torch.norm">6. torch.sqrt()在0处的左导数没有定义，会返回nan，换用 torch.norm()</h2>
+<p>例如： # https://github.com/pytorch/pytorch/issues/2421 # norm = torch.sqrt((x1 - t1)**2 + (x2 - t2)**2) norm = (torch.stack((x1, x2)) - torch.stack((t1, t2))).norm(dim=0)</p>
+]]></content>
+      <categories>
+        <category>科研</category>
+      </categories>
+      <tags>
+        <tag>pytorch</tag>
+        <tag>python</tag>
+        <tag>深度学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>英语写作</title>
     <url>/2020/05/15/%E8%8B%B1%E8%AF%AD%E5%86%99%E4%BD%9C%E6%98%93%E9%94%99%E7%82%B9/</url>
     <content><![CDATA[<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/77971927" target="_blank" rel="noopener" title="Permalink to 英语写作_论文,写作_xiaojiajia007的博客-CSDN博客">Source</a></p>
@@ -874,7 +1462,7 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
 <p>然后到配置的主题next下的配置文件 /Users/lijia/科研&amp;学习/github博客/themes/next/_config.yml，更改配置如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">math:</span><br><span class="line">  # Default (true) will load mathjax &#x2F; katex script on demand.</span><br><span class="line">  # That is it only render those page which has &#96;mathjax: true&#96; in Front-matter.</span><br><span class="line">  # If you set it to false, it will load mathjax &#x2F; katex srcipt EVERY PAGE.</span><br><span class="line">  per_page: false</span><br><span class="line"></span><br><span class="line">  # hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.</span><br><span class="line">  mathjax:</span><br><span class="line">    enable: true</span><br><span class="line">    # See: https:&#x2F;&#x2F;mhchem.github.io&#x2F;MathJax-mhchem&#x2F;</span><br><span class="line">    mhchem: false</span><br></pre></td></tr></table></figure>
 <h2 id="行内数学公式显示异常">行内数学公式显示异常</h2>
-<p>未知问题：有时在typora中显示正常的行内数学公式，在hexo中就显示异常了，比如下面一个情况 <img src="https://img-blog.csdnimg.cn/20200528154750912.png" alt="在这里插入图片描述" /> <strong>暂时的接近办法</strong>：通过尝试发现，对于有些显示不正常的行内公式<span class="math inline">\(X=\left(x_{1}, x_{2}, \ldots, x_{n}\right)\)</span>我们只需要在前面或者后面一个$符号插入一个空格，公式渲染显示就正常了。</p>
+<p>未知问题：有时在typora中显示正常的行内数学公式，在hexo中就显示异常了，比如下面一个情况 <img src="https://img-blog.csdnimg.cn/20200528154750912.png" alt="在这里插入图片描述" /> <strong>暂时的接近办法</strong>：通过尝试发现，对于有些显示不正常的行内公式<span class="math inline">\(X=\left(x_{1}, x_{2}, \ldots, x_{n}\right)\)</span>我们只需要在前面或者后面一个$符号和正文之间插入一个空格，公式渲染显示就正常了。</p>
 <h2 id="更改markdown信息头模板">更改markdown信息头模板</h2>
 <p>默认的信息头不全，我们把markdown模板 /Users/lijia/科研&amp;学习/github博客/scaffolds/post.md 里面最开始的信息更改如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">title: &#123;&#123; title &#125;&#125;</span><br><span class="line">date: &#123;&#123; date &#125;&#125;</span><br><span class="line">tags:</span><br><span class="line">description: 点击阅读前文前, 首页能看到的文章的简短描述 </span><br><span class="line">categories:</span><br></pre></td></tr></table></figure>
