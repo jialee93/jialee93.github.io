@@ -54,8 +54,9 @@
 <meta property="og:description" content="经常使用的Pytorch代码片段技巧，以及环境搭建和使用易错点">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114844390.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-05-28T08:07:51.000Z">
-<meta property="article:modified_time" content="2020-06-04T01:27:16.556Z">
+<meta property="article:modified_time" content="2020-06-11T14:49:24.887Z">
 <meta property="article:author" content="Jia Li">
 <meta property="article:tag" content="pytorch">
 <meta property="article:tag" content="python">
@@ -245,7 +246,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-04 09:27:16" itemprop="dateModified" datetime="2020-06-04T09:27:16+08:00">2020-06-04</time>
+                <time title="Modified: 2020-06-11 22:49:24" itemprop="dateModified" datetime="2020-06-11T22:49:24+08:00">2020-06-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -510,624 +511,372 @@ loc_loss /= num_matched_boxes   # 除以的是正样本的数目</code></pre>
 <p><strong>Reduce </strong> <strong>size_average </strong> * 意义* True True 对batch里面的数据取均值loss.mean() True False 对batch里面的数据求和loss.sum() False – returns a loss per batch element instead, 这个时候忽略size_average参数</p>
 <hr />
 <p>reduction : 可选的参数有：‘none’ | ‘elementwise_mean’ | ‘sum’, 正如参数的字面意思</p>
-<table>
-<colgroup>
-<col style="width: 100%" />
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">假设输入和target的大小分别是NxCxWxH，那么一旦reduce设置为False，loss的大小为NxCxWxH，返回每一个元素的loss</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>reduction代表了上面的reduce和size_average双重含义，这也是文档里为什么说reduce和size_average要被Deprecated 的原因</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">例子：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">import torch import torch.nn as nn</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># ----------------------------------- MSE loss</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># 生成网络输出 以及 目标输出 output = torch.ones(2, 2, requires_grad=True) * 0.5 target = torch.ones(2, 2)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># 设置三种不同参数的L1Loss reduce_False = nn.MSELoss(size_average=True, reduce=False) # 等效于reduction='none' size_average_True = nn.MSELoss(size_average=True, reduce=True) # 等效于reduction='mean' size_average_False = nn.MSELoss(size_average=False, reduce=True) # 等效于reduction='sum'</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">o_0 = reduce_False(output, target) o_1 = size_average_True(output, target) o_2 = size_average_False(output, target)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">print('=False, 输出同维度的loss:'.format(o_0)) print('size_average=True，:'.format(o_1)) print('size_average=False，:'.format(o_2))</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">输出：</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">reduce=False, 输出同维度的loss: tensor([[0.2500, 0.2500], [0.2500, 0.2500]], grad_fn=<MseLossBackward>)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">size_average=True， 求平均: 0.25</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">size_average=False， 求和: 1.0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 8. 将tensor以及model迁移至cuda上</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>将数据迁移到cuda上必须reassign，tensor.cuda()不是in-place操作，而是返回一个新的在cuda上的tensor。而网络模型不需要reassign.</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">### a. 迁移tensor</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>问题：</strong>Hi, this works, <code>a = torch.LongTensor(1).random_(0, 10).to("cuda")</code>. but this won’t work:</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>回答：</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">If you are pushing tensors to a device or host, <strong>you have to reassign them:</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">a = a.to(device='cuda')</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### b. 迁移模型</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>nn.Module</code>s push all parameters, buffers and submodules recursively and don’t need the assignment.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">&gt; model.cuda()</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 9. 对feature map (即也是tensor)做尺寸上的缩放</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">&gt; <code>torch.nn.functional.``interpolate</code>(<em>input</em>, <em>size=None</em>, <em>scale_factor=None</em>, <em>mode='nearest'</em>, <em>align_corners=None</em>)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">默认的<em>align_corners=None就是和Opencv中的缩放规则保持一致，默认使用几何中心对齐，以此消除量化误差（或者说</em>计算出的灰度值也相对于源图像偏左偏上）<em>。</em></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">若做缩放，需要在缩放后图像 的位置上找到对应的 原始图像位置上 的像素值，有以下</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">SrcX=(dstX+0.5)* (srcWidth/dstWidth) -0.5 SrcY=(dstY+0.5) * (srcHeight/dstHeight)-0.5</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">具体参考我的另一篇博客：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://blog.csdn.net/xiaojiajia007/article/details/100150726" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/100150726</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 10. 模型的普通类成员变量和Pytorch中自动注册的Parameter或者buffer区别</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://zhuanlan.zhihu.com/p/89442276" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/89442276</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">模型中需要保存下来的参数包括两种:</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">一种是反向传播需要被optimizer更新的，称之为 parameter 一种是反向传播不需要被optimizer更新，称之为 buffer，它只能在forward中被更新。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">第一种参数我们可以通过 model.parameters() 返回；第二种参数我们可以通过 model.buffers() 返回。因为我们的模型保存的是 state_dict 返回的 OrderDict，所以这两种参数不仅要满足是否需要被更新的要求，还会被保存到OrderDict。而<strong>普通的类成员变量属性是无法自动保存到模型的 OrderDict中去的。</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">模型进行设备移动时，模型中注册的参数(Parameter和buffer)会同时进行移动，比如使用model.cuda()之后注册的参数parameter和buffer会自动迁移到cuda上去，<strong>而普通成员变量不会自动设备移动</strong>。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># pytorch训练数据准备</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 1. DataLoader 类</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 参数说明 <a href="https://blog.csdn.net/weixin_42236288/article/details/80893882%C2%A0" target="_blank" rel="noopener">摘录自</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">1. dataset：加载的数据集(Dataset对象) 2. batch_size：batch size 3. shuffle:：是否将数据打乱 4. sampler： 样本抽样，后续会详细介绍 5. num_workers：使用多进程加载的进程数，0代表不使用多进程 6. collate_fn： 如何将多个样本数据拼接成一个batch，一般使用默认的拼接方式即可 7. pin_memory：是否将数据保存在pin memory区，pin memory中的数据转到GPU会快一些 8. drop_last：dataset中的数据个数可能不是batch_size的整数倍，drop_last为True会将多出来不足一个batch的数据丢弃</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 对于 pin_memory 的解释：<a href="https://oldpan.me/archives/pytorch-to-use-multiple-gpus" target="_blank" rel="noopener">摘录自</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>pin_memory就是锁页内存</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">&gt; pin_memory就是锁页内存，创建DataLoader时，设置pin_memory=True，则意味着生成的Tensor数据最开始是属于内存中的锁页内存，这样将内存的Tensor转义到GPU的显存就会更快一些。 &gt; 主机中的内存，有两种存在方式，一是锁页，二是不锁页，锁页内存存放的内容在任何情况下都不会与主机的虚拟内存进行交换（注：虚拟内存就是硬盘），而不锁页内存在主机内存不足时，数据会存放在虚拟内存中。显卡中的显存全部是锁页内存,当计算机的内存充足的时候，可以设置pin_memory=True。当系统卡住，或者交换内存使用过多的时候，设置pin_memory=False。因为pin_memory与电脑硬件性能有关，pytorch开发者不能确保每一个炼丹玩家都有高端设备，因此pin_memory默认为False。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 2. 多进程读取HDF5文件支持的不好以及解决办法</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">DataLoader中多进程高效处理hdf5文件：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://discuss.pytorch.org/t/dataloader-when-num-worker-0-there-is-bug/25643" target="_blank" rel="noopener">摘录自</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>My recommendations:</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; * Use HDF5 in version 1.10 (better multiprocessing handling), &gt; * Because an opened HDF5 file isn’t pickleable and to send Dataset to workers’ processes it needs to be serialised with pickle, you can’t open the HDF5 file in <code>__init__</code>. Open it in <code>__getitem__</code>and <strong>store as the singleton!</strong>. Do not open it each time as it introduces huge overhead. &gt; * Use <code>DataLoader</code> with <code>num_workers</code> &gt; 0 (reading from hdf5 (i.e. hard drive) is slow) and <code>batch_sampler</code> (random access to hdf5 (i.e. hard drive) is slow).</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>Sample code:</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">class H5Dataset(torch.utils.data.Dataset): def <strong>init</strong>(self, path): self.file_path = path self.dataset = None with h5py.File(self.file_path, 'r') as file: self.dataset_len = len(file["dataset"])</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">def <strong>getitem</strong>(self, index): if self.dataset is None: self.dataset = h5py.File(self.file_path, 'r')["dataset"] return self.dataset[index]</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">def <strong>len</strong>(self): return self.dataset_len</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>如何安装HDF5 1.10以及对应的python hdf5的包呢？ 查看<a href="https://blog.csdn.net/xiaojiajia007/article/details/87873443" target="_blank" rel="noopener">我的另一个博客</a></strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>使用命令行环境变量HDF5_DIR=/usr/local/hdf5 pip install h5py。具体如下：</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Then you should be fine. Install HDF5 1.10 from source into somewhere you want to. The .tar is here: https://www.hdfgroup.org/HDF5/release/obtainsrc5110.html Follow the install readme but basically you just need to give it a directory with: &gt; ./configure --prefix=/usr/local/h5py before you make.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Now install with you anaconda version of python. You may want to make a separate environment using conda but that's your call.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Remove the h5py you have with anaconda using &gt; conda uninstall h5py or &gt; pip uninstall h5py</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Then use pip to reinstall h5py but pointing to the HDF5 library you made from source. From here: http://docs.h5py.org/en/latest/build.html <strong>&gt; HDF5_DIR=/usr/local/hdf5 pip install h5py</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Then you should be good. Open up a python terminal and test if you can use SWMR mode: &gt; import h5py &gt; f = h5py.File("./swmr.h5", 'a', libver='latest', swmr=True)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 3. 多进程准备数据<strong>随机种子seed</strong>的问题</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://blog.csdn.net/xiaojiajia007/article/details/87881231" target="_blank" rel="noopener">参见我另一个博客</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 4. 如何加速训练数据准备并载入GPU训练</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">参考一个知乎博客，data_prefetcher： <a href="https://zhuanlan.zhihu.com/p/80695364" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/80695364</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">以及Pytorch论坛上的一个讨论： <a href="https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/19?u=jia_lee" target="_blank" rel="noopener">https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/19?u=jia_lee</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># Pytorch训练阶段</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 1. Stochastic Weight Averaging in PyTorch</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">这是一种model weight average策略，类似于模型集成，常常用来刷指标，提高模型的泛化精度。详细说明请见我的单独博客：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://blog.csdn.net/xiaojiajia007/article/details/90748115" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90748115</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 2. 通过梯度积累变相增大batch size</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://www.zhihu.com/question/303070254/answer/573037166" target="_blank" rel="noopener">详情请见 PyTorch中在反向传播前为什么要手动将梯度清零？ - Pascal的回答 - 知乎</a> 但是需要注意的是，因为BN层的参数是在 forward()阶段更新的，这样积累梯度并没有增大BN layers的实际batch size。可以通过减少BN层的 momentum 值，让BN层动态更新统计参数时能够记住更长。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># Pytorch 测试阶段</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 1. 正确的测试（预测）时间计时代码</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">torch.cuda.synchronize() # 等待当前设备上所有流中的所有核心完成 start = time.time() result = model(input) torch.cuda.synchronize() end = time.time()</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">在pytorch里面，程序的执行都是异步的。如果没有torch.cuda.synchronize() ，测试的时间会很短，因为执行完end=time.time()程序就退出了，后台的cu也因为python的退出退出了，如果采用torch.cuda.synchronize() ，代码会同步cu的操作，等待gpu上的操作都完成了再继续成形end = time.time() 原文：https://blog.csdn.net/u013548568/article/details/81368019</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 2. 训练，测试两个阶段需要注意设置不同状态 <a href="https://discuss.pytorch.org/t/model-eval-vs-with-torch-no-grad/19615/10" target="_blank" rel="noopener">参考</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">### a. model.train()和model.val()</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">比如BN和Dropout</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">During eval <code>Dropout</code> is deactivated and just passes its input. During the training the probability <code>p</code> is used to drop activations. Also, the activations are scaled with <code>1./p</code> as otherwise the expected values would differ between training and eval.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">drop = nn.Dropout() x = torch.ones(1, 10)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># Train mode (default after construction) drop.train() print(drop(x))</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># Eval mode drop.eval() print(drop(x))</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">### b. 测试（val)时不光要设置<code>model.eval()</code> ，为了防止内存爆炸，应该追加<code>torch.no_grad()</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">* <code>model.eval()</code> will notify all your layers that you are in eval mode, that way, batchnorm or dropout layers will work in eval model instead of training mode. * <code>torch.no_grad():</code> impacts the autograd engine and deactivate it. It will reduce memory usage and speed up computations but you won’t be able to backprop (which you don’t want in an eval script). 注意，<code>torch.no_grad()是</code>context manager。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 3. Dropout里需要设置训练标志位，否则会踩坑</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 使用F.dropout ( nn.functional.dropout )的时候需要设置它的可选参数training state</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">这个状态参数与模型整体的一致，否则就是out=out，没有效果，具体说明见链接 <a href="https://www.zhihu.com/question/67209417/answer/302434279" target="_blank" rel="noopener">查看</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Class DropoutFC(nn.Module): def <strong>init</strong>(self): super(DropoutFC, self).__init__() self.fc = nn.Linear(100,20)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">def forward(self, input): out = self.fc(input) out = F.dropout(out, p=0.5, training=self.training) # set dropout's training sate return out</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Net = DropoutFC() Net.train()</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># train the Net #作者：雷杰 #链接：https://www.zhihu.com/question/67209417/answer/302434279</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 或者直接使用nn.Dropout()，即利用包装后的layer</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">nn.Dropout()实际上是对F.dropout的一个包装, 也将self.training传入了)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Class DropoutFC(nn.Module): def <strong>init</strong>(self): super(DropoutFC, self).__init__() self.fc = nn.Linear(100,20) self.dropout = nn.Dropout(p=0.5)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">def forward(self, input): out = self.fc(input) out = self.dropout(out) return out Net = DropoutFC() Net.train()</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># train the Net</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 4. 多GPU模型权重的保存与加载</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Instead of deleting the “module.” string from all the state_dict keys, you can save your model with: <code>torch.save(model.module.state_dict(), path_to_file)</code> instead of <code>torch.save(model.state_dict(), path_to_file)</code> <strong><em>that way you don’t get the “module.” string to begin with…</em></strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># original saved file with DataParallel state_dict = torch.load('myfile.pth.tar') # 把所有的张量加载到CPU中 # torch.load('tensors.pt', map_location=lambda storage, loc: storage)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"># create new OrderedDict that does not contain <code>module.</code> from collections import OrderedDict new_state_dict = OrderedDict() for k, v in state_dict.items(): name = k[7:] # remove <code>module.</code> new_state_dict[name] = v # load params model.load_state_dict(new_state_dict)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">############## 还有一个可用的封装更好的函数 # 加载模型，解决命名和维度不匹配问题,解决多个gpu并行 def load_state_keywise(model, model_path): model_dict = model.state_dict() pretrained_dict = torch.load(model_path, map_location='cpu') key = list(pretrained_dict.keys())[0] # 1. filter out unnecessary keys # 1.1 multi-GPU -&gt;CPU if (str(key).startswith('module.')): pretrained_dict = {k[7:]: v for k, v in pretrained_dict.items() if k[7:] in model_dict and v.size() == model_dict[k[7:]].size()} else: pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict and v.size() == model_dict[k].size()} # 2. overwrite entries in the existing state dict model_dict.update(pretrained_dict) # 3. load the new state dict model.load_state_dict(model_dict)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">################## 更简单直接的方式 ################## # Instead of deleting the “module.” string from all the state_dict keys, you can save your model with:</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">torch.save(model.module.state_dict(), path_to_file) # instead of</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">torch.save(model.state_dict(), path_to_file)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># that way you don’t get the “module.” string to begin with…</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 5. 恢复保存的优化器状态(optimizer checkpoint resume)，继续优化</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://blog.csdn.net/xiaojiajia007/article/details/88417329" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/88417329</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 6. 载入模型权重GPU内存被额外占用的bug解决</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">### 分布式/多进程中的这种情况的现象是，对于同一个python进程（pid号相同）会两次占用固定大小的gpu内存</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">观察到的现象是python进程多于预期应有的进程数。比如我们单机多卡分布式训练，已经完成了网络模型的in-place参数设备转换，即network.cuda()，现在我们有4块GPU，我们在程序中的每一个进程分配一块GPU时本来应该只有4个进程，每个进程占用一定的GPU显存，但实际情况如所示：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Processes: GPU Memory | | GPU PID Type Process name Usage | |=============================================================================| | 0 1291 G /usr/lib/xorg/Xorg 153MiB | | 0 2549 G fcitx-qimpanel 14MiB | | 0 21740 G compiz 138MiB | | 0 22840 C /home/jia/.virtualenvs/phoenix/bin/python 6097MiB | | 0 22841 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现 | 0 22842 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现 | 0 22843 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现 | 0 23207 G /opt/teamviewer/tv_bin/TeamViewer 24MiB | | 0 23985 G .../Software/pycharm-2019.2.4/jbr/bin/java 12MiB | | 1 22841 C /home/jia/.virtualenvs/phoenix/bin/python 6129MiB | | 2 22842 C /home/jia/.virtualenvs/phoenix/bin/python 6227MiB | | 3 22843 C /home/jia/.virtualenvs/phoenix/bin/python 6229MiB</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">原因：在同一个cuda上之后不使用的内存将会被自动销毁并回收，但是对于不同GPU之间目前没有自动的内存管理机制??，如果某一个进程在cuda0上实例化的tensor x，在另一个使用cuda2的进程中使用了，但cuda2上的进程并没有对tensor x进行内存销毁回收，造成GPU内存的占用。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">解决办法：在当前进程中销毁不在同一个cuda上的内存垃圾，或者载入权重时使用torch.load(model_path, <strong>map_location='cpu'</strong>)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### GPU预训练保存的权值可以直接载入到CPU下的网络模型network中，并且载入之后network的参数会移到预训练权值所在的device上</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">如下图所示：</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><img src="https://img-blog.csdnimg.cn/20200108114844390.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" /></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">这个行为挺诡异，按照正常的设计逻辑，本来CPU的模型直接载入GPU预训练权值应该会因为device不同而报错（cpu, cuda0)但结果并没有，可以成功载入，并且载入之后CPU下的模型network的device也变成cuda0了。甚至我们可以仅仅载入某一layer的权值，那么这一layer的weight.data将变到cuda0上，而其没有载入更改的layer的weight.data仍然在cpu上！</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">解决办法同上一种情况，把GPU预训练权值map到cpu上之后再network.load_state_dict()。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># Pytorch的内存优化和加速</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>有一个 pytorch提速指南： <a href="https://zhuanlan.zhihu.com/p/39752167" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/39752167</a></strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>可以参考 <a href="https://blog.csdn.net/jacke121/article/details/81329679%C2%A0" target="_blank" rel="noopener">原文</a></strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 1. 使用inplace减少内存开辟，从而压缩内存需求</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">对于in-place operation的解读，见：<a href="https://blog.csdn.net/u012436149/article/details/80819523" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/u012436149/article/details/80819523</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">以及：<a href="https://blog.csdn.net/york1996/article/details/81835873" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/york1996/article/details/81835873</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">如，ReLu(inplace=True)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">在官方问文档中由这一段话：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; 如果你使用了in-place operation而没有报错的话，那么你可以确定你的梯度计算是正确的。<strong>因为Pytorch在内存占用和执行速度上做了很多算法优化，哪些需要保留梯度不能使用in-place覆盖就显得不那么显而易见了，不能单纯地用原始梯度反向传播过程来决定。</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">inplace只是可以节省存储tensor的内存，但是PYTORCH中的自动微分机制仍然能够追踪，对于内存来说inplace可能是同一个对象，但是对于autograd来说，依然是两个不同的对象。 一个例子：<a href="https://discuss.pytorch.org/t/why-relu-inplace-true-does-not-give-error-in-official-resnet-py-but-it-gives-error-in-my-code/21004/3" target="_blank" rel="noopener">resnet</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; <strong><code>inplace</code> means that it will not allocate new memory and change tensors inplace</strong>. <strong>But from the autograd point of view, you have two different tensors (even though they actually share the same memory)</strong>. One is the output of conv (or batchnorm for resnet) and one is the output of the relu.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 2. torch.backends.cudnn.benchmark = True</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">在程序刚开始加这条语句可以提升一点训练速度，没什么额外开销。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 3. torch.cuda.empty_cache()</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">因为每次迭代都会引入点临时变量，会导致训练速度越来越慢，基本呈线性增长。开发人员还不清楚原因，但如果周期性的使用torch.cuda.empty_cache()的话就可以解决这个问题。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 4. 使用checkpoint分阶段计算，这样可以在显卡上放下更大的网络</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">知乎回答的一个例子：https://www.zhihu.com/question/274635237/answer/574193034</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 5. 尝试Nvidia Apex 16位浮点数扩展</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">温馨提示：我的另一篇博客<a href="https://mp.csdn.net/console/editor/html/84784982" target="_blank" rel="noopener">pip install, python setup.py, egg-info的说明--以Nvidia Apex安装为例</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### Clean the old install before rebuilding:</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; pip uninstall apex &gt; cd apex_repo_dir &gt; rm -rf build (if present) &gt; rm -rf apex.egg-info (if present)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### Install package：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./ &gt; &gt; # --no-cache-dir 清除安装缓存文件</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">或者</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; python setup.py install --cuda_ext --cpp_ext</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### ps: 如果遇到Cuda版本不兼容的问题，解决办法见：（若pytorch升级到1.3，cuda10.1则没有这个error了）</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952" target="_blank" rel="noopener">https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">如果没有出现其他error，可以直接使用上面链接的建议，删除版本检查抛出的报错。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">讨论：</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://github.com/NVIDIA/apex/issues/350" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/issues/350</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://github.com/NVIDIA/apex/pull/323" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/323</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 6. Pytorch内存泄露（僵尸进程）解决办法 <a href="https://blog.csdn.net/liuyifang0810680/article/details/79628394%C2%A0" target="_blank" rel="noopener">原文链接</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">nvidia-smi 发现内存泄露问题，即没有进程时，内存被占用</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">&gt; fuser -v /dev/nvidia* 发现僵尸进程 &gt; &gt; ps x |grep python|awk '{print $1}'|xargs kill 杀死所有僵尸进程</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">命令解读：</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">ps x: show all process of current user</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">grep python: to get process that has python in command line</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">awk '{print $1}': to get the related process pidxargs kill`: to kill the process</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">note: make sure you don’t kill other processes! do ps x |grep python first.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 7. 相关的进程和内存管理bash cmd (命令行命令）</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">nvidia-smi -l xxx 监控GPU，动态刷新信息（默认5s刷新一次），按Ctrl+C停止，可指定刷新频率，以秒为单位；</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">watch -n 1 nvidia-smi <strong>实时监控GPU</strong>； watch -n 1 lscpu实时监控CPU，watch是周期性的执行下个程序 ps -elf进程查看， <strong>ps -elf | grep python 查看Python子进程</strong>，这个也是命令比较实用，能够用在监视其他基于python解释器运行的进程， kill -9 [PID]杀死进程PID。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; &gt; <strong>watch -n 5 -t -d=cumulative 'command'</strong> &gt; &gt; watch是周期性的执行下个程序，并全屏显示执行结果 &gt; &gt; -n 每隔5秒周期执行一次 &gt; &gt; -t 开头的间隔时间和信息等不显示 &gt; &gt; <strong>-d=cumulative 发生变动的地方高亮</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 8. 如何才能使用 Tensor Core</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>Convolutions</strong>: For cudnn versions 7.2 and ealier, <span class="citation" data-cites="vaibhav0195">@vaibhav0195</span> is correct: input channels, output channels, and batch size should be multiples of 8 to use tensor cores. However, this requirement is lifted for cudnn versions 7.3 and later. <strong>For cudnn 7.3 and later, you don't need to worry about making your channels/batch size multiples of 8 to enable Tensor Core use</strong>.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><strong>GEMMs (fully connected layers)</strong>: For matrix A x matrix B, where A has size [I, J] and B has size [J, K], I, J, and K must be multiples of 8 to use Tensor Cores. This requirement exists for all cublas and cudnn versions. This means that for <strong>bare fully connected layers, the batch size, input features, and output features must be multiples of 8</strong>, and** for RNNs, you usually (but not always, it can be architecture-dependent depending on what you use for encoder/decoder) need to have batch size, hidden size, embedding size, and dictionary size as multiples of 8.**</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## <strong>9. Apex的Fused Adam的特点是模型参数更新迭代得比Pytorch中原生的Adam快</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">What is the difference between FusedAdam optimizer in Nvidia AMP package with the Adam optimizer in Pytorch?</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><a href="https://discuss.pytorch.org/t/fusedadam-optimizer-in-nvidia-amp-package/47544" target="_blank" rel="noopener">摘录自</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">&gt; The Adam optimizer in Pytorch (like all Pytorch optimizers) carries out optimizer.step() by looping over parameters, and launching a series of kernels for each parameter. This can require hundreds of small launches that are mostly bound by CPU-side Python looping and kernel launch overhead, resulting in poor device utilization. Currently, the FusedAdam implementation in Apex flattens the parameters for the optimization step, then carries out the optimization step itself via a fused kernel that combines all the Adam operations. In this way, the loop over parameters as well as the internal series of Adam operations for each parameter are fused such that optimizer.step() requires only a few kernel launches. &gt; &gt; The current implementation (in Apex master) is brittle and only works with Amp opt_level O2. I’ve got a WIP branch to make it work for any opt_level (<a href="https://github.com/NVIDIA/apex/pull/351" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/351</a>). I recommend waiting until this is merged then trying it.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"># <strong>Pytorch 使用陷阱，易错点</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## <strong>1. Tensor.expand, expand_as是共享内存的，只是原始数据的一个视图 view，并没有在扩展的axis上有新的数据复制，牵一发动全身！</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><strong>为了避免对 expand() 后对某个channel操作会影响原始tensor的全部元素，需要使用clone()</strong></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">如果没有clone()，对mask_miss的某个通道赋值后，所有通道上的tensor都会变成1！</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">&gt; # Notice! expand does not allocate more memory but just make the tensor look as if you expanded it. &gt; # You should call .clone() on the resulting tensor if you plan on modifying it &gt; # https://discuss.pytorch.org/t/very-strange-behavior-change-one-element-of-a-tensor-will-influence-all-elements/41190</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">mask = mask_miss.expand_as(sxing).clone() # type: torch.Tensor mask[:, :, -2, :, :] = 1 # except for person mask channel</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 2. 损失计算图因为Pytorch的动态机制越来越大，直到耗尽内存</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">摘录自</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">常见的原因有</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 在循环中使用全局变量当做累加器，且累加梯度信息</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">举个例子，下面的代码中</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">total_loss=0 for i in range(10000): optimizer.zero_grad() output=model(input) loss=criterion(output) loss.backward() # 计算的梯度自动叠加到各个权重的grad上，并且计算完成后销毁计算图！！！ optimizer.step() total_loss+=loss #这里total_loss是跨越循环的变量，起着累加的作用， #loss变量是带有梯度的tensor，会保持历史梯度信息，在循环过程中会不断积累梯度信息到tota_loss，占用内存</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">以上例子的修正方法是在循环中的最后一句修改为：</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">total_loss+=float(loss)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">或者 total_loss += loss.item() # tensor.item()是取张量的python数值</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">利用类型变换解除梯度信息，这样，多次累加不会累加梯度信息。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">### 局部变量逗留导致内存泄露</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">局部变量通常在变量作用域之外会被Python自动销毁，在作用域之内，不需要的临时变量可以使用del x来销毁。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">### list数据类型，不断append增长了计算图大小</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 3. Pytorch中的Batch Normalization layer踩坑</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">详情查看我的另一篇博客：<a href="https://blog.csdn.net/xiaojiajia007/article/details/90115174" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90115174</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">## 4. 优化器的权值衰减weight_decay项导致的隐蔽bug，即是的网络的权值不断减少至0</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">摘录自：<a href="https://zhuanlan.zhihu.com/p/91485607" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/91485607</a></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">我们都知道weight_decay指的是权值衰减，（<strong>注意：权值衰减不等价于在原损失的基础上加上一个L2惩罚项！具体说明见下面那条笔记</strong>），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">这次的坑是这样的，在训练一个ResNet50的时候，网络的高层部分layer4暂时没有用到，因此也并不会有梯度回传，于是我就放心地将ResNet50的所有参数都传递给Optimizer进行更新了，想着layer4应该能保持原来的权重不变才对。但是实际上，尽管layer4没有梯度回传，但是weight_decay的作用仍然存在，它使得layer4权值越来越小，趋向于0。后面需要用到layer4的时候，发现输出异常（接近于0），才注意到这个问题的存在。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">虽然这样的情况可能不容易遇到，但是还是要谨慎：暂时不需要更新的权值，一定不要传递给Optimizer，避免不必要的麻烦。</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">## 5. L2正则不等于权值衰减</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">权值衰减（Weight Decay）：在网络权值通过损失函数更新后，直接再减去权值本身的一个倍数，可以写成 W(t+1)’ = W(t+1)-W(t)；</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">而 L2正则（L2 Regulation）：在原有的算是函数基础上，添加了网络权值平方和*一个倍数，L' = L+∑w^2.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><a href="https://blog.csdn.net/xiaojiajia007/article/details/104045066" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/104045066</a></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">对于L2 Regulation 和 Weight Decay，假设原来的损失函数是<span class="math inline">\(f\)</span>,</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 对于有Weight Decay的参数更新规则如下：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math display">\[
-\theta_{t+1}=\theta_{t}-\alpha \nabla f_{t}\left(\theta_{t}\right)-\lambda \theta_{t},
-\]</span> 其中<span class="math inline">\(\lambda\)</span>是权值衰减的系数，<span class="math inline">\(\alpha\)</span>是学习率。</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">### 对于有L2 Regulation的参数更新规则如下：</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math display">\[
-\theta_{t+1}=\theta_{t}-\alpha \nabla_{f}\left(\theta_{t}\right)- \alpha\lambda^{\prime}  \theta_{t},
-\]</span> 其中<span class="math inline">\(\lambda^{\prime}\)</span>是L2正则的系数。</td>
-</tr>
-</tbody>
-</table>
-<p>可见，只有当<span class="math inline">\(\lambda=\alpha\lambda^{\prime}\)</span>，即<span class="math inline">\(\lambda^{\prime}=\lambda/\alpha\)</span>时，L2 Regulation 和 Weight Decay在数值上才是完全等价的。</p>
+<hr />
+<p>假设输入和target的大小分别是NxCxWxH，那么一旦reduce设置为False，loss的大小为NxCxWxH，返回每一个元素的loss</p>
+<p><strong>reduction代表了上面的reduce和size_average双重含义，这也是文档里为什么说reduce和size_average要被Deprecated 的原因</strong></p>
+<p>例子：</p>
+<pre><code>import torch
+import torch.nn as nn
+
+# ----------------------------------- MSE loss
+
+# 生成网络输出 以及 目标输出
+output = torch.ones(2, 2, requires_grad=True) * 0.5
+target = torch.ones(2, 2)
+
+# 设置三种不同参数的L1Loss
+reduce_False = nn.MSELoss(size_average=True, reduce=False) # 等效于reduction=&#39;none&#39;
+size_average_True = nn.MSELoss(size_average=True, reduce=True) # 等效于reduction=&#39;mean&#39;
+size_average_False = nn.MSELoss(size_average=False, reduce=True) # 等效于reduction=&#39;sum&#39;
+
+o_0 = reduce_False(output, target)
+o_1 = size_average_True(output, target)
+o_2 = size_average_False(output, target)
+
+print(&#39;\nreduce=False, 输出同维度的loss:\n{}\n&#39;.format(o_0))
+print(&#39;size_average=True，\t求平均:\t{}&#39;.format(o_1))
+print(&#39;size_average=False，\t求和:\t{}&#39;.format(o_2))</code></pre>
+<p>输出：</p>
+<pre><code>reduce=False, 输出同维度的loss:
+tensor([[0.2500, 0.2500],
+        [0.2500, 0.2500]], grad_fn=&lt;MseLossBackward&gt;)
+
+size_average=True，  求平均:    0.25
+
+size_average=False， 求和: 1.0</code></pre>
+<h2 id="将tensor以及model迁移至cuda上">8. 将tensor以及model迁移至cuda上</h2>
+<p><strong>将数据迁移到cuda上必须reassign，tensor.cuda()不是in-place操作，而是返回一个新的在cuda上的tensor。而网络模型不需要reassign.</strong></p>
+<h3 id="a.-迁移tensor">a. 迁移tensor</h3>
+<p><strong>问题：</strong>Hi, this works, <code>a = torch.LongTensor(1).random_(0, 10).to("cuda")</code>. but this won’t work:</p>
+<p><strong>回答：</strong></p>
+<p>If you are pushing tensors to a device or host, <strong>you have to reassign them:</strong></p>
+<pre><code>a = a.to(device=&#39;cuda&#39;)</code></pre>
+<h3 id="b.-迁移模型">b. 迁移模型</h3>
+<p><code>nn.Module</code>s push all parameters, buffers and submodules recursively and don’t need the assignment.</p>
+<blockquote>
+<p>model.cuda()</p>
+</blockquote>
+<h2 id="对feature-map-即也是tensor做尺寸上的缩放">9. 对feature map (即也是tensor)做尺寸上的缩放</h2>
+<blockquote>
+<p><code>torch.nn.functional.``interpolate</code>(<em>input</em>, <em>size=None</em>, <em>scale_factor=None</em>, <em>mode='nearest'</em>, <em>align_corners=None</em>)</p>
+</blockquote>
+<p>默认的<em>align_corners=None就是和Opencv中的缩放规则保持一致，默认使用几何中心对齐，以此消除量化误差（或者说</em>计算出的灰度值也相对于源图像偏左偏上）<em>。</em></p>
+<p>若做缩放，需要在缩放后图像 的位置上找到对应的 原始图像位置上 的像素值，有以下</p>
+<p>SrcX=(dstX+0.5)* (srcWidth/dstWidth) -0.5 SrcY=(dstY+0.5) * (srcHeight/dstHeight)-0.5</p>
+<p>具体参考我的另一篇博客：</p>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/100150726" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/100150726</a></p>
+<h2 id="模型的普通类成员变量和pytorch中自动注册的parameter或者buffer区别">10. 模型的普通类成员变量和Pytorch中自动注册的Parameter或者buffer区别</h2>
+<p><a href="https://zhuanlan.zhihu.com/p/89442276" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/89442276</a></p>
+<p>模型中需要保存下来的参数包括两种:</p>
+<p>一种是反向传播需要被optimizer更新的，称之为 parameter 一种是反向传播不需要被optimizer更新，称之为 buffer，它只能在forward中被更新。</p>
+<p>第一种参数我们可以通过 model.parameters() 返回；第二种参数我们可以通过 model.buffers() 返回。因为我们的模型保存的是 state_dict 返回的 OrderDict，所以这两种参数不仅要满足是否需要被更新的要求，还会被保存到OrderDict。而<strong>普通的类成员变量属性是无法自动保存到模型的 OrderDict中去的。</strong></p>
+<p>模型进行设备移动时，模型中注册的参数(Parameter和buffer)会同时进行移动，比如使用model.cuda()之后注册的参数parameter和buffer会自动迁移到cuda上去，<strong>而普通成员变量不会自动设备移动</strong>。</p>
+<h1 id="pytorch训练数据准备">pytorch训练数据准备</h1>
+<h2 id="dataloader-类">1. DataLoader 类</h2>
+<h3 id="参数说明-摘录自">参数说明 <a href="https://blog.csdn.net/weixin_42236288/article/details/80893882%C2%A0" target="_blank" rel="noopener">摘录自</a></h3>
+<p>1. dataset：加载的数据集(Dataset对象) 2. batch_size：batch size 3. shuffle:：是否将数据打乱 4. sampler： 样本抽样，后续会详细介绍 5. num_workers：使用多进程加载的进程数，0代表不使用多进程 6. collate_fn： 如何将多个样本数据拼接成一个batch，一般使用默认的拼接方式即可 7. pin_memory：是否将数据保存在pin memory区，pin memory中的数据转到GPU会快一些 8. drop_last：dataset中的数据个数可能不是batch_size的整数倍，drop_last为True会将多出来不足一个batch的数据丢弃</p>
+<h3 id="对于-pin_memory-的解释摘录自">对于 pin_memory 的解释：<a href="https://oldpan.me/archives/pytorch-to-use-multiple-gpus" target="_blank" rel="noopener">摘录自</a></h3>
+<p><strong>pin_memory就是锁页内存</strong></p>
+<blockquote>
+<p>pin_memory就是锁页内存，创建DataLoader时，设置pin_memory=True，则意味着生成的Tensor数据最开始是属于内存中的锁页内存，这样将内存的Tensor转义到GPU的显存就会更快一些。 主机中的内存，有两种存在方式，一是锁页，二是不锁页，锁页内存存放的内容在任何情况下都不会与主机的虚拟内存进行交换（注：虚拟内存就是硬盘），而不锁页内存在主机内存不足时，数据会存放在虚拟内存中。显卡中的显存全部是锁页内存,当计算机的内存充足的时候，可以设置pin_memory=True。当系统卡住，或者交换内存使用过多的时候，设置pin_memory=False。因为pin_memory与电脑硬件性能有关，pytorch开发者不能确保每一个炼丹玩家都有高端设备，因此pin_memory默认为False。</p>
+</blockquote>
+<h2 id="多进程读取hdf5文件支持的不好以及解决办法">2. 多进程读取HDF5文件支持的不好以及解决办法</h2>
+<p>DataLoader中多进程高效处理hdf5文件：</p>
+<p><a href="https://discuss.pytorch.org/t/dataloader-when-num-worker-0-there-is-bug/25643" target="_blank" rel="noopener">摘录自</a></p>
+<p><strong>My recommendations:</strong></p>
+<blockquote>
+<ul>
+<li>Use HDF5 in version 1.10 (better multiprocessing handling),</li>
+<li>Because an opened HDF5 file isn’t pickleable and to send Dataset to workers’ processes it needs to be serialised with pickle, you can’t open the HDF5 file in <code>__init__</code>. Open it in <code>__getitem__</code>and <strong>store as the singleton!</strong>. Do not open it each time as it introduces huge overhead.</li>
+<li>Use <code>DataLoader</code> with <code>num_workers</code> &gt; 0 (reading from hdf5 (i.e. hard drive) is slow) and <code>batch_sampler</code> (random access to hdf5 (i.e. hard drive) is slow).</li>
+</ul>
+</blockquote>
+<p><strong>Sample code:</strong></p>
+<pre><code>class H5Dataset(torch.utils.data.Dataset):
+    def __init__(self, path):
+        self.file_path = path
+        self.dataset = None
+        with h5py.File(self.file_path, &#39;r&#39;) as file:
+            self.dataset_len = len(file[&quot;dataset&quot;])
+
+    def __getitem__(self, index):
+        if self.dataset is None:
+            self.dataset = h5py.File(self.file_path, &#39;r&#39;)[&quot;dataset&quot;]
+        return self.dataset[index]
+
+    def __len__(self):
+        return self.dataset_len</code></pre>
+<p><strong>如何安装HDF5 1.10以及对应的python hdf5的包呢？ 查看<a href="https://blog.csdn.net/xiaojiajia007/article/details/87873443" target="_blank" rel="noopener">我的另一个博客</a></strong></p>
+<p><strong>使用命令行环境变量HDF5_DIR=/usr/local/hdf5 pip install h5py。具体如下：</strong></p>
+<p>Then you should be fine. Install HDF5 1.10 from source into somewhere you want to. The .tar is here: https://www.hdfgroup.org/HDF5/release/obtainsrc5110.html Follow the install readme but basically you just need to give it a directory with: &gt; ./configure --prefix=/usr/local/h5py before you make.</p>
+<p>Now install with you anaconda version of python. You may want to make a separate environment using conda but that's your call.</p>
+<p>Remove the h5py you have with anaconda using &gt; conda uninstall h5py or &gt; pip uninstall h5py</p>
+<p>Then use pip to reinstall h5py but pointing to the HDF5 library you made from source. From here: http://docs.h5py.org/en/latest/build.html <strong>&gt; HDF5_DIR=/usr/local/hdf5 pip install h5py</strong></p>
+<p>Then you should be good. Open up a python terminal and test if you can use SWMR mode: &gt; import h5py &gt; f = h5py.File("./swmr.h5", 'a', libver='latest', swmr=True)</p>
+<h2 id="多进程准备数据随机种子seed的问题">3. 多进程准备数据<strong>随机种子seed</strong>的问题</h2>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/87881231" target="_blank" rel="noopener">参见我另一个博客</a></p>
+<h2 id="如何加速训练数据准备并载入gpu训练">4. 如何加速训练数据准备并载入GPU训练</h2>
+<p>参考一个知乎博客，data_prefetcher： <a href="https://zhuanlan.zhihu.com/p/80695364" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/80695364</a></p>
+<p>以及Pytorch论坛上的一个讨论： <a href="https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/19?u=jia_lee" target="_blank" rel="noopener">https://discuss.pytorch.org/t/how-to-prefetch-data-when-processing-with-gpu/548/19?u=jia_lee</a></p>
+<h1 id="pytorch训练阶段">Pytorch训练阶段</h1>
+<h2 id="stochastic-weight-averaging-in-pytorch">1. Stochastic Weight Averaging in PyTorch</h2>
+<p>这是一种model weight average策略，类似于模型集成，常常用来刷指标，提高模型的泛化精度。详细说明请见我的单独博客：</p>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/90748115" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90748115</a></p>
+<h2 id="通过梯度积累变相增大batch-size">2. 通过梯度积累变相增大batch size</h2>
+<p><a href="https://www.zhihu.com/question/303070254/answer/573037166" target="_blank" rel="noopener">详情请见 PyTorch中在反向传播前为什么要手动将梯度清零？ - Pascal的回答 - 知乎</a> 但是需要注意的是，因为BN层的参数是在 forward()阶段更新的，这样积累梯度并没有增大BN layers的实际batch size。可以通过减少BN层的 momentum 值，让BN层动态更新统计参数时能够记住更长。</p>
+<h1 id="pytorch-测试阶段">Pytorch 测试阶段</h1>
+<h2 id="正确的测试预测时间计时代码">1. 正确的测试（预测）时间计时代码</h2>
+<pre><code>torch.cuda.synchronize() # 等待当前设备上所有流中的所有核心完成
+start = time.time() 
+result = model(input) 
+torch.cuda.synchronize() 
+end = time.time()</code></pre>
+<p>在pytorch里面，程序的执行都是异步的。如果没有torch.cuda.synchronize() ，测试的时间会很短，因为执行完end=time.time()程序就退出了，后台的cu也因为python的退出退出了，如果采用torch.cuda.synchronize() ，代码会同步cu的操作，等待gpu上的操作都完成了再继续成形end = time.time() 原文：https://blog.csdn.net/u013548568/article/details/81368019</p>
+<h2 id="训练测试两个阶段需要注意设置不同状态-参考">2. 训练，测试两个阶段需要注意设置不同状态 <a href="https://discuss.pytorch.org/t/model-eval-vs-with-torch-no-grad/19615/10" target="_blank" rel="noopener">参考</a></h2>
+<h3 id="a.-model.train和model.val">a. model.train()和model.val()</h3>
+<p>比如BN和Dropout</p>
+<p>During eval <code>Dropout</code> is deactivated and just passes its input. During the training the probability <code>p</code> is used to drop activations. Also, the activations are scaled with <code>1./p</code> as otherwise the expected values would differ between training and eval.</p>
+<pre><code>drop = nn.Dropout()
+x = torch.ones(1, 10)
+
+# Train mode (default after construction)
+drop.train()
+print(drop(x))
+
+# Eval mode
+drop.eval()
+print(drop(x))</code></pre>
+<h3 id="b.-测试val时不光要设置model.eval-为了防止内存爆炸应该追加torch.no_grad">b. 测试（val)时不光要设置<code>model.eval()</code> ，为了防止内存爆炸，应该追加<code>torch.no_grad()</code></h3>
+<ul>
+<li><code>model.eval()</code> will notify all your layers that you are in eval mode, that way, batchnorm or dropout layers will work in eval model instead of training mode.</li>
+<li><code>torch.no_grad():</code> impacts the autograd engine and deactivate it. It will reduce memory usage and speed up computations but you won’t be able to backprop (which you don’t want in an eval script). 注意，<code>torch.no_grad()是</code>context manager。</li>
+</ul>
+<h2 id="dropout里需要设置训练标志位否则会踩坑">3. Dropout里需要设置训练标志位，否则会踩坑</h2>
+<h3 id="使用f.dropout-nn.functional.dropout-的时候需要设置它的可选参数training-state">使用F.dropout ( nn.functional.dropout )的时候需要设置它的可选参数training state</h3>
+<p>这个状态参数与模型整体的一致，否则就是out=out，没有效果，具体说明见链接 <a href="https://www.zhihu.com/question/67209417/answer/302434279" target="_blank" rel="noopener">查看</a></p>
+<pre><code>Class DropoutFC(nn.Module):
+   def __init__(self):
+       super(DropoutFC, self).__init__()
+       self.fc = nn.Linear(100,20)
+
+   def forward(self, input):
+       out = self.fc(input)
+       out = F.dropout(out, p=0.5, training=self.training) # set dropout&#39;s training sate
+       return out
+
+Net = DropoutFC()
+Net.train()
+
+# train the Net
+#作者：雷杰
+#链接：https://www.zhihu.com/question/67209417/answer/302434279</code></pre>
+<h3 id="或者直接使用nn.dropout即利用包装后的layer">或者直接使用nn.Dropout()，即利用包装后的layer</h3>
+<p>nn.Dropout()实际上是对F.dropout的一个包装, 也将self.training传入了)</p>
+<pre><code>Class DropoutFC(nn.Module):
+  def __init__(self):
+      super(DropoutFC, self).__init__()
+      self.fc = nn.Linear(100,20)
+      self.dropout = nn.Dropout(p=0.5)
+
+  def forward(self, input):
+      out = self.fc(input)
+      out = self.dropout(out)
+      return out
+Net = DropoutFC()
+Net.train()
+
+# train the Net</code></pre>
+<h2 id="多gpu模型权重的保存与加载">4. 多GPU模型权重的保存与加载</h2>
+<p>Instead of deleting the “module.” string from all the state_dict keys, you can save your model with: <code>torch.save(model.module.state_dict(), path_to_file)</code> instead of <code>torch.save(model.state_dict(), path_to_file)</code> <strong><em>that way you don’t get the “module.” string to begin with…</em></strong></p>
+<pre><code># original saved file with DataParallel
+state_dict = torch.load(&#39;myfile.pth.tar&#39;)
+# 把所有的张量加载到CPU中
+# torch.load(&#39;tensors.pt&#39;, map_location=lambda storage, loc: storage)
+
+# create new OrderedDict that does not contain `module.`
+from collections import OrderedDict
+new_state_dict = OrderedDict()
+for k, v in state_dict.items():
+    name = k[7:] # remove `module.`
+    new_state_dict[name] = v
+# load params
+model.load_state_dict(new_state_dict)
+
+############## 还有一个可用的封装更好的函数
+# 加载模型，解决命名和维度不匹配问题,解决多个gpu并行
+def load_state_keywise(model, model_path):
+    model_dict = model.state_dict()
+    pretrained_dict = torch.load(model_path, map_location=&#39;cpu&#39;)
+    key = list(pretrained_dict.keys())[0]
+    # 1. filter out unnecessary keys
+    # 1.1 multi-GPU -&gt;CPU
+    if (str(key).startswith(&#39;module.&#39;)):
+        pretrained_dict = {k[7:]: v for k, v in pretrained_dict.items() if
+                           k[7:] in model_dict and v.size() == model_dict[k[7:]].size()}
+    else:
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if
+                           k in model_dict and v.size() == model_dict[k].size()}
+    # 2. overwrite entries in the existing state dict
+    model_dict.update(pretrained_dict)
+    # 3. load the new state dict
+    model.load_state_dict(model_dict)
+
+ ################## 更简单直接的方式 ##################
+# Instead of deleting the “module.” string from all the state_dict keys, you can save your model with:
+
+torch.save(model.module.state_dict(), path_to_file)
+# instead of
+
+torch.save(model.state_dict(), path_to_file)
+
+# that way you don’t get the “module.” string to begin with…</code></pre>
+<h2 id="恢复保存的优化器状态optimizer-checkpoint-resume继续优化">5. 恢复保存的优化器状态(optimizer checkpoint resume)，继续优化</h2>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/88417329" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/88417329</a></p>
+<h2 id="载入模型权重gpu内存被额外占用的bug解决">6. 载入模型权重GPU内存被额外占用的bug解决</h2>
+<h3 id="分布式多进程中的这种情况的现象是对于同一个python进程pid号相同会两次占用固定大小的gpu内存">分布式/多进程中的这种情况的现象是，对于同一个python进程（pid号相同）会两次占用固定大小的gpu内存</h3>
+<p>观察到的现象是python进程多于预期应有的进程数。比如我们单机多卡分布式训练，已经完成了网络模型的in-place参数设备转换，即network.cuda()，现在我们有4块GPU，我们在程序中的每一个进程分配一块GPU时本来应该只有4个进程，每个进程占用一定的GPU显存，但实际情况如所示：</p>
+<pre><code>Processes: GPU Memory |
+| GPU PID Type Process name Usage |
+|=============================================================================|
+| 0 1291 G /usr/lib/xorg/Xorg 153MiB |
+| 0 2549 G fcitx-qimpanel 14MiB |
+| 0 21740 G compiz 138MiB |
+| 0 22840 C /home/jia/.virtualenvs/phoenix/bin/python 6097MiB | 
+| 0 22841 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现
+| 0 22842 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现
+| 0 22843 C /home/jia/.virtualenvs/phoenix/bin/python 859MiB | # 本不该出现
+| 0 23207 G /opt/teamviewer/tv_bin/TeamViewer 24MiB |
+| 0 23985 G .../Software/pycharm-2019.2.4/jbr/bin/java 12MiB |
+| 1 22841 C /home/jia/.virtualenvs/phoenix/bin/python 6129MiB |
+| 2 22842 C /home/jia/.virtualenvs/phoenix/bin/python 6227MiB |
+| 3 22843 C /home/jia/.virtualenvs/phoenix/bin/python 6229MiB</code></pre>
+<p>原因：在同一个cuda上之后不使用的内存将会被自动销毁并回收，但是对于不同GPU之间目前没有自动的内存管理机制??，如果某一个进程在cuda0上实例化的tensor x，在另一个使用cuda2的进程中使用了，但cuda2上的进程并没有对tensor x进行内存销毁回收，造成GPU内存的占用。</p>
+<p>解决办法：在当前进程中销毁不在同一个cuda上的内存垃圾，或者载入权重时使用torch.load(model_path, <strong>map_location='cpu'</strong>)</p>
+<h3 id="gpu预训练保存的权值可以直接载入到cpu下的网络模型network中并且载入之后network的参数会移到预训练权值所在的device上">GPU预训练保存的权值可以直接载入到CPU下的网络模型network中，并且载入之后network的参数会移到预训练权值所在的device上</h3>
+<p>如下图所示：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200108114844390.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" /></p>
+<p>这个行为挺诡异，按照正常的设计逻辑，本来CPU的模型直接载入GPU预训练权值应该会因为device不同而报错（cpu, cuda0)但结果并没有，可以成功载入，并且载入之后CPU下的模型network的device也变成cuda0了。甚至我们可以仅仅载入某一layer的权值，那么这一layer的weight.data将变到cuda0上，而其没有载入更改的layer的weight.data仍然在cpu上！</p>
+<p>解决办法同上一种情况，把GPU预训练权值map到cpu上之后再network.load_state_dict()。</p>
+<h1 id="pytorch的内存优化和加速">Pytorch的内存优化和加速</h1>
+<p><strong>有一个 pytorch提速指南： <a href="https://zhuanlan.zhihu.com/p/39752167" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/39752167</a></strong></p>
+<p><strong>可以参考 <a href="https://blog.csdn.net/jacke121/article/details/81329679%C2%A0" target="_blank" rel="noopener">原文</a></strong></p>
+<h2 id="使用inplace减少内存开辟从而压缩内存需求">1. 使用inplace减少内存开辟，从而压缩内存需求</h2>
+<p>对于in-place operation的解读，见：<a href="https://blog.csdn.net/u012436149/article/details/80819523" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/u012436149/article/details/80819523</a></p>
+<p>以及：<a href="https://blog.csdn.net/york1996/article/details/81835873" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/york1996/article/details/81835873</a></p>
+<p>如，ReLu(inplace=True)</p>
+<p>在官方问文档中由这一段话：</p>
+<blockquote>
+<p>如果你使用了in-place operation而没有报错的话，那么你可以确定你的梯度计算是正确的。<strong>因为Pytorch在内存占用和执行速度上做了很多算法优化，哪些需要保留梯度不能使用in-place覆盖就显得不那么显而易见了，不能单纯地用原始梯度反向传播过程来决定。</strong></p>
+</blockquote>
+<p>inplace只是可以节省存储tensor的内存，但是PYTORCH中的自动微分机制仍然能够追踪，对于内存来说inplace可能是同一个对象，但是对于autograd来说，依然是两个不同的对象。 一个例子：<a href="https://discuss.pytorch.org/t/why-relu-inplace-true-does-not-give-error-in-official-resnet-py-but-it-gives-error-in-my-code/21004/3" target="_blank" rel="noopener">resnet</a></p>
+<blockquote>
+<p><strong><code>inplace</code> means that it will not allocate new memory and change tensors inplace</strong>. <strong>But from the autograd point of view, you have two different tensors (even though they actually share the same memory)</strong>. One is the output of conv (or batchnorm for resnet) and one is the output of the relu.</p>
+</blockquote>
+<h2 id="torch.backends.cudnn.benchmark-true">2. torch.backends.cudnn.benchmark = True</h2>
+<p>在程序刚开始加这条语句可以提升一点训练速度，没什么额外开销。</p>
+<h2 id="torch.cuda.empty_cache">3. torch.cuda.empty_cache()</h2>
+<p>因为每次迭代都会引入点临时变量，会导致训练速度越来越慢，基本呈线性增长。开发人员还不清楚原因，但如果周期性的使用torch.cuda.empty_cache()的话就可以解决这个问题。</p>
+<h2 id="使用checkpoint分阶段计算这样可以在显卡上放下更大的网络">4. 使用checkpoint分阶段计算，这样可以在显卡上放下更大的网络</h2>
+<p>知乎回答的一个例子：https://www.zhihu.com/question/274635237/answer/574193034</p>
+<h2 id="尝试nvidia-apex-16位浮点数扩展">5. 尝试Nvidia Apex 16位浮点数扩展</h2>
+<p>温馨提示：我的另一篇博客<a href="https://mp.csdn.net/console/editor/html/84784982" target="_blank" rel="noopener">pip install, python setup.py, egg-info的说明--以Nvidia Apex安装为例</a></p>
+<h3 id="clean-the-old-install-before-rebuilding">Clean the old install before rebuilding:</h3>
+<blockquote>
+<p>pip uninstall apex cd apex_repo_dir rm -rf build (if present) rm -rf apex.egg-info (if present)</p>
+</blockquote>
+<h3 id="install-package">Install package：</h3>
+<blockquote>
+<p>pip install -v --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" ./</p>
+<p># --no-cache-dir 清除安装缓存文件</p>
+</blockquote>
+<p>或者</p>
+<blockquote>
+<p>python setup.py install --cuda_ext --cpp_ext</p>
+</blockquote>
+<h3 id="ps-如果遇到cuda版本不兼容的问题解决办法见若pytorch升级到1.3cuda10.1则没有这个error了">ps: 如果遇到Cuda版本不兼容的问题，解决办法见：（若pytorch升级到1.3，cuda10.1则没有这个error了）</h3>
+<p><a href="https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952" target="_blank" rel="noopener">https://github.com/NVIDIA/apex/issues/350#issuecomment-500390952</a></p>
+<p>如果没有出现其他error，可以直接使用上面链接的建议，删除版本检查抛出的报错。</p>
+<p>讨论：</p>
+<p><a href="https://github.com/NVIDIA/apex/issues/350" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/issues/350</a></p>
+<p><a href="https://github.com/NVIDIA/apex/pull/323" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/323</a></p>
+<h2 id="pytorch内存泄露僵尸进程解决办法-原文链接">6. Pytorch内存泄露（僵尸进程）解决办法 <a href="https://blog.csdn.net/liuyifang0810680/article/details/79628394%C2%A0" target="_blank" rel="noopener">原文链接</a></h2>
+<p>nvidia-smi 发现内存泄露问题，即没有进程时，内存被占用</p>
+<blockquote>
+<p>fuser -v /dev/nvidia* 发现僵尸进程</p>
+<p>ps x |grep python|awk '{print $1}'|xargs kill 杀死所有僵尸进程</p>
+</blockquote>
+<p>命令解读：</p>
+<p>ps x: show all process of current user</p>
+<p>grep python: to get process that has python in command line</p>
+<p>awk '{print $1}': to get the related process pidxargs kill`: to kill the process</p>
+<p>note: make sure you don’t kill other processes! do ps x |grep python first.</p>
+<h2 id="相关的进程和内存管理bash-cmd-命令行命令">7. 相关的进程和内存管理bash cmd (命令行命令）</h2>
+<p>nvidia-smi -l xxx 监控GPU，动态刷新信息（默认5s刷新一次），按Ctrl+C停止，可指定刷新频率，以秒为单位；</p>
+<p>watch -n 1 nvidia-smi <strong>实时监控GPU</strong>； watch -n 1 lscpu实时监控CPU，watch是周期性的执行下个程序 ps -elf进程查看， <strong>ps -elf | grep python 查看Python子进程</strong>，这个也是命令比较实用，能够用在监视其他基于python解释器运行的进程， kill -9 [PID]杀死进程PID。</p>
+<blockquote>
+<blockquote>
+<p><strong>watch -n 5 -t -d=cumulative 'command'</strong></p>
+</blockquote>
+<p>watch是周期性的执行下个程序，并全屏显示执行结果</p>
+<p>-n 每隔5秒周期执行一次</p>
+<p>-t 开头的间隔时间和信息等不显示</p>
+<p><strong>-d=cumulative 发生变动的地方高亮</strong></p>
+</blockquote>
+<h2 id="如何才能使用-tensor-core">8. 如何才能使用 Tensor Core</h2>
+<p><strong>Convolutions</strong>: For cudnn versions 7.2 and ealier, <span class="citation" data-cites="vaibhav0195">@vaibhav0195</span> is correct: input channels, output channels, and batch size should be multiples of 8 to use tensor cores. However, this requirement is lifted for cudnn versions 7.3 and later. <strong>For cudnn 7.3 and later, you don't need to worry about making your channels/batch size multiples of 8 to enable Tensor Core use</strong>.</p>
+<p><strong>GEMMs (fully connected layers)</strong>: For matrix A x matrix B, where A has size [I, J] and B has size [J, K], I, J, and K must be multiples of 8 to use Tensor Cores. This requirement exists for all cublas and cudnn versions. This means that for <strong>bare fully connected layers, the batch size, input features, and output features must be multiples of 8</strong>, and** for RNNs, you usually (but not always, it can be architecture-dependent depending on what you use for encoder/decoder) need to have batch size, hidden size, embedding size, and dictionary size as multiples of 8.**</p>
+<h2 id="apex的fused-adam的特点是模型参数更新迭代得比pytorch中原生的adam快"><strong>9. Apex的Fused Adam的特点是模型参数更新迭代得比Pytorch中原生的Adam快</strong></h2>
+<p>What is the difference between FusedAdam optimizer in Nvidia AMP package with the Adam optimizer in Pytorch?</p>
+<p><a href="https://discuss.pytorch.org/t/fusedadam-optimizer-in-nvidia-amp-package/47544" target="_blank" rel="noopener">摘录自</a></p>
+<blockquote>
+<p>The Adam optimizer in Pytorch (like all Pytorch optimizers) carries out optimizer.step() by looping over parameters, and launching a series of kernels for each parameter. This can require hundreds of small launches that are mostly bound by CPU-side Python looping and kernel launch overhead, resulting in poor device utilization. Currently, the FusedAdam implementation in Apex flattens the parameters for the optimization step, then carries out the optimization step itself via a fused kernel that combines all the Adam operations. In this way, the loop over parameters as well as the internal series of Adam operations for each parameter are fused such that optimizer.step() requires only a few kernel launches.</p>
+<p>The current implementation (in Apex master) is brittle and only works with Amp opt_level O2. I’ve got a WIP branch to make it work for any opt_level (<a href="https://github.com/NVIDIA/apex/pull/351" target="_blank" rel="noopener" class="uri">https://github.com/NVIDIA/apex/pull/351</a>). I recommend waiting until this is merged then trying it.</p>
+</blockquote>
+<h1 id="pytorch-使用陷阱易错点"><strong>Pytorch 使用陷阱，易错点</strong></h1>
+<h2 id="tensor.expand-expand_as是共享内存的只是原始数据的一个视图-view并没有在扩展的axis上有新的数据复制牵一发动全身"><strong>1. Tensor.expand, expand_as是共享内存的，只是原始数据的一个视图 view，并没有在扩展的axis上有新的数据复制，牵一发动全身！</strong></h2>
+<p><strong>为了避免对 expand() 后对某个channel操作会影响原始tensor的全部元素，需要使用clone()</strong></p>
+<p>如果没有clone()，对mask_miss的某个通道赋值后，所有通道上的tensor都会变成1！</p>
+<blockquote>
+<p># Notice! expand does not allocate more memory but just make the tensor look as if you expanded it. # You should call .clone() on the resulting tensor if you plan on modifying it # https://discuss.pytorch.org/t/very-strange-behavior-change-one-element-of-a-tensor-will-influence-all-elements/41190</p>
+</blockquote>
+<pre><code>mask = mask_miss.expand_as(sxing).clone()            # type: torch.Tensor
+mask[:, :, -2, :, :] = 1   # except for person mask channel</code></pre>
+<h2 id="损失计算图因为pytorch的动态机制越来越大直到耗尽内存">2. 损失计算图因为Pytorch的动态机制越来越大，直到耗尽内存</h2>
+<p>摘录自</p>
+<p>常见的原因有</p>
+<h3 id="在循环中使用全局变量当做累加器且累加梯度信息">在循环中使用全局变量当做累加器，且累加梯度信息</h3>
+<p>举个例子，下面的代码中</p>
+<pre><code>total_loss=0
+for i in range(10000):
+  optimizer.zero_grad()
+  output=model(input)
+  loss=criterion(output)
+  loss.backward() # 计算的梯度自动叠加到各个权重的grad上，并且计算完成后销毁计算图！！！
+  optimizer.step()
+  total_loss+=loss
+  #这里total_loss是跨越循环的变量，起着累加的作用，
+  #loss变量是带有梯度的tensor，会保持历史梯度信息，在循环过程中会不断积累梯度信息到tota_loss，占用内存</code></pre>
+<p>以上例子的修正方法是在循环中的最后一句修改为：</p>
+<p>total_loss+=float(loss)</p>
+<p>或者 total_loss += loss.item() # tensor.item()是取张量的python数值</p>
+<p>利用类型变换解除梯度信息，这样，多次累加不会累加梯度信息。</p>
+<h3 id="局部变量逗留导致内存泄露">局部变量逗留导致内存泄露</h3>
+<p>局部变量通常在变量作用域之外会被Python自动销毁，在作用域之内，不需要的临时变量可以使用del x来销毁。</p>
+<h3 id="list数据类型不断append增长了计算图大小">list数据类型，不断append增长了计算图大小</h3>
+<h2 id="pytorch中的batch-normalization-layer踩坑">3. Pytorch中的Batch Normalization layer踩坑</h2>
+<p>详情查看我的另一篇博客：<a href="https://blog.csdn.net/xiaojiajia007/article/details/90115174" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90115174</a></p>
+<h2 id="优化器的权值衰减weight_decay项导致的隐蔽bug即是的网络的权值不断减少至0">4. 优化器的权值衰减weight_decay项导致的隐蔽bug，即是的网络的权值不断减少至0</h2>
+<p>摘录自：<a href="https://zhuanlan.zhihu.com/p/91485607" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/91485607</a></p>
+<p>我们都知道weight_decay指的是权值衰减，（<strong>注意：权值衰减不等价于在原损失的基础上加上一个L2惩罚项！具体说明见下面那条笔记</strong>），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。</p>
+<p>这次的坑是这样的，在训练一个ResNet50的时候，网络的高层部分layer4暂时没有用到，因此也并不会有梯度回传，于是我就放心地将ResNet50的所有参数都传递给Optimizer进行更新了，想着layer4应该能保持原来的权重不变才对。但是实际上，尽管layer4没有梯度回传，但是weight_decay的作用仍然存在，它使得layer4权值越来越小，趋向于0。后面需要用到layer4的时候，发现输出异常（接近于0），才注意到这个问题的存在。</p>
+<p>虽然这样的情况可能不容易遇到，但是还是要谨慎：暂时不需要更新的权值，一定不要传递给Optimizer，避免不必要的麻烦。</p>
+<h2 id="l2正则不等于权值衰减">5. L2正则不等于权值衰减</h2>
+<p>权值衰减（Weight Decay）：在网络权值通过损失函数更新后，直接再减去权值本身的一个倍数，可以写成 W(t+1)’ = W(t+1)-W(t)；</p>
+<p>而 L2正则（L2 Regulation）：在原有的算是函数基础上，添加了网络权值平方和*一个倍数，L' = L+∑w^2.</p>
+<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/104045066" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/104045066</a></p>
+<figure>
+<img src="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="公式" /><figcaption>公式</figcaption>
+</figure>
 <p>在Pytorch中，对于SGD优化器，两者是等效的，但是对于Adam优化器，两者作用有差别，对于Adam会有耦合的错误。</p>
 <p>我看到有的开源项目中(<a href="https://github.com/leoxiaobin/deep-high-resolution-net.pytorch/blob/master/lib/utils/utils.py#L60" target="_blank" rel="noopener">链接</a>)，SGD使用weight decay，而Adam中没有使用weight decay。</p>
 <p>具体分析见下面两个文章：</p>
@@ -1254,7 +1003,7 @@ loc_loss /= num_matched_boxes   # 除以的是正样本的数目</code></pre>
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网络模型构建"><span class="nav-number">1.</span> <span class="nav-text">网络模型构建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nn.sequential和nn.modulelist的区别"><span class="nav-number">1.1.</span> <span class="nav-text">1. nn.Sequential和nn.ModuleList的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nn.modulelist可以由多维下标索引但用嵌套的list初始化时需注意"><span class="nav-number">1.2.</span> <span class="nav-text">2. nn.ModuleList可以由多维下标索引，但用嵌套的list初始化时需注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络结构可视化"><span class="nav-number">2.</span> <span class="nav-text">网络结构可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构可视化-1"><span class="nav-number">2.1.</span> <span class="nav-text">1. 网络结构可视化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类似于keras-打印网络每层输出的形状shape"><span class="nav-number">2.2.</span> <span class="nav-text">2. 类似于keras, 打印网络每层输出的形状shape</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch中layer的输出shape的尺寸取整"><span class="nav-number">2.3.</span> <span class="nav-text">3. pytorch中layer的输出shape的尺寸取整</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超级给力的网络结构可视化工具netron-和-hiddenlayer"><span class="nav-number">2.4.</span> <span class="nav-text">4. 超级给力的网络结构可视化工具：Netron 和 hiddenlayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算网络模型的参数量和浮点运算数"><span class="nav-number">2.5.</span> <span class="nav-text">5. 计算网络模型的参数量和浮点运算数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tensor的操作"><span class="nav-number">3.</span> <span class="nav-text">Tensor的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor.view和tensor.permute-permute变换"><span class="nav-number">3.1.</span> <span class="nav-text">１. Tensor.view和Tensor.permute (permute:变换)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#若前面有一个tensor输入需要梯度则后面的输出也需要梯度"><span class="nav-number">3.2.</span> <span class="nav-text">２. 若前面有一个tensor输入需要梯度，则后面的输出也需要梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor之间要是同一个数据类型dtype才能运算因此有时需要进行类型转换"><span class="nav-number">3.3.</span> <span class="nav-text">３. Tensor之间要是同一个数据类型dtype才能运算，因此有时需要进行类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor的clone和copy_的区别"><span class="nav-number">3.4.</span> <span class="nav-text">４. Tensor的clone和copy_的区别：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor初始化"><span class="nav-number">3.5.</span> <span class="nav-text">５. Tensor初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a.-torch.tensor和torch.from_numpy效果不同"><span class="nav-number">3.5.1.</span> <span class="nav-text">a. torch.tensor和torch.from_numpy()效果不同</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data和detach的区别"><span class="nav-number">3.6.</span> <span class="nav-text">６. data和detach()的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch中损失函数对tensor操作的reducesize_average参数说明"><span class="nav-number">3.7.</span> <span class="nav-text">7. pytorch中损失函数对tensor操作的reduce,size_average参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#torch.sqrt在0处的左导数没有定义会返回nan换用-torch.norm"><span class="nav-number">3.8.</span> <span class="nav-text">6. torch.sqrt()在0处的左导数没有定义，会返回nan，换用 torch.norm()</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网络模型构建"><span class="nav-number">1.</span> <span class="nav-text">网络模型构建</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nn.sequential和nn.modulelist的区别"><span class="nav-number">1.1.</span> <span class="nav-text">1. nn.Sequential和nn.ModuleList的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#nn.modulelist可以由多维下标索引但用嵌套的list初始化时需注意"><span class="nav-number">1.2.</span> <span class="nav-text">2. nn.ModuleList可以由多维下标索引，但用嵌套的list初始化时需注意</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网络结构可视化"><span class="nav-number">2.</span> <span class="nav-text">网络结构可视化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#网络结构可视化-1"><span class="nav-number">2.1.</span> <span class="nav-text">1. 网络结构可视化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类似于keras-打印网络每层输出的形状shape"><span class="nav-number">2.2.</span> <span class="nav-text">2. 类似于keras, 打印网络每层输出的形状shape</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch中layer的输出shape的尺寸取整"><span class="nav-number">2.3.</span> <span class="nav-text">3. pytorch中layer的输出shape的尺寸取整</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#超级给力的网络结构可视化工具netron-和-hiddenlayer"><span class="nav-number">2.4.</span> <span class="nav-text">4. 超级给力的网络结构可视化工具：Netron 和 hiddenlayer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#计算网络模型的参数量和浮点运算数"><span class="nav-number">2.5.</span> <span class="nav-text">5. 计算网络模型的参数量和浮点运算数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tensor的操作"><span class="nav-number">3.</span> <span class="nav-text">Tensor的操作</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor.view和tensor.permute-permute变换"><span class="nav-number">3.1.</span> <span class="nav-text">１. Tensor.view和Tensor.permute (permute:变换)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#若前面有一个tensor输入需要梯度则后面的输出也需要梯度"><span class="nav-number">3.2.</span> <span class="nav-text">２. 若前面有一个tensor输入需要梯度，则后面的输出也需要梯度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor之间要是同一个数据类型dtype才能运算因此有时需要进行类型转换"><span class="nav-number">3.3.</span> <span class="nav-text">３. Tensor之间要是同一个数据类型dtype才能运算，因此有时需要进行类型转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor的clone和copy_的区别"><span class="nav-number">3.4.</span> <span class="nav-text">４. Tensor的clone和copy_的区别：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor初始化"><span class="nav-number">3.5.</span> <span class="nav-text">５. Tensor初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a.-torch.tensor和torch.from_numpy效果不同"><span class="nav-number">3.5.1.</span> <span class="nav-text">a. torch.tensor和torch.from_numpy()效果不同</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#data和detach的区别"><span class="nav-number">3.6.</span> <span class="nav-text">６. data和detach()的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch中损失函数对tensor操作的reducesize_average参数说明"><span class="nav-number">3.7.</span> <span class="nav-text">7. pytorch中损失函数对tensor操作的reduce,size_average参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将tensor以及model迁移至cuda上"><span class="nav-number">3.8.</span> <span class="nav-text">8. 将tensor以及model迁移至cuda上</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a.-迁移tensor"><span class="nav-number">3.8.1.</span> <span class="nav-text">a. 迁移tensor</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b.-迁移模型"><span class="nav-number">3.8.2.</span> <span class="nav-text">b. 迁移模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对feature-map-即也是tensor做尺寸上的缩放"><span class="nav-number">3.9.</span> <span class="nav-text">9. 对feature map (即也是tensor)做尺寸上的缩放</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模型的普通类成员变量和pytorch中自动注册的parameter或者buffer区别"><span class="nav-number">3.10.</span> <span class="nav-text">10. 模型的普通类成员变量和Pytorch中自动注册的Parameter或者buffer区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pytorch训练数据准备"><span class="nav-number">4.</span> <span class="nav-text">pytorch训练数据准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dataloader-类"><span class="nav-number">4.1.</span> <span class="nav-text">1. DataLoader 类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参数说明-摘录自"><span class="nav-number">4.1.1.</span> <span class="nav-text">参数说明 摘录自</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对于-pin_memory-的解释摘录自"><span class="nav-number">4.1.2.</span> <span class="nav-text">对于 pin_memory 的解释：摘录自</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程读取hdf5文件支持的不好以及解决办法"><span class="nav-number">4.2.</span> <span class="nav-text">2. 多进程读取HDF5文件支持的不好以及解决办法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多进程准备数据随机种子seed的问题"><span class="nav-number">4.3.</span> <span class="nav-text">3. 多进程准备数据随机种子seed的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何加速训练数据准备并载入gpu训练"><span class="nav-number">4.4.</span> <span class="nav-text">4. 如何加速训练数据准备并载入GPU训练</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pytorch训练阶段"><span class="nav-number">5.</span> <span class="nav-text">Pytorch训练阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#stochastic-weight-averaging-in-pytorch"><span class="nav-number">5.1.</span> <span class="nav-text">1. Stochastic Weight Averaging in PyTorch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过梯度积累变相增大batch-size"><span class="nav-number">5.2.</span> <span class="nav-text">2. 通过梯度积累变相增大batch size</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pytorch-测试阶段"><span class="nav-number">6.</span> <span class="nav-text">Pytorch 测试阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#正确的测试预测时间计时代码"><span class="nav-number">6.1.</span> <span class="nav-text">1. 正确的测试（预测）时间计时代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#训练测试两个阶段需要注意设置不同状态-参考"><span class="nav-number">6.2.</span> <span class="nav-text">2. 训练，测试两个阶段需要注意设置不同状态 参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a.-model.train和model.val"><span class="nav-number">6.2.1.</span> <span class="nav-text">a. model.train()和model.val()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b.-测试val时不光要设置model.eval-为了防止内存爆炸应该追加torch.no_grad"><span class="nav-number">6.2.2.</span> <span class="nav-text">b. 测试（val)时不光要设置model.eval() ，为了防止内存爆炸，应该追加torch.no_grad()</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dropout里需要设置训练标志位否则会踩坑"><span class="nav-number">6.3.</span> <span class="nav-text">3. Dropout里需要设置训练标志位，否则会踩坑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用f.dropout-nn.functional.dropout-的时候需要设置它的可选参数training-state"><span class="nav-number">6.3.1.</span> <span class="nav-text">使用F.dropout ( nn.functional.dropout )的时候需要设置它的可选参数training state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#或者直接使用nn.dropout即利用包装后的layer"><span class="nav-number">6.3.2.</span> <span class="nav-text">或者直接使用nn.Dropout()，即利用包装后的layer</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多gpu模型权重的保存与加载"><span class="nav-number">6.4.</span> <span class="nav-text">4. 多GPU模型权重的保存与加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#恢复保存的优化器状态optimizer-checkpoint-resume继续优化"><span class="nav-number">6.5.</span> <span class="nav-text">5. 恢复保存的优化器状态(optimizer checkpoint resume)，继续优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#载入模型权重gpu内存被额外占用的bug解决"><span class="nav-number">6.6.</span> <span class="nav-text">6. 载入模型权重GPU内存被额外占用的bug解决</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分布式多进程中的这种情况的现象是对于同一个python进程pid号相同会两次占用固定大小的gpu内存"><span class="nav-number">6.6.1.</span> <span class="nav-text">分布式&#x2F;多进程中的这种情况的现象是，对于同一个python进程（pid号相同）会两次占用固定大小的gpu内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpu预训练保存的权值可以直接载入到cpu下的网络模型network中并且载入之后network的参数会移到预训练权值所在的device上"><span class="nav-number">6.6.2.</span> <span class="nav-text">GPU预训练保存的权值可以直接载入到CPU下的网络模型network中，并且载入之后network的参数会移到预训练权值所在的device上</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pytorch的内存优化和加速"><span class="nav-number">7.</span> <span class="nav-text">Pytorch的内存优化和加速</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用inplace减少内存开辟从而压缩内存需求"><span class="nav-number">7.1.</span> <span class="nav-text">1. 使用inplace减少内存开辟，从而压缩内存需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#torch.backends.cudnn.benchmark-true"><span class="nav-number">7.2.</span> <span class="nav-text">2. torch.backends.cudnn.benchmark &#x3D; True</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#torch.cuda.empty_cache"><span class="nav-number">7.3.</span> <span class="nav-text">3. torch.cuda.empty_cache()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用checkpoint分阶段计算这样可以在显卡上放下更大的网络"><span class="nav-number">7.4.</span> <span class="nav-text">4. 使用checkpoint分阶段计算，这样可以在显卡上放下更大的网络</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尝试nvidia-apex-16位浮点数扩展"><span class="nav-number">7.5.</span> <span class="nav-text">5. 尝试Nvidia Apex 16位浮点数扩展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#clean-the-old-install-before-rebuilding"><span class="nav-number">7.5.1.</span> <span class="nav-text">Clean the old install before rebuilding:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#install-package"><span class="nav-number">7.5.2.</span> <span class="nav-text">Install package：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ps-如果遇到cuda版本不兼容的问题解决办法见若pytorch升级到1.3cuda10.1则没有这个error了"><span class="nav-number">7.5.3.</span> <span class="nav-text">ps: 如果遇到Cuda版本不兼容的问题，解决办法见：（若pytorch升级到1.3，cuda10.1则没有这个error了）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch内存泄露僵尸进程解决办法-原文链接"><span class="nav-number">7.6.</span> <span class="nav-text">6. Pytorch内存泄露（僵尸进程）解决办法 原文链接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关的进程和内存管理bash-cmd-命令行命令"><span class="nav-number">7.7.</span> <span class="nav-text">7. 相关的进程和内存管理bash cmd (命令行命令）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何才能使用-tensor-core"><span class="nav-number">7.8.</span> <span class="nav-text">8. 如何才能使用 Tensor Core</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#apex的fused-adam的特点是模型参数更新迭代得比pytorch中原生的adam快"><span class="nav-number">7.9.</span> <span class="nav-text">9. Apex的Fused Adam的特点是模型参数更新迭代得比Pytorch中原生的Adam快</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#pytorch-使用陷阱易错点"><span class="nav-number">8.</span> <span class="nav-text">Pytorch 使用陷阱，易错点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tensor.expand-expand_as是共享内存的只是原始数据的一个视图-view并没有在扩展的axis上有新的数据复制牵一发动全身"><span class="nav-number">8.1.</span> <span class="nav-text">1. Tensor.expand, expand_as是共享内存的，只是原始数据的一个视图 view，并没有在扩展的axis上有新的数据复制，牵一发动全身！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#损失计算图因为pytorch的动态机制越来越大直到耗尽内存"><span class="nav-number">8.2.</span> <span class="nav-text">2. 损失计算图因为Pytorch的动态机制越来越大，直到耗尽内存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在循环中使用全局变量当做累加器且累加梯度信息"><span class="nav-number">8.2.1.</span> <span class="nav-text">在循环中使用全局变量当做累加器，且累加梯度信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部变量逗留导致内存泄露"><span class="nav-number">8.2.2.</span> <span class="nav-text">局部变量逗留导致内存泄露</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#list数据类型不断append增长了计算图大小"><span class="nav-number">8.2.3.</span> <span class="nav-text">list数据类型，不断append增长了计算图大小</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pytorch中的batch-normalization-layer踩坑"><span class="nav-number">8.3.</span> <span class="nav-text">3. Pytorch中的Batch Normalization layer踩坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化器的权值衰减weight_decay项导致的隐蔽bug即是的网络的权值不断减少至0"><span class="nav-number">8.4.</span> <span class="nav-text">4. 优化器的权值衰减weight_decay项导致的隐蔽bug，即是的网络的权值不断减少至0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#l2正则不等于权值衰减"><span class="nav-number">8.5.</span> <span class="nav-text">5. L2正则不等于权值衰减</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#torch.sqrt在0处的左导数没有定义会返回nan换用-torch.norm"><span class="nav-number">8.6.</span> <span class="nav-text">6. torch.sqrt()在0处的左导数没有定义，会返回nan，换用 torch.norm()</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1336,7 +1085,7 @@ loc_loss /= num_matched_boxes   # 除以的是正样本的数目</code></pre>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">1:27</span>
+    <span title="Reading time total">1:26</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
   </div>
