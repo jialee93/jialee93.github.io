@@ -56,7 +56,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200108114844390.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-05-28T08:07:51.000Z">
-<meta property="article:modified_time" content="2020-06-11T14:49:24.887Z">
+<meta property="article:modified_time" content="2020-06-11T14:51:29.613Z">
 <meta property="article:author" content="Jia Li">
 <meta property="article:tag" content="pytorch">
 <meta property="article:tag" content="python">
@@ -246,7 +246,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-06-11 22:49:24" itemprop="dateModified" datetime="2020-06-11T22:49:24+08:00">2020-06-11</time>
+                <time title="Modified: 2020-06-11 22:51:29" itemprop="dateModified" datetime="2020-06-11T22:51:29+08:00">2020-06-11</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -874,9 +874,7 @@ for i in range(10000):
 <p>权值衰减（Weight Decay）：在网络权值通过损失函数更新后，直接再减去权值本身的一个倍数，可以写成 W(t+1)’ = W(t+1)-W(t)；</p>
 <p>而 L2正则（L2 Regulation）：在原有的算是函数基础上，添加了网络权值平方和*一个倍数，L' = L+∑w^2.</p>
 <p><a href="https://blog.csdn.net/xiaojiajia007/article/details/104045066" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/104045066</a></p>
-<figure>
-<img src="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="公式" /><figcaption>公式</figcaption>
-</figure>
+<p><img src="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" /></p>
 <p>在Pytorch中，对于SGD优化器，两者是等效的，但是对于Adam优化器，两者作用有差别，对于Adam会有耦合的错误。</p>
 <p>我看到有的开源项目中(<a href="https://github.com/leoxiaobin/deep-high-resolution-net.pytorch/blob/master/lib/utils/utils.py#L60" target="_blank" rel="noopener">链接</a>)，SGD使用weight decay，而Adam中没有使用weight decay。</p>
 <p>具体分析见下面两个文章：</p>
