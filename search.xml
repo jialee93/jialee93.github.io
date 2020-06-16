@@ -568,7 +568,7 @@ for i in range(10000):
 <p>虽然这样的情况可能不容易遇到，但是还是要谨慎：暂时不需要更新的权值，一定不要传递给Optimizer，避免不必要的麻烦。</p>
 <h2 id="l2正则不等于权值衰减">5. L2正则不等于权值衰减</h2>
 <p>权值衰减（Weight Decay）：在网络权值通过损失函数更新后，直接再减去权值本身的一个倍数，可以写成 W(t+1)’ = W(t+1)-W(t)；</p>
-<p>而 L2正则（L2 Regulation）：在原有的算是函数基础上，添加了网络权值平方和*一个倍数，L' = L+∑w^2.</p>
+<p>而 L2正则（L2 Regulation）：在原有的算是函数基础上，添加了网络权值平方和*一个倍数，L' = L+1/2∑w^2，注意在参数更新，对L'求关于某个分量的导数时其他参数视作常数，导数为0。</p>
 <p><a href="https://blog.csdn.net/xiaojiajia007/article/details/104045066" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/104045066</a></p>
 <p><img src="https://img-blog.csdnimg.cn/20200119205411821.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" /></p>
 <p>在Pytorch中，对于SGD优化器，两者是等效的，但是对于Adam优化器，两者作用有差别，对于Adam会有耦合的错误。</p>
@@ -1033,6 +1033,15 @@ for i in range(10000):
 <p>intraparty党内的抄(intra+party党) intracollegiate大学内的(intra+collegiate大学的，学院的) intrapersonal个人内心的(intra+personal个人的) intranational国内的(intra+national国家的)</p>
 <h4 id="inter-表示在之间相互">inter-表示“在…之间，相互”</h4>
 <p>international国际的(inter+national国家的) interpose置于，介入(inter+pose放→放在二者之间) intersect横断(inter+sect切割 →在中间切→zhidao横断) intervene干涉(inter+vene走→走在二者之间→干涉) interaction相互影响(inter+action行动→相互行动→影响) interchangeable可互换的(inter+changeable可改变的) interlude(活动间的)休息(inter+lude玩→在中间玩→活动间休息) interrelate相互关连(inter+relate关连)</p>
+<h3 id="数学物理中axiomprincipletheoremlawrule-这几个词如何区分">数学、物理中，axiom，principle、theorem、law、rule 这几个词如何区分？</h3>
+<p><a href="https://www.zhihu.com/question/389899464/answer/1176208152" target="_blank" rel="noopener">参考1</a></p>
+<p><a href="https://www.zhihu.com/question/20222198/answer/14386797" target="_blank" rel="noopener">参考2</a></p>
+<p><a href="https://www.zhihu.com/question/389899464/answer/1174115855" target="_blank" rel="noopener">参考3</a></p>
+<p>数学中的<strong>公理axiom</strong>，与物理中的<strong>定律 principle</strong>同属客观规律，<strong>但无法用实验证明只能被假定成立</strong>，<strong>只能在一定范围内归纳</strong>。<strong>原理和公理一样，无法被证明，</strong>也因此科学的发展出现大的突破总是以公理/原理被证伪的形式。但注意，<strong>数学上没有Principle，只有Axiom。</strong>数学和物理在最开始的起点处，一个称之为"原理"一个称之为"公理"的东西，本质上似乎是相同的，只不过"原理"往往要比公理更复杂，原理(Principle)更注重推导的结果是否丰富，而公理(Axiom)仅仅为逻辑演绎提供起点。</p>
+<p><strong>定理(Theorem)</strong>则是通过逻辑演绎，由原理或者公理推导出来的用途比较广的，重要性很强的推论，一般的推论称为Corollary，其实和定理本身属性相同，只是重要性(应用范围)差很多，一般只用于作为重要定理的证明中间过程存在着。物理里凡是叫做 theorem 的东西，总是跟数学拖不了干系。不来点数学推导，似乎就很难被称作 theorem。</p>
+<p><strong>注意：</strong>命名这事儿，还是要结合当时的时代背景，在当时看来无解的principle或者实验规律law，可能经过物理学和数学地进一步的发展，找到更加底层的principle或者law，进而被推演出啦，升级为theorem，<strong>但是很多时候名称依然沿用而被保留了下来。</strong></p>
+<p><strong>定律(Law)主要是一开始一些直接从经验中总结出来的东西，一开始的角色其实和原理差不多，只不过形式更为具象，原理更为抽象。同时作为原理一般能够推导出多条定律，比如最小作用量原理，既可以给出牛顿定律，也可以给出相对论下的运动方程，还可以给出麦克斯韦方程组</strong>。相对来说，<strong>如果完全是靠经验总结而非逻辑归纳得到的命题，应该就只能叫做定律了</strong>。</p>
+<p><strong>规则(Rule)则是一些用于计算或者简化计算的常规套路</strong>，它们本身并没有多少意义，只是在漫长的理论推导过程中由于经常被用到，<strong>人们更愿意记住它们而不是每次重复之前做过的同样的步骤</strong>，相当于围棋中的"定式"。</p>
 <h2 id="英文标题大小写">23. 英文标题大小写</h2>
 <p><strong>不定冠词a 在标题中是小写</strong></p>
 <p>更加具体的标题大小写规则如下： <a href="https://www.zhihu.com/question/50427700/answer/121428231" target="_blank" rel="noopener">知乎回答</a></p>
