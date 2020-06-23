@@ -557,8 +557,8 @@ for i in range(10000):
       </categories>
       <tags>
         <tag>pytorch</tag>
-        <tag>python</tag>
         <tag>深度学习</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
