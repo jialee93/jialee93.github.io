@@ -146,6 +146,7 @@ $font-size-base           = (hexo-config('font.enable') and hexo-config('font.gl
 ```
 
 ###  网址缩略图
+
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200203182511137.png)
 如果我们想要更改网址栏左侧的缩略图标，我们先制作好图标，放入对应的 `/Users/lijia/科研&学习/github博客/themes/next/source/images` 文件夹下，然后更改主题（我们用的是next）下的配置文件如下：
 
@@ -161,6 +162,7 @@ favicon:
 ```
 
 ### 接入评论系统以及文章阅读次数显示
+
 参考：
 http://www.zhangblog.com/2019/06/16/hexo05/
 http://www.zhangblog.com/2019/06/16/hexo06/
@@ -184,3 +186,31 @@ valine:
 设置完成后文章的开头就会显示如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20200203203817826.png)
 增加了 Views 和 Valine，而博客文章下面就有了留言板。
+
+### Side bar添加访问者ip地区地图
+
+使用clustrmaps，选择插件风格，拷贝网站出现的脚本 javascript代码
+
+```javascript
+<script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=a&t=n&d=QL-1Sagpgczc7G2fmX1QXKQOnj-EMUBDxB3pA6RxWIY'></script>
+```
+
+粘贴到Next主题下某个位置，参考链接中给出了两个可插入上述代码的配置文件，这里我们选择了其中一个位置的配置文件`/***lee.github.io/themes/next/layout/_macro/sidebar.swig `粘贴代码，插入如下：
+
+```
+<aside class="sidebar">
+    <div class="sidebar-inner">
+
+      {%- set display_toc = page.toc.enable and display_toc %}
+      {%- if display_toc %}
+        {%- set toc = toc(page.content, { "class": "nav", list_number: page.toc.number, max_depth: page.toc.max_depth }) %}
+        {%- set display_toc = toc.length > 1 and display_toc %}
+      {%- endif %}
+
+      <!-- Insert clustrmaps.com, the following single line is inserted by jialee-->
+      <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=a&t=n&d=QL-1Sagpgczc7G2fmX1QXKQOnj-EMUBDxB3pA6RxWIY'></script>
+```
+
+最后我们来看一下效果
+
+![](https://www.yanlongwang.net/downloads/images/blog/visitor_traffic_demo.png)

@@ -17,11 +17,11 @@ categories: 科研
 
 简而言之就是，nn.Sequential类似于Keras中的贯序模型，它是Module的子类，在构建数个网络层之后会自动调用forward()方法，从而有网络模型生成。而nn.ModuleList仅仅类似于pytho中的list类型，只是将一系列层装入列表，并没有实现forward()方法，因此也不会有网络模型产生的副作用。两者使用的一个很好的例子如链接：<https://www.cnblogs.com/hellcat/p/8477195.html>
 
-另外需要注意的是，网络中需要训练的参数一定要被正确地注册，比如如果使用了普通list, dict等，之后一定要用nn.Sequential或者nn.ModuleList包装一下，这样才能将模型参数顺利被优化器识别。否则，运行时不会报错，但是没有被注册的参数将不会被训练！
+另外需要注意的是**，网络中需要训练的参数一定要被正确地注册，比如如果使用了普通list, dict等，之后一定要用nn.Sequential或者nn.ModuleList包装一下；甚至在定义网络时，网络的一个attribute是一个list, list里面是一个或者多个子网络Module类别，也依然需要用nn.ModuleList替换掉这个普通的list，这样才能将模型参数和子网络模型参数顺利被优化器识别**。否则，运行时不会报错，但是没有被注册的参数将不会被训练！并且，只有被正确注册之后，我们用model.cuda()，这些参数才会被自动迁移到GPU上，否则只会停留在CPU上。
 
 ## 2\. nn.ModuleList可以由多维下标索引，但用嵌套的list初始化时需注意
 
-注意： 比如下面self.outs定义了具有二维索引的modulelist，需要注意的是，内层list也要加nn.ModuleList包装，这样内层list内部就是可迭代的Module subclass对象， 否则内层就是普通的list，不满足输入参数的类型要求，会报错。
+注意： 比如下面self.outs定义了具有二维索引的modulelist，需要注意的是，内层list也要加nn.ModuleList包装，这样内层list内部就是可迭代的Module subclass对象， **否则内层就是普通的list，不满足输入参数的类型要求**，pytorch不能正确识别它们是可训练的模型参数，会报错。
 
     class PoseNet(nn.Module):
         def __init__(self, nstack, inp_dim, oup_dim, bn=False, increase=128, **kwargs):
@@ -88,13 +88,20 @@ categories: 科研
     
         add_nodes(var.grad_fn)
         return dot
-    
-    # plot the model
-    # net = PoseNet(nstack=4, inp_dim=256, oup_dim=68)
-    # x = Variable(torch.randn(1, 3, 512, 512))  # x的shape为(batch，channels，height，width)
-    # y = net(x)
-    # g = make_dot(y)
-    # g.view()
+
+
+使用以上代码的例子
+
+```
+# plot the model
+# net = PoseNet(nstack=4, inp_dim=256, oup_dim=68)
+# x = Variable(torch.randn(1, 3, 512, 512))  # x的shape为(batch，channels，height，width)
+# y = net(x)
+# g = make_dot(y)
+# g.view()
+```
+
+
 
 ## 2\. 类似于keras, 打印网络每层输出的形状shape
 
@@ -128,31 +135,35 @@ Improved visualization tool of [torchsummary](https://github.com/sksq96/pytorch-
             x = F.dropout(x, training=self.training)
             x = self.fc2(x)
             return F.log_softmax(x, dim=1)
-    
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
-    model = Net().to(device)
-    
-    summary(model, (1, 28, 28))
-    
-    >>>>>:
-    ----------------------------------------------------------------
-            Layer (type)               Output Shape         Param #
-    ================================================================
-                Conv2d-1           [-1, 10, 24, 24]             260
-                Conv2d-2             [-1, 20, 8, 8]           5,020
-             Dropout2d-3             [-1, 20, 8, 8]               0
-                Linear-4                   [-1, 50]          16,050
-                Linear-5                   [-1, 10]             510
-    ================================================================
-    Total params: 21,840
-    Trainable params: 21,840
-    Non-trainable params: 0
-    ----------------------------------------------------------------
-    Input size (MB): 0.00
-    Forward/backward pass size (MB): 0.06
-    Params size (MB): 0.08
-    Estimated Total Size (MB): 0.15
-    ----------------------------------------------------------------
+
+```
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu") # PyTorch v0.4.0
+model = Net().to(device)
+
+summary(model, (1, 28, 28))
+
+>>>>>:
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 10, 24, 24]             260
+            Conv2d-2             [-1, 20, 8, 8]           5,020
+         Dropout2d-3             [-1, 20, 8, 8]               0
+            Linear-4                   [-1, 50]          16,050
+            Linear-5                   [-1, 10]             510
+================================================================
+Total params: 21,840
+Trainable params: 21,840
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.06
+Params size (MB): 0.08
+Estimated Total Size (MB): 0.15
+----------------------------------------------------------------
+```
+
+
 
 ## 3\. pytorch中layer的输出shape的尺寸取整
 
@@ -355,9 +366,11 @@ SrcX=(dstX+0.5)\* (srcWidth/dstWidth) -0.5
 
 <https://blog.csdn.net/xiaojiajia007/article/details/100150726>
 
-## 10\. 模型的普通类成员变量和Pytorch中自动注册的Parameter或者buffer区别
+## 10\. 注册参数--模型的普通类成员变量和Pytorch中自动注册的Parameter或者buffer区别
 
 <https://zhuanlan.zhihu.com/p/89442276>
+
+同时参考 第一节#网络模型构建中nn.ModuleList
 
 模型中需要保存下来的参数包括两种:
 
@@ -847,4 +860,5 @@ total\_loss+=float(loss)
 例如：
  \# https://github.com/pytorch/pytorch/issues/2421
  \# norm = torch.sqrt((x1 - t1)\*\*2 + (x2 - t2)\*\*2)
- norm = (torch.stack((x1, x2)) - torch.stack((t1, t2))).norm(dim=0)
+
+`norm = (torch.stack((x1, x2)) - torch.stack((t1, t2))).norm(dim=0)`

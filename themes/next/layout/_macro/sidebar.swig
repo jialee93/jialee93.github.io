@@ -14,6 +14,9 @@
         {%- set display_toc = toc.length > 1 and display_toc %}
       {%- endif %}
 
+      <!-- Insert clustrmaps.com, the following single line is inserted by jialee-->
+      <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=a&t=n&d=QL-1Sagpgczc7G2fmX1QXKQOnj-EMUBDxB3pA6RxWIY'></script>
+
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
           {{ __('sidebar.toc') }}
