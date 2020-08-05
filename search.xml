@@ -242,12 +242,18 @@ size_average=False， 求和: 1.0</code></pre>
 <h1 id="pytorch训练数据准备">pytorch训练数据准备</h1>
 <h2 id="dataloader-类">1. DataLoader 类</h2>
 <h3 id="参数说明-摘录自">参数说明 <a href="https://blog.csdn.net/weixin_42236288/article/details/80893882%C2%A0" target="_blank" rel="noopener">摘录自</a></h3>
-<p>1. dataset：加载的数据集(Dataset对象) 2. batch_size：batch size 3. shuffle:：是否将数据打乱 4. sampler： 样本抽样，后续会详细介绍 5. num_workers：使用多进程加载的进程数，0代表不使用多进程 6. collate_fn： 如何将多个样本数据拼接成一个batch，一般使用默认的拼接方式即可 7. pin_memory：是否将数据保存在pin memory区，pin memory中的数据转到GPU会快一些 8. drop_last：dataset中的数据个数可能不是batch_size的整数倍，drop_last为True会将多出来不足一个batch的数据丢弃</p>
+<p>1. dataset：加载的数据集(Dataset对象) 2. batch_size：batch size 3. shuffle:：是否将数据打乱 4. sampler： 样本抽样，后续会详细介绍 5. num_workers：使用多进程加载的进程数，0代表不使用多进程 6. collate_fn： <strong>如何将多个样本数据拼接成一个batch</strong>，一般使用默认的拼接方式即可，即默认调用default_collate，但是如果数据异常往往无法自动处理而报错 7. pin_memory：是否将数据保存在pin memory区，pin memory中的数据转到GPU会快一些 8. drop_last：dataset中的数据个数可能不是batch_size的整数倍，drop_last为True会将多出来不足一个batch的数据丢弃</p>
 <h3 id="对于-pin_memory-的解释摘录自">对于 pin_memory 的解释：<a href="https://oldpan.me/archives/pytorch-to-use-multiple-gpus" target="_blank" rel="noopener">摘录自</a></h3>
 <p><strong>pin_memory就是锁页内存</strong></p>
 <blockquote>
 <p>pin_memory就是锁页内存，创建DataLoader时，设置pin_memory=True，则意味着生成的Tensor数据最开始是属于内存中的锁页内存，这样将内存的Tensor转义到GPU的显存就会更快一些。 主机中的内存，有两种存在方式，一是锁页，二是不锁页，锁页内存存放的内容在任何情况下都不会与主机的虚拟内存进行交换（注：虚拟内存就是硬盘），而不锁页内存在主机内存不足时，数据会存放在虚拟内存中。显卡中的显存全部是锁页内存,当计算机的内存充足的时候，可以设置pin_memory=True。当系统卡住，或者交换内存使用过多的时候，设置pin_memory=False。因为pin_memory与电脑硬件性能有关，pytorch开发者不能确保每一个炼丹玩家都有高端设备，因此pin_memory默认为False。</p>
 </blockquote>
+<h3 id="collate_fn的作用和默认的default_collate">collate_fn的作用，和默认的default_collate</h3>
+<p>这个函数的决定<strong>如何将多个样本数据拼接成一个batch</strong>，一般使用默认的拼接方式即可，即默认调用default_collate，它会自动地把__getitem__生成的单个张量，数字，字符串，列表，字典等进行串联拼接成batch的数据。但是如果数据异常往往无法自动处理而报错。比如如果我们读取图片失败，default_collate自动处理时就会报错：</p>
+<blockquote>
+<p>TypeError: batch must contain tensors, numbers, dicts or lists; found &lt;class 'NoneType'&gt;</p>
+</blockquote>
+<p>这个时候需要靠我们自定义collate_fn，返回的batch数据会自定清理掉不合法的数据，并且我们还可以通过自己的collate_fn自由地对dataloader生产的batch数据做各种选择处理。</p>
 <h2 id="多进程读取hdf5文件支持的不好以及解决办法">2. 多进程读取HDF5文件支持的不好以及解决办法</h2>
 <p>DataLoader中多进程高效处理hdf5文件：</p>
 <p><a href="https://discuss.pytorch.org/t/dataloader-when-num-worker-0-there-is-bug/25643" target="_blank" rel="noopener">摘录自</a></p>
@@ -535,7 +541,7 @@ for i in range(10000):
 <p>详情查看我的另一篇博客：<a href="https://blog.csdn.net/xiaojiajia007/article/details/90115174" target="_blank" rel="noopener" class="uri">https://blog.csdn.net/xiaojiajia007/article/details/90115174</a></p>
 <h2 id="优化器的权值衰减weight_decay项导致的隐蔽bug即是的网络的权值不断减少至0">4. 优化器的权值衰减weight_decay项导致的隐蔽bug，即是的网络的权值不断减少至0</h2>
 <p>摘录自：<a href="https://zhuanlan.zhihu.com/p/91485607" target="_blank" rel="noopener" class="uri">https://zhuanlan.zhihu.com/p/91485607</a></p>
-<p>我们都知道weight_decay指的是权值衰减，（<strong>注意：权值衰减不等价于在原损失的基础上加上一个L2惩罚项！具体说明见下面那条笔记</strong>），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。</p>
+<p>我们都知道weight_decay指的是权值衰减，（<strong>注意：<font color="#dddd00">权值衰减不等价于在原损失的基础上加上一个L2惩罚项！</font> 具体说明见下面那条笔记</strong>），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。</p>
 <p>这次的坑是这样的，在训练一个ResNet50的时候，网络的高层部分layer4暂时没有用到，因此也并不会有梯度回传，于是我就放心地将ResNet50的所有参数都传递给Optimizer进行更新了，想着layer4应该能保持原来的权重不变才对。但是实际上，尽管layer4没有梯度回传，但是weight_decay的作用仍然存在，它使得layer4权值越来越小，趋向于0。后面需要用到layer4的时候，发现输出异常（接近于0），才注意到这个问题的存在。</p>
 <p>虽然这样的情况可能不容易遇到，但是还是要谨慎：暂时不需要更新的权值，一定不要传递给Optimizer，避免不必要的麻烦。</p>
 <h2 id="l2正则不等于权值衰减">5. L2正则不等于权值衰减</h2>
@@ -1187,8 +1193,10 @@ for i in range(10000):
 <p>There are many boys playing basketball. 那里有许多男孩正在打篮球。</p>
 <p><strong>There is a boy standing under the tree</strong>.大树下有个男孩。</p>
 <h2 id="一些可以提升逼格的高级词汇">34. 一些可以提升逼格的高级词汇</h2>
-<p>said: adj, 上述的,用来替换mentioned above</p>
+<h3 id="said-adj上述的用来替换mentioned-above">said: adj，上述的，用来替换mentioned above</h3>
 <p>e.g. Clicking on the "LaTeXiT" button on the bottom right will produce <strong>said </strong>formula in the viewer</p>
+<h3 id="concretely-adv具体地用来替换频繁使用to-be-specific">concretely: adv，具体地，用来替换频繁使用to be specific</h3>
+<p>e.g. (More) Concretely, it also means that women are more likely to have</p>
 <h2 id="based-on-与-on-the-basis-of用法不同">35. based on 与 on the basis of用法不同</h2>
 <p><a href="https://wallaceediting.cn/blog/progress/grammar-usage/%E5%A6%82%E4%BD%95%E4%BE%9D%E7%85%A7%E6%9C%9F%E5%88%8A%E8%A7%84%E5%AE%9A%E6%AD%A3%E7%A1%AE%E4%BD%BF%E7%94%A8based-on%E4%B8%8Eon-the-basis-of.html" target="_blank" rel="noopener">原文</a></p>
 <p>based on不能替换according to，而 on the basis of能替换according to。</p>
