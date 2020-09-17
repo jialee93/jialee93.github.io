@@ -58,7 +58,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190529105226461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019052910525070.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-01-28T04:11:44.000Z">
-<meta property="article:modified_time" content="2020-09-17T04:38:42.434Z">
+<meta property="article:modified_time" content="2020-09-17T04:40:10.102Z">
 <meta property="article:author" content="Jia Li">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -246,7 +246,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-17 12:38:42" itemprop="dateModified" datetime="2020-09-17T12:38:42+08:00">2020-09-17</time>
+                <time title="Modified: 2020-09-17 12:40:10" itemprop="dateModified" datetime="2020-09-17T12:40:10+08:00">2020-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -325,7 +325,7 @@
 <li>L1使权重稀疏，L2使权重平滑，一句话总结就是：L1会趋向于产生少量的特征，而其他的特征都是0，而L2会选择更多的特征，这些特征都会接近于0</li>
 </ul>
 <hr>
-<h2 id="正则化理解之最大后验概率估计（MAP）"><a href="#正则化理解之最大后验概率估计（MAP）" class="headerlink" title="正则化理解之最大后验概率估计（MAP）"></a>正则化理解之最大后验概率估计（MAP）</h2><h3 id="在最大似然估计中1"><a href="#在最大似然估计中1" class="headerlink" title="在最大似然估计中1"></a>在最大似然估计中<sup><a href="#fn_1" id="reffn_1">1</a></sup></h3><p>设$X$、$y$为训练样本和相应的标签,   $X=\left(x<em>{1}, x</em>{2}, \ldots, x_{n} \right)$  是一组抽样数据，满足独立同分布假设（i.i.d），假设权重$w$是未知的参数，从而求得对数<strong>似然函数</strong>:</p>
+<h2 id="正则化理解之最大后验概率估计（MAP）"><a href="#正则化理解之最大后验概率估计（MAP）" class="headerlink" title="正则化理解之最大后验概率估计（MAP）"></a>正则化理解之最大后验概率估计（MAP）</h2><h3 id="在最大似然估计中1"><a href="#在最大似然估计中1" class="headerlink" title="在最大似然估计中1"></a>在最大似然估计中<sup><a href="#fn_1" id="reffn_1">1</a></sup></h3><p>设$X$、$y$为训练样本和相应的标签,   $ X=\left(x<em>{1}, x</em>{2}, \ldots, x_{n} \right) $  是一组抽样数据，满足独立同分布假设（i.i.d），假设权重$w$是未知的参数，从而求得对数<strong>似然函数</strong>:</p>
 <script type="math/tex; mode=display">
 \operatorname{MLP}=l(w)=\log [P(y | X ; w)]=\log \left[\prod_{i} P\left(y^{i} | x^{i} ; w\right)\right]</script><p>通过假设$y^{i}$的不同概率分布，即可得到不同的模型（即变成已知模型形式，拟合模型参数的问题，<font color="#000066">w的写法是前面加分号，表示它是某一固定参数值，而不是概率条件！</font>）。例如若假设 $y^{i} \sim N\left(w^{T} x^{i}, \sigma^{2}\right)$ 的高斯分布（$x^{i}$也是一系列随机向量，随机向量的每个分量都对$y^{i}$有影响，若随机向量的维度很大，可以认为$y^{i}$服从正态分布，而一般正态分布可以转化成标准正态分布求解），则有：</p>
 <script type="math/tex; mode=display">
