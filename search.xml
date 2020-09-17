@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>编程刷题</title>
+    <title>算法刷题</title>
     <url>/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/</url>
     <content><![CDATA[<h1 id="OJ系统使用"><a href="#OJ系统使用" class="headerlink" title="OJ系统使用"></a>OJ系统使用</h1><h2 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h2><h3 id="stdin-readline输入"><a href="#stdin-readline输入" class="headerlink" title="stdin.readline输入"></a>stdin.readline输入</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        line = sys.stdin.readline().strip()  <span class="comment"># 不像input自动去除\n，这里需要用手动strip去除换行符</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> line:  <span class="comment"># 遇到数据结尾跳出</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        lines = line.split()  <span class="comment"># 变成列表</span></span><br><span class="line">        print(int(lines[<span class="number">0</span>]) + int(lines[<span class="number">1</span>]))</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#print(lines)</span></span><br></pre></td></tr></table></figure>
 <h3 id="stdin-readlines一次性输入"><a href="#stdin-readlines一次性输入" class="headerlink" title="stdin.readlines一次性输入"></a>stdin.readlines一次性输入</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">lines=sys.stdin.readlines()  <span class="comment"># 一次性读完文件</span></span><br><span class="line">print(lines)</span><br></pre></td></tr></table></figure>
@@ -183,11 +183,11 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 </blockquote>
 <p>定义状态变量（使用的数组元素的意义）<strong>V(i, j)</strong> 为当前包的容量为 j （也就是已经挑选的物品总重量不超过 j ），已经决策了前 i 个物品是否放入后的最佳策略所对应的<strong>价值</strong>。如果还不明白这个含义，那换一句表述：该状态变量表示在前 i 件物品中选择若干件放在可用容量为 j 的背包中（<strong>这个背包的容量指的是我们使用的背包最大容量，不一定把包装满</strong>），可以取得的最大价值。</p>
 <p><strong>求解</strong></p>
-<p>设包的最大容量为C，每一件物品的重量为 $w<em>{i}$，其价值为 $p</em>{i}$，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
+<p>设包的最大容量为C，每一件物品的重量为 $w<em>{i}$ ，其价值为 $p</em>{i}$ ，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
 <ol>
-<li><p>包的容量小于该物品的重量 $\ j&lt;w_{i}$ ，此物品不能放入包。则此时对前 i 个物品处理的最佳策略对应的价值和前 i-1 个物品和包容量为 j 的决策结果的最优值相同，即  $\ V(i, j)= V(i-1, j)$</p>
+<li><p>包的容量小于该物品的重量  $j&lt;w_{i}$  ，此物品不能放入包。则此时对前 i 个物品处理的最佳策略对应的价值和前 i-1 个物品和包容量为 j 的决策结果的最优值相同，即  $\ V(i, j)= V(i-1, j)$</p>
 </li>
-<li><p>包的容量大于当前物品重量 $j&gt;=w<em>{i}$ ，包可以放下此物品。根据我们定义的状态变量<strong>V(i, j)</strong> 的含义，<font color="#dd00dd">当包容量为j时，最优策略可能并没有放入第i个物品，即不一定非要把包全部填满才能达到价值最大。</font>那么对于第i个物品，我们有两种可能的决策，放入和不放入。**也就是说 $V(i,j)$ 这个问题显然和 $V(i-1, j-w</em>{i})$ 和 $V(i-1, j)$这两个子问题有关**。不要忘记动态规划其实就是在<font color="#00dd00">逐步填写表，表填完了，最优解也就得到了。</font></p>
+<li><p>包的容量大于当前物品重量  $j&gt;=w<em>{i}$  ，包可以放下此物品。根据我们定义的状态变量<strong>V(i, j)</strong> 的含义，<font color="#dd00dd">当包容量为j时，最优策略可能并没有放入第i个物品，即不一定非要把包全部填满才能达到价值最大。</font>那么对于第i个物品，我们有两种可能的决策，放入和不放入。**也就是说  $ V(i,j)$  这个问题显然和  $ V(i-1, j-w</em>{i})$  和  $ V(i-1, j)$ 这两个子问题有关**。不要忘记动态规划其实就是在<font color="#00dd00">逐步填写表，表填完了，最优解也就得到了。</font></p>
 <p>例如下图中，我们有3种物品，他们的重量和价格分别是1, 2, 3 kg和60, 100, 120，而包的最大容量为5。</p>
 <p><img src="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120007.png" alt="image-20200830103029967" style="zoom:50%;" /></p>
 <ul>
@@ -196,7 +196,7 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 <li><p>放入当前第 i 个商品的话 $V(i, j)= V(i-1, j)+p_{i}$。</p>
 </li>
 </ul>
-<p>那么我们选择当前两种决策中最优的那个，即 $V(i, j)= max{V(i-1, j), V(i-1, j-w<em>{i})+p</em>{i}}$ 。而只有当 $V(i, j)= V(i-1, j-w<em>{i})+p</em>{i}$时，才有“取第 i 件物品”发生。</p>
+<p>那么我们选择当前两种决策中最优的那个，即  $ V(i, j)= max{V(i-1, j), V(i-1, j-w<em>{i})+p</em>{i}}$  。而只有当  $V(i, j)= V(i-1, j-w<em>{i})+p</em>{i}$ 时，才有“取第 i 件物品”发生。</p>
 </li>
 </ol>
 <p>现在我们知道了最大价值，但还不知道由哪些商品组成，故要根据最优解回溯解的构成。</p>
@@ -250,7 +250,6 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
         <category>找工作</category>
       </categories>
       <tags>
-        <tag>编程</tag>
         <tag>算法</tag>
       </tags>
   </entry>
@@ -1380,64 +1379,56 @@ y=\frac{x-\mathrm{E}[x]}{\sqrt{\operatorname{Var}[x]+\epsilon}} * \gamma+\beta</
     <title>L1，L2正则化的理解</title>
     <url>/2020/01/28/L1%E5%92%8CL2%E6%AD%A3%E5%88%99%E5%8C%96%E7%9A%84%E7%90%86%E8%A7%A3/</url>
     <content><![CDATA[<p>摘录自：</p>
-<p>https://zhuanlan.zhihu.com/p/35356992</p>
-<p>https://zhuanlan.zhihu.com/p/29360425</p>
+<p><a href="https://zhuanlan.zhihu.com/p/35356992" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/35356992</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/29360425" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/29360425</a></p>
 <a id="more"></a>
-<h2 id="正则化理解之结构最小化">正则化理解之结构最小化</h2>
-<h3 id="首先给出一个例子解释l1的作用可以使得模型获得稀疏解">首先给出一个例子解释<strong>L1的作用可以使得模型获得稀疏解</strong></h3>
-<p><a href="https://blog.csdn.net/xiaojiajia007/article/details/90611838" target="_blank" rel="noopener">点击查看：L1正则能够使得模型的解稀疏</a> <img src="https://img-blog.csdnimg.cn/20190529105352198.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /></p>
+<h2 id="正则化理解之结构最小化"><a href="#正则化理解之结构最小化" class="headerlink" title="正则化理解之结构最小化"></a>正则化理解之结构最小化</h2><h3 id="首先给出一个例子解释L1的作用可以使得模型获得稀疏解"><a href="#首先给出一个例子解释L1的作用可以使得模型获得稀疏解" class="headerlink" title="首先给出一个例子解释L1的作用可以使得模型获得稀疏解"></a>首先给出一个例子解释<strong>L1的作用可以使得模型获得稀疏解</strong></h3><p><a href="https://blog.csdn.net/xiaojiajia007/article/details/90611838" target="_blank" rel="noopener">点击查看：L1正则能够使得模型的解稀疏</a><br><img src="https://img-blog.csdnimg.cn/20190529105352198.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <p><strong>正则化之所以能够降低过拟合的原因在于，正则化是结构风险最小化的一种策略实现。</strong></p>
 <p>给loss function加上正则化项，能使得新得到的优化目标函数h = f+normal，需要在f和normal中做一个权衡（trade-off），如果还像原来只优化f的情况下，那可能得到一组解比较复杂，使得正则项normal比较大，那么h就不是最优的，因此可以看出加正则项能让解更加简单，符合奥卡姆剃刀理论，同时也比较符合在偏差和方差（方差表示模型的复杂度）分析中，通过降低模型复杂度，得到更小的泛化误差，降低过拟合程度。</p>
 <p><strong>L1正则化和L2正则化：</strong></p>
 <p>L1正则化就是在loss function后边所加正则项为L1范数，加上L1范数容易得到稀疏解（0比较多）。L2正则化就是loss function后边所加正则项为L2范数的平方，加上L2正则相比于L1正则来说，得到的解比较平滑（不是稀疏），但是同样能够保证解中接近于0（但不是等于0，所以相对平滑）的维度比较多，降低模型的复杂度。</p>
-<h3 id="作图说明">作图说明</h3>
-<p><a href="https://blog.csdn.net/liangdong2014/article/details/79517638" target="_blank" rel="noopener">摘录自</a></p>
-<p><img src="https://img-blog.csdnimg.cn/20190529163213574.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" /> <strong>从等高线和取值空间的交点可以看到L1更容易倾向一个权重偏大一个权重为0。L2更容易倾向权重都较小。</strong></p>
+<h3 id="作图说明"><a href="#作图说明" class="headerlink" title="作图说明"></a>作图说明</h3><p><a href="https://blog.csdn.net/liangdong2014/article/details/79517638" target="_blank" rel="noopener">摘录自</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20190529163213574.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><strong>从等高线和取值空间的交点可以看到L1更容易倾向一个权重偏大一个权重为0。L2更容易倾向权重都较小。</strong></p>
 <p>而通过求导数可以看出，对于两种正则带来的梯度更新：</p>
 <ul>
 <li>L1减少的是一个常量，L2减少的是权重的固定比例</li>
 <li>孰快孰慢取决于权重本身的大小，权重刚大时可能L2快，较小时L1快</li>
 <li>L1使权重稀疏，L2使权重平滑，一句话总结就是：L1会趋向于产生少量的特征，而其他的特征都是0，而L2会选择更多的特征，这些特征都会接近于0</li>
 </ul>
-<hr />
-<h2 id="正则化理解之最大后验概率估计map">正则化理解之最大后验概率估计（MAP）</h2>
-<h3 id="在最大似然估计中1">在最大似然估计中<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></h3>
-<p>设<span class="math inline">\(X\)</span>、<span class="math inline">\(y\)</span>为训练样本和相应的标签, $ X=( x_{1}, x_{2}, , x_{n} ) $ 是一组抽样数据，满足独立同分布假设（i.i.d），假设权重<span class="math inline">\(w\)</span>是未知的参数，从而求得对数<strong>似然函数</strong>: <span class="math display">\[
-\operatorname{MLP}=l(w)=\log [P(y | X ; w)]=\log \left[\prod_{i} P\left(y^{i} | x^{i} ; w\right)\right]
-\]</span> 通过假设<span class="math inline">\(y^{i}\)</span>的不同概率分布，即可得到不同的模型（即变成已知模型形式，拟合模型参数的问题，<font color="#000066">w的写法是前面加分号，表示它是某一固定参数值，而不是概率条件！</font>）。例如若假设 <span class="math inline">\(y^{i} \sim N\left(w^{T} x^{i}, \sigma^{2}\right)\)</span> 的高斯分布（<span class="math inline">\(x^{i}\)</span>也是一系列随机向量，随机向量的每个分量都对<span class="math inline">\(y^{i}\)</span>有影响，若随机向量的维度很大，可以认为<span class="math inline">\(y^{i}\)</span>服从正态分布，而一般正态分布可以转化成标准正态分布求解），则有： <span class="math display">\[
-l(w)=\log \left[\prod_{i} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(y^{i}-w^{T} x^{i}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{i}\left(y^{i}-w^{T} x^{i}\right)^{2}+C
-\]</span> 式子中<span class="math inline">\(C\)</span>是常数项，常数项和系数项不影响求最大值，因而可令<span class="math inline">\(J(w ; X, y)=-l(w)\)</span>即可得到线性回归的代价函数。这里我们可以看到，假设<span class="math inline">\(y^{i}\)</span> <font color=purple face=bold>服从正态分布的极大似然估计方法和均方误差最小化求解线性回归的结果是一样的！</font></p>
-<h3 id="在最大后验概率估计中">在最大后验概率估计中</h3>
-<p>将权重<span class="math inline">\(w\)</span>看作随机变量，也具有某种分布，从而有： <span class="math display">\[
-P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac { P(X)P(y|w,X)P(w) }{ P(X,y) } \propto P(y|X,w)P(w)
-\]</span> 上面式子中<span class="math inline">\(P(X,y)\)</span>等对于特定问题已经是固定值了，与<span class="math inline">\(w\)</span>无关，所以求的<span class="math inline">\(P(w|X,y)\)</span>正比于<span class="math inline">\(P(y|X,w)P(w)\)</span>。 那我们利用最大后验概率估计求参数 <span class="math inline">\(w\)</span> 的时候，同样取对数有<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>： <span class="math display">\[
-\operatorname{MAP}=\log P(y | X, w) P(w)=\log P(y | X, w)+\log P(w)
-\]</span> 可以看出后验概率函数为在似然函数的基础上增加了一项 <span class="math inline">\(\log P(w)\)</span>。<span class="math inline">\(P(w)\)</span>的意义是对权重系数<span class="math inline">\(w\)</span>的概率分布的先验假设,在收集到训练样本{<span class="math inline">\(X,y\)</span>}后，则可根据w在{<span class="math inline">\(X,y\)</span>}下的后验概率对<span class="math inline">\(w\)</span>进行修正，从而可以对<span class="math inline">\(w\)</span>更好地估计。</p>
+<hr>
+<h2 id="正则化理解之最大后验概率估计（MAP）"><a href="#正则化理解之最大后验概率估计（MAP）" class="headerlink" title="正则化理解之最大后验概率估计（MAP）"></a>正则化理解之最大后验概率估计（MAP）</h2><h3 id="在最大似然估计中1"><a href="#在最大似然估计中1" class="headerlink" title="在最大似然估计中1"></a>在最大似然估计中<sup><a href="#fn_1" id="reffn_1">1</a></sup></h3><p>设$X$、$y$为训练样本和相应的标签,  $X=\left( x<em>{1}, x</em>{2}, \ldots, x_{n} \right) $ 是一组抽样数据，满足独立同分布假设（i.i.d），假设权重$w$是未知的参数，从而求得对数<strong>似然函数</strong>:</p>
+<script type="math/tex; mode=display">
+\operatorname{MLP}=l(w)=\log [P(y | X ; w)]=\log \left[\prod_{i} P\left(y^{i} | x^{i} ; w\right)\right]</script><p>通过假设$y^{i}$的不同概率分布，即可得到不同的模型（即变成已知模型形式，拟合模型参数的问题，<font color="#000066">w的写法是前面加分号，表示它是某一固定参数值，而不是概率条件！</font>）。例如若假设 $y^{i} \sim N\left(w^{T} x^{i}, \sigma^{2}\right)$ 的高斯分布（$x^{i}$也是一系列随机向量，随机向量的每个分量都对$y^{i}$有影响，若随机向量的维度很大，可以认为$y^{i}$服从正态分布，而一般正态分布可以转化成标准正态分布求解），则有：</p>
+<script type="math/tex; mode=display">
+l(w)=\log \left[\prod_{i} \frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(y^{i}-w^{T} x^{i}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{i}\left(y^{i}-w^{T} x^{i}\right)^{2}+C</script><p>式子中$C$是常数项，常数项和系数项不影响求最大值，因而可令$J(w ; X, y)=-l(w)$即可得到线性回归的代价函数。这里我们可以看到，假设$y^{i}$ <font color=purple face=bold>服从正态分布的极大似然估计方法和均方误差最小化求解线性回归的结果是一样的！</font> </p>
+<h3 id="在最大后验概率估计中"><a href="#在最大后验概率估计中" class="headerlink" title="在最大后验概率估计中"></a>在最大后验概率估计中</h3><p>将权重$w$看作随机变量，也具有某种分布，从而有：</p>
+<script type="math/tex; mode=display">
+P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac { P(X)P(y|w,X)P(w) }{ P(X,y) } \propto P(y|X,w)P(w)</script><p>上面式子中$P(X,y)$等对于特定问题已经是固定值了，与$w$无关，所以求的$P(w|X,y)$正比于$P(y|X,w)P(w)$。<br>那我们利用最大后验概率估计求参数 $w$ 的时候，同样取对数有<sup><a href="#fn_2" id="reffn_2">2</a></sup> <sup><a href="#fn_3" id="reffn_3">3</a></sup>：</p>
+<script type="math/tex; mode=display">
+\operatorname{MAP}=\log P(y | X, w) P(w)=\log P(y | X, w)+\log P(w)</script><p>可以看出后验概率函数为在似然函数的基础上增加了一项 $\log P(w)$。$P(w)$的意义是对权重系数$w$的概率分布的先验假设,在收集到训练样本{$X,y$}后，则可根据w在{$X,y$}下的后验概率对$w$进行修正，从而可以对$w$更好地估计。</p>
 <blockquote>
 <p><strong>这里补充一下周志华老师的西瓜书149页的知识：</strong></p>
 <p>概率学派认为参数虽然未知，但确实是客观存在的固定值，而贝叶斯学派则认为参数是未观察到的随机变量，其本身也有分布。因此可以先假定参数服从某个先验分布（没有观测到任何当前的数据前的先验知识），然后基于当前的观测值来计算参数的后验分布。</p>
 </blockquote>
-<h3 id="若假设-w_j-的先验分布为0均值的高斯分布即-w_j-sim-nleft0-sigma2right">若假设 $ w_{j}$ 的先验分布为0均值的高斯分布，即 <span class="math inline">\(w_{j} \sim N\left(0, \sigma^{2}\right)\)</span>，</h3>
-<p>则有： <span class="math display">\[
-\log P(w)=\log \prod_{j} P\left(w_{j}\right)=\log \prod_{j}\left[\frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(w_{j}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{j} w_{j}^{2}+C^{\prime}
-\]</span> <img src="https://img-blog.csdnimg.cn/20190529105226461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="高斯分布" /> 可以看到，在高斯分布下<span class="math inline">\(\log{P(w)}\)</span>的效果等价于在代价函数中增加<span class="math inline">\(L_{2}\)</span>正则项，也就是说<strong>在MAP中使用一个高斯分布的先验等价于在MLE中采用L2的正则</strong>。从上图可以看出<span class="math inline">\(w\)</span>值取到0附近的概率特别大。也就是说我们提前先假设了<span class="math inline">\(w\)</span>的解更容易取到0的附近。</p>
-<h3 id="若假设w_j服从均值为0参数为a的拉普拉斯分布即pleftw_jrightfrac12-a-efrac-leftw_jrighta">若假设<span class="math inline">\(w_{j}\)</span>服从均值为0、参数为a的拉普拉斯分布，即：<span class="math inline">\(P\left(w_{j}\right)=\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}\)</span></h3>
-<p>则有： <span class="math display">\[
-\log P(w)=\log \prod_{j} \frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}=-\frac{1}{a} \sum_{j}\left|w_{j}\right|+C^{\prime}
-\]</span> <img src="https://img-blog.csdnimg.cn/2019052910525070.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="拉普拉斯分布" /> 可以看到，在拉普拉斯分布下<span class="math inline">\(\log{P(w)}\)</span>的效果等价于在代价函数中增加<span class="math inline">\(L_{1}\)</span>正则项。从下图可以看出<span class="math inline">\(w\)</span>值取到0的概率特别大。也就是说我们提前先假设了<span class="math inline">\(w\)</span>的解更容易取到0。</p>
-<h3 id="我们得到对于l_1l_2正则化的一种最大后验角度理解">我们得到对于<span class="math inline">\(L_{1}\)</span>、<span class="math inline">\(L_{2}\)</span>正则化的一种最大后验角度理解</h3>
-<ul>
-<li><span class="math inline">\(L_{1}\)</span>正则化可通过假设权重<span class="math inline">\(w\)</span> 的先验分布为拉普拉斯分布，由最大后验概率估计导出</li>
-<li><span class="math inline">\(L_{2}\)</span>正则化可通过假设权重<span class="math inline">\(w\)</span> 的先验分布为高斯分布，由最大后验概率估计导出</li>
+<h3 id="若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，"><a href="#若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，" class="headerlink" title="若假设 $ w{j}$ 的先验分布为0均值的高斯分布，即 $w{j} \sim N\left(0, \sigma^{2}\right)$，"></a>若假设 $ w<em>{j}$ 的先验分布为0均值的高斯分布，即 $w</em>{j} \sim N\left(0, \sigma^{2}\right)$，</h3><p>则有：</p>
+<script type="math/tex; mode=display">
+\log P(w)=\log \prod_{j} P\left(w_{j}\right)=\log \prod_{j}\left[\frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(w_{j}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{j} w_{j}^{2}+C^{\prime}</script><p><img src="https://img-blog.csdnimg.cn/20190529105226461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="高斯分布"><br>可以看到，在高斯分布下$\log{P(w)}$的效果等价于在代价函数中增加$L_{2}$正则项，也就是说<strong>在MAP中使用一个高斯分布的先验等价于在MLE中采用L2的正则</strong>。从上图可以看出$w$值取到0附近的概率特别大。也就是说我们提前先假设了$w$的解更容易取到0的附近。</p>
+<h3 id="若假设-w-j-服从均值为0、参数为a的拉普拉斯分布，即：-P-left-w-j-right-frac-1-2-a-e-frac-left-w-j-right-a"><a href="#若假设-w-j-服从均值为0、参数为a的拉普拉斯分布，即：-P-left-w-j-right-frac-1-2-a-e-frac-left-w-j-right-a" class="headerlink" title="若假设$w{j}$服从均值为0、参数为a的拉普拉斯分布，即：$P\left(w{j}\right)=\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}$"></a>若假设$w<em>{j}$服从均值为0、参数为a的拉普拉斯分布，即：$P\left(w</em>{j}\right)=\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}$</h3><p>则有：</p>
+<script type="math/tex; mode=display">
+\log P(w)=\log \prod_{j} \frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}=-\frac{1}{a} \sum_{j}\left|w_{j}\right|+C^{\prime}</script><p><img src="https://img-blog.csdnimg.cn/2019052910525070.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="拉普拉斯分布"><br>可以看到，在拉普拉斯分布下$\log{P(w)}$的效果等价于在代价函数中增加$L_{1}$正则项。从下图可以看出$w$值取到0的概率特别大。也就是说我们提前先假设了$w$的解更容易取到0。</p>
+<h3 id="我们得到对于-L-1-、-L-2-正则化的一种最大后验角度理解"><a href="#我们得到对于-L-1-、-L-2-正则化的一种最大后验角度理解" class="headerlink" title="我们得到对于$L{1}$、$L{2}$正则化的一种最大后验角度理解"></a>我们得到对于$L<em>{1}$、$L</em>{2}$正则化的一种最大后验角度理解</h3><ul>
+<li>$L_{1}$正则化可通过假设权重$w$ 的先验分布为拉普拉斯分布，由最大后验概率估计导出</li>
+<li>$L_{2}$正则化可通过假设权重$w$ 的先验分布为高斯分布，由最大后验概率估计导出</li>
 </ul>
-<section class="footnotes" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1" role="doc-endnote"><p><span class="math inline">\(\arg \max \sum_{i=1}^{n} \log P\left(x_{i} ; \theta\right)\)</span>。对于离散的用分布律P，对于连续型的变量在数学中已知模型表达式则用概率密度函数f<a href="#fnref1" class="footnote-back" role="doc-backlink">↩</a></p></li>
-<li id="fn2" role="doc-endnote"><p>辨析：MLP（Maximum A Posteriori）是最大后验概率估计（贝叶斯学派）； MAP（Maximum Likelihood Estimation）是最大似然估计（概率学派）。<a href="https://zhuanlan.zhihu.com/p/32480810" target="_blank" rel="noopener">请参考</a><a href="#fnref2" class="footnote-back" role="doc-backlink">↩</a></p></li>
-<li id="fn3" role="doc-endnote"><p>这里应该是省略的写法，比如<span class="math inline">\(P(w|X,y)\)</span>，里面三个都是随机变量，实际上对于一个具体的训练样本完整的写法应该是<span class="math inline">\(P(w=a|X=x1,Y=y1)\)</span><a href="#fnref3" class="footnote-back" role="doc-backlink">↩</a></p></li>
-</ol>
-</section>
+<blockquote id="fn_1">
+<sup>1</sup>. $\arg \max \sum<em>{i=1}^{n} \log P\left(x</em>{i} ; \theta\right)$。对于离散的用分布律P，对于连续型的变量在数学中已知模型表达式则用概率密度函数f<a href="#reffn_1" title="Jump back to footnote [1] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_2">
+<sup>2</sup>. 辨析：MLP（Maximum A Posteriori）是最大后验概率估计（贝叶斯学派）； MAP（Maximum Likelihood Estimation）是最大似然估计（概率学派）。<a href="https://zhuanlan.zhihu.com/p/32480810" target="_blank" rel="noopener">请参考</a><a href="#reffn_2" title="Jump back to footnote [2] in the text."> &#8617;</a>
+</blockquote>
+<blockquote id="fn_3">
+<sup>3</sup>. 这里应该是省略的写法，比如$P(w|X,y)$，里面三个都是随机变量，实际上对于一个具体的训练样本完整的写法应该是$P(w=a|X=x1,Y=y1)$<a href="#reffn_3" title="Jump back to footnote [3] in the text."> &#8617;</a>
+</blockquote>
 ]]></content>
       <categories>
         <category>科研</category>

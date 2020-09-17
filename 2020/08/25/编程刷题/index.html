@@ -48,7 +48,7 @@
 
   <meta name="description" content="OJ系统编程笔试">
 <meta property="og:type" content="article">
-<meta property="og:title" content="编程刷题">
+<meta property="og:title" content="算法刷题">
 <meta property="og:url" content="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/index.html">
 <meta property="og:site_name" content="小佳の博客 Jia&#39;s Blog">
 <meta property="og:description" content="OJ系统编程笔试">
@@ -57,9 +57,8 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200917115650.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120017.png">
 <meta property="article:published_time" content="2020-08-25T08:45:42.000Z">
-<meta property="article:modified_time" content="2020-09-17T04:09:06.827Z">
+<meta property="article:modified_time" content="2020-09-17T04:24:41.071Z">
 <meta property="article:author" content="Jia Li">
-<meta property="article:tag" content="编程">
 <meta property="article:tag" content="算法">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120007.png">
@@ -76,7 +75,7 @@
   };
 </script>
 
-  <title>编程刷题 | 小佳の博客 Jia's Blog</title>
+  <title>算法刷题 | 小佳の博客 Jia's Blog</title>
   
 
 
@@ -229,7 +228,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          编程刷题
+          算法刷题
         </h1>
 
         <div class="post-meta">
@@ -246,7 +245,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-09-17 12:09:06" itemprop="dateModified" datetime="2020-09-17T12:09:06+08:00">2020-09-17</time>
+                <time title="Modified: 2020-09-17 12:24:41" itemprop="dateModified" datetime="2020-09-17T12:24:41+08:00">2020-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -261,7 +260,7 @@
             </span>
 
           
-            <span id="/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="编程刷题" title="Views">
+            <span id="/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="算法刷题" title="Views">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -487,11 +486,11 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 </blockquote>
 <p>定义状态变量（使用的数组元素的意义）<strong>V(i, j)</strong> 为当前包的容量为 j （也就是已经挑选的物品总重量不超过 j ），已经决策了前 i 个物品是否放入后的最佳策略所对应的<strong>价值</strong>。如果还不明白这个含义，那换一句表述：该状态变量表示在前 i 件物品中选择若干件放在可用容量为 j 的背包中（<strong>这个背包的容量指的是我们使用的背包最大容量，不一定把包装满</strong>），可以取得的最大价值。</p>
 <p><strong>求解</strong></p>
-<p>设包的最大容量为C，每一件物品的重量为 $w<em>{i}$，其价值为 $p</em>{i}$，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
+<p>设包的最大容量为C，每一件物品的重量为 $w<em>{i}$ ，其价值为 $p</em>{i}$ ，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
 <ol>
-<li><p>包的容量小于该物品的重量 $\ j&lt;w_{i}$ ，此物品不能放入包。则此时对前 i 个物品处理的最佳策略对应的价值和前 i-1 个物品和包容量为 j 的决策结果的最优值相同，即  $\ V(i, j)= V(i-1, j)$</p>
+<li><p>包的容量小于该物品的重量  $j&lt;w_{i}$  ，此物品不能放入包。则此时对前 i 个物品处理的最佳策略对应的价值和前 i-1 个物品和包容量为 j 的决策结果的最优值相同，即  $\ V(i, j)= V(i-1, j)$</p>
 </li>
-<li><p>包的容量大于当前物品重量 $j&gt;=w<em>{i}$ ，包可以放下此物品。根据我们定义的状态变量<strong>V(i, j)</strong> 的含义，<font color="#dd00dd">当包容量为j时，最优策略可能并没有放入第i个物品，即不一定非要把包全部填满才能达到价值最大。</font>那么对于第i个物品，我们有两种可能的决策，放入和不放入。**也就是说 $V(i,j)$ 这个问题显然和 $V(i-1, j-w</em>{i})$ 和 $V(i-1, j)$这两个子问题有关**。不要忘记动态规划其实就是在<font color="#00dd00">逐步填写表，表填完了，最优解也就得到了。</font></p>
+<li><p>包的容量大于当前物品重量  $j&gt;=w<em>{i}$  ，包可以放下此物品。根据我们定义的状态变量<strong>V(i, j)</strong> 的含义，<font color="#dd00dd">当包容量为j时，最优策略可能并没有放入第i个物品，即不一定非要把包全部填满才能达到价值最大。</font>那么对于第i个物品，我们有两种可能的决策，放入和不放入。**也就是说  $ V(i,j)$  这个问题显然和  $ V(i-1, j-w</em>{i})$  和  $ V(i-1, j)$ 这两个子问题有关**。不要忘记动态规划其实就是在<font color="#00dd00">逐步填写表，表填完了，最优解也就得到了。</font></p>
 <p>例如下图中，我们有3种物品，他们的重量和价格分别是1, 2, 3 kg和60, 100, 120，而包的最大容量为5。</p>
 <p><img src="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120007.png" alt="image-20200830103029967" style="zoom:50%;" /></p>
 <ul>
@@ -500,7 +499,7 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 <li><p>放入当前第 i 个商品的话 $V(i, j)= V(i-1, j)+p_{i}$。</p>
 </li>
 </ul>
-<p>那么我们选择当前两种决策中最优的那个，即 $V(i, j)= max{V(i-1, j), V(i-1, j-w<em>{i})+p</em>{i}}$ 。而只有当 $V(i, j)= V(i-1, j-w<em>{i})+p</em>{i}$时，才有“取第 i 件物品”发生。</p>
+<p>那么我们选择当前两种决策中最优的那个，即  $ V(i, j)= max{V(i-1, j), V(i-1, j-w<em>{i})+p</em>{i}}$  。而只有当  $V(i, j)= V(i-1, j-w<em>{i})+p</em>{i}$ 时，才有“取第 i 件物品”发生。</p>
 </li>
 </ol>
 <p>现在我们知道了最大价值，但还不知道由哪些商品组成，故要根据最优解回溯解的构成。</p>
@@ -582,7 +581,7 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
   </li>
   <li class="post-copyright-link">
     <strong>Post link: </strong>
-    <a href="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" title="编程刷题">https://hellojialee.github.io/2020/08/25/编程刷题/</a>
+    <a href="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" title="算法刷题">https://hellojialee.github.io/2020/08/25/编程刷题/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
@@ -593,7 +592,6 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag"># 编程</a>
               <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
           </div>
 
@@ -699,7 +697,7 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
