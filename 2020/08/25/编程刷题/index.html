@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/flower.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/flower.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/flower-16x16.png">
+  <link rel="mask-icon" href="/images/flower.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('https://hellojialee.github.io').hostname,
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.7.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":true,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="OJ系统编程笔试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编程刷题">
+<meta property="og:url" content="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/index.html">
+<meta property="og:site_name" content="小佳の博客 Jia&#39;s Blog">
+<meta property="og:description" content="OJ系统编程笔试">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120007.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200917115650.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120017.png">
+<meta property="article:published_time" content="2020-08-25T08:45:42.000Z">
+<meta property="article:modified_time" content="2020-09-17T03:59:29.229Z">
+<meta property="article:author" content="Jia Li">
+<meta property="article:tag" content="编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120007.png">
+
+<link rel="canonical" href="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>编程刷题 | 小佳の博客 Jia's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">小佳の博客 Jia's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="Searching..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
+    <link itemprop="mainEntityOfPage" href="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/touxiang1.jpg">
+      <meta itemprop="name" content="Jia Li">
+      <meta itemprop="description" content="Be happy, be healthy!">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小佳の博客 Jia's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          编程刷题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-08-25 16:45:42" itemprop="dateCreated datePublished" datetime="2020-08-25T16:45:42+08:00">2020-08-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-17 11:59:29" itemprop="dateModified" datetime="2020-09-17T11:59:29+08:00">2020-09-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%89%BE%E5%B7%A5%E4%BD%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">找工作</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="编程刷题" title="Views">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine: </span>
+    
+    <a title="valine" href="/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/#comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>21k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>19 mins.</span>
+            </span>
+            <div class="post-description">OJ系统编程笔试</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="OJ系统使用"><a href="#OJ系统使用" class="headerlink" title="OJ系统使用"></a>OJ系统使用</h1><h2 id="输入输出"><a href="#输入输出" class="headerlink" title="输入输出"></a>输入输出</h2><h3 id="stdin-readline输入"><a href="#stdin-readline输入" class="headerlink" title="stdin.readline输入"></a>stdin.readline输入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        line = sys.stdin.readline().strip()  <span class="comment"># 不像input自动去除\n，这里需要用手动strip去除换行符</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> line:  <span class="comment"># 遇到数据结尾跳出</span></span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        lines = line.split()  <span class="comment"># 变成列表</span></span><br><span class="line">        print(int(lines[<span class="number">0</span>]) + int(lines[<span class="number">1</span>]))</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#print(lines)</span></span><br></pre></td></tr></table></figure>
+<h3 id="stdin-readlines一次性输入"><a href="#stdin-readlines一次性输入" class="headerlink" title="stdin.readlines一次性输入"></a>stdin.readlines一次性输入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line">lines=sys.stdin.readlines()  <span class="comment"># 一次性读完文件</span></span><br><span class="line">print(lines)</span><br></pre></td></tr></table></figure>
+<h3 id="list-map输入成int"><a href="#list-map输入成int" class="headerlink" title="list map输入成int"></a>list map输入成int</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data=list(map(int,input().split()))</span><br><span class="line">print(data)</span><br></pre></td></tr></table></figure>
+<h3 id="input-函数循环输入"><a href="#input-函数循环输入" class="headerlink" title="input()函数循环输入"></a>input()函数循环输入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">lines = []</span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        str1 = input()  <span class="comment"># input()会自动把接受字符末尾的\n(换行符)给去掉</span></span><br><span class="line">        <span class="keyword">if</span> str1 == <span class="string">""</span>:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        lines.append(str1)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">print(lines)</span><br><span class="line">print(<span class="string">","</span>.join(lines))  <span class="comment"># 用","分隔lines里面的元素组成字符串</span></span><br></pre></td></tr></table></figure>
+<h3 id="print-函数控制打印后不换号，而是输出空格"><a href="#print-函数控制打印后不换号，而是输出空格" class="headerlink" title="print()函数控制打印后不换号，而是输出空格"></a>print()函数控制打印后不换号，而是输出空格</h3><p>例如：print(x, end=’ ‘)  # 使用end参数控制</p>
+<h2 id="循环输入带来的调试误区"><a href="#循环输入带来的调试误区" class="headerlink" title="循环输入带来的调试误区"></a>循环输入带来的调试误区</h2><p>注意因为循环输入中使用了 <code>except: break</code>导致调试时如果报错运行到了这里直接break，而不是爆出原来的错误，调试的时候应该把这个去除！</p>
+<h1 id="字符串题"><a href="#字符串题" class="headerlink" title="字符串题"></a>字符串题</h1><h2 id="ASCII码"><a href="#ASCII码" class="headerlink" title="ASCII码"></a>ASCII码</h2><p>ord() 函数获取字符的ASCII码， chr()获取ASCII码对应的字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; ord(&#39;A&#39;)</span><br><span class="line">65</span><br><span class="line">&gt;&gt;&gt; ord(&#39;中&#39;)</span><br><span class="line">20013</span><br><span class="line">&gt;&gt;&gt; chr(66)</span><br><span class="line">&#39;B&#39;</span><br><span class="line">&gt;&gt;&gt; chr(25991)</span><br><span class="line">&#39;文&#39;</span><br></pre></td></tr></table></figure>
+<p><strong>UTF-8</strong>是一种 Unicode 的实现方式。对于英语字母，<strong>UTF-8</strong> 编码和 <strong>ASCII</strong> 码是相同的。</p>
+<h2 id="前缀后缀"><a href="#前缀后缀" class="headerlink" title="前缀后缀"></a>前缀后缀</h2><p>使用<strong>startswith() and endswith()</strong>代替切片进行序列前缀或后缀的检查</p>
+<p>比如用<code>if foo.startswith(‘bar’):</code> 会优于 <code>if foo[:3] == ‘bar’:</code></p>
+<p>print(‘-‘ * 80)打印一串‘————————————————————————————————————————‘</p>
+<h2 id="字符串计数"><a href="#字符串计数" class="headerlink" title="字符串计数"></a>字符串计数</h2><p>写出一个程序，接受一个由字母和数字组成的字符串，和一个字符，然后输出输入字符串中含有该字符的个数。不区分大小写。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">line  =input().lower()</span><br><span class="line">m = input().lower()</span><br><span class="line">print( line.count(m))</span><br></pre></td></tr></table></figure>
+<h2 id="最大回文字符子串"><a href="#最大回文字符子串" class="headerlink" title="最大回文字符子串"></a>最大回文字符子串</h2><p>除了暴力循环判断，也可以使用动态规划算法求解</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">longestPalindrome</span><span class="params">(self, s: str)</span> -&gt; str:</span></span><br><span class="line">        n = len(s)</span><br><span class="line">        dp = [[<span class="literal">False</span>] * n <span class="keyword">for</span> _ <span class="keyword">in</span> range(n)]</span><br><span class="line">        ans = <span class="string">""</span></span><br><span class="line">        <span class="comment"># 枚举子串的长度 l+1</span></span><br><span class="line">        <span class="keyword">for</span> l <span class="keyword">in</span> range(n):</span><br><span class="line">            <span class="comment"># 枚举子串的起始位置 i，这样可以通过 j=i+l 得到子串的结束位置</span></span><br><span class="line">            <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">                j = i + l</span><br><span class="line">                <span class="keyword">if</span> j &gt;= len(s):</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                <span class="keyword">if</span> l == <span class="number">0</span>:</span><br><span class="line">                    dp[i][j] = <span class="literal">True</span>  <span class="comment"># 针对长度为1的子串</span></span><br><span class="line">                <span class="keyword">elif</span> l == <span class="number">1</span>:  <span class="comment"># 针对长度为2的子串</span></span><br><span class="line">                    dp[i][j] = (s[i] == s[j])</span><br><span class="line">                <span class="keyword">else</span>:  <span class="comment"># 针对长度大于等于3的子串，其他情形都能最终拆解成这三种情况</span></span><br><span class="line">                    dp[i][j] = (dp[i + <span class="number">1</span>][j - <span class="number">1</span>] <span class="keyword">and</span> s[i] == s[j])</span><br><span class="line">                <span class="keyword">if</span> dp[i][j] <span class="keyword">and</span> l + <span class="number">1</span> &gt; len(ans):</span><br><span class="line">                    ans = s[i:j+<span class="number">1</span>]</span><br><span class="line">        <span class="keyword">return</span> ans</span><br></pre></td></tr></table></figure>
+<h2 id="strip-和-split-区别"><a href="#strip-和-split-区别" class="headerlink" title="strip() 和 split() 区别"></a>strip() 和 split() 区别</h2><p>从英语单词的意义上，</p>
+<p><strong>strip: 脱去，去除</strong> </p>
+<p><strong>split: 分开，分裂</strong></p>
+<p>===================================</p>
+<p>str.split()) 默认去除所有空格符，包括空格，换行\n, 制表符\t ，即(‘\n’, ‘\r’, ‘\t’, ‘ ‘)，<font color="#dd00dd">并且返回切割之后的字符串list</font></p>
+<p>str.strip(‘L’)) 移除字符串<strong>头和尾</strong> 指定的字符（默认为空格或换行符），或给定去除的字符序列，比如此处移除头尾所有L（包括重复L），<font color="#dd00dd">返回的依然是字符串</font></p>
+<p>另外还有str.rstrip用于删除字符串末尾的空白字符，str.lstrip删除左边的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">str = <span class="string">"LLLine1-a\tbcdef\nLine2-abc \nLine4-abcddd"</span></span><br><span class="line">print(str.split())  <span class="comment"># 默认去除所有空格符，包括空格，换行\n, 制表符\t</span></span><br><span class="line">print(str.strip(<span class="string">'L'</span>)) <span class="comment">#移除字符串头尾指定的字符（默认为空格或换行符）或字符序列，比如此处移除头尾所有L（包括重复L）</span></span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[<span class="string">'LLLine1-a'</span>, <span class="string">'bcdef'</span>, <span class="string">'Line2-abc'</span>, <span class="string">'Line4-abcddd'</span>]</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">ine1-a	bcdef</span><br><span class="line">Line2-abc </span><br><span class="line">Line4-abcddd</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="string">'2135432145e'</span></span><br><span class="line">print(a.split(<span class="string">'21'</span>))  <span class="comment"># 21前面为空也会形成一个元素，即空“”</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[<span class="string">''</span>, <span class="string">'3543'</span>, <span class="string">'45e'</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="正则模块re-split"><a href="#正则模块re-split" class="headerlink" title="正则模块re.split"></a>正则模块re.split</h2><p>re.split模块比str.split()函数强大的多！</p>
+<p>我们也可以轻松地指定一个字符范围，像[0-9]代表的含意与\d就是完全一致的：一位数字；同理[a-z0-9A-Z_]也完全等同于\w（如果只考虑英文的话），\w代表 匹配字母或数字或下划线或汉字, \s 匹配任意的空白符</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">s = <span class="string">'1,2,3,4,a,5,6,7\n,8,b,9,10,11,12'</span></span><br><span class="line"></span><br><span class="line">t=re.split(<span class="string">',[a-c],'</span>, s, flags=re.IGNORECASE)</span><br><span class="line">print(t) <span class="comment"># 以 ',a,'或者',b,'或者',c,'为分隔符</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[<span class="string">'1,2,3,4'</span>, <span class="string">'5,6,7\n,8'</span>, <span class="string">'9,10,11,12'</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">y = [x <span class="keyword">for</span> i <span class="keyword">in</span> s.split(<span class="string">',a,'</span>) <span class="keyword">for</span> x <span class="keyword">in</span> i.split(<span class="string">',b,'</span>)]</span><br><span class="line">print(y)</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[<span class="string">'1,2,3,4'</span>, <span class="string">'5,6,7\n,8'</span>, <span class="string">'9,10,11,12'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># re中的split支持多个分隔符，不同分隔符之间用|分开，或者全放在[]中</span></span><br><span class="line">print(re.split(<span class="string">',[a-b],|\n,|10'</span>, s))   <span class="comment"># 单引号</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[<span class="string">'1,2,3,4'</span>, <span class="string">'5,6,7'</span>, <span class="string">'8'</span>, <span class="string">'9,'</span>, <span class="string">',11,12'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># # 两个字符以上切割需要放在 [ ] 中</span></span><br><span class="line">print(re.split(<span class="string">'[89b]'</span>, s))  <span class="comment"># 8, 9, b为分隔符</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line">[<span class="string">'1,2,3,4,a,5,6,7\n,'</span>, <span class="string">','</span>, <span class="string">','</span>, <span class="string">',10,  11, 12'</span>]</span><br></pre></td></tr></table></figure>
+<p>re模块的re.sub 字符替换功能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"></span><br><span class="line">s = <span class="string">'  1,2 3,4,a,5,6,7\n,8,b,9,10,  11, 12  '</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># # 去除字符串中所有引号，空白符，9，a, b</span></span><br><span class="line"><span class="comment">#  substitue成空字符串‘’，也就是把这些模式的字符去除</span></span><br><span class="line">print(re.sub(<span class="string">"['\"','\'','\s', 9, a, b]"</span>, <span class="string">''</span>, s))  <span class="comment"># 注意[]外用双引号！这样包住转移字符时看起来更加简明</span></span><br><span class="line"><span class="comment"># 或者其实好像也不需要有逗号把这些字符分开</span></span><br><span class="line">print(re.sub(<span class="string">"['\"''\'','\s'9ab]"</span>, <span class="string">''</span>, s))</span><br><span class="line"></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="number">12345678101112</span></span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="number">12345678101112</span></span><br></pre></td></tr></table></figure>
+<h2 id="数字转换"><a href="#数字转换" class="headerlink" title="数字转换"></a>数字转换</h2><h3 id="进制转换函数-int-hex-oct"><a href="#进制转换函数-int-hex-oct" class="headerlink" title="进制转换函数 int(), hex(), oct()"></a>进制转换函数 int(), hex(), oct()</h3><p><strong>十六进制 到 十进制</strong></p>
+<p>使用 <strong>int()</strong> 函数 ，<strong>第一个参数是字符串</strong> ‘0Xff’ ,<strong>第二个参数是说明，这个字符串是几进制的数</strong>。  转化的结果是一个十进制数。</p>
+<p>>&gt;&gt; int(‘0xf’,16)<br>15</p>
+<p><strong>二进制 到 十进制</strong></p>
+<p>>&gt;&gt; int(‘10100111110’,2)<br>1342</p>
+<p><strong>八进制 到 十进制</strong></p>
+<p>>&gt;&gt; int(‘17’,8)<br>15</p>
+<p><strong>十进制 转 十六进制</strong></p>
+<p>>&gt;&gt; hex(1033)<br>‘0x409’</p>
+<p><strong>八进制到 十六进制</strong></p>
+<p>就是 八进制先转成 十进制， 再转成 十六进制。</p>
+<p>>&gt;&gt; hex(int(‘17’,8))<br>‘0xf’</p>
+<p><strong>十进制转二进制</strong></p>
+<p>>&gt;&gt; bin(10)<br>‘0b1010’</p>
+<p><strong>十六进制转 二进制</strong></p>
+<p>十六进制-&gt;十进制-&gt;二进制</p>
+<p>>&gt;&gt; bin(int(‘ff’,16))</p>
+<h1 id="数论题"><a href="#数论题" class="headerlink" title="数论题"></a>数论题</h1><h2 id="最大公约数和最小公倍数"><a href="#最大公约数和最小公倍数" class="headerlink" title="最大公约数和最小公倍数"></a>最大公约数和最小公倍数</h2><h3 id="判断是否是质数"><a href="#判断是否是质数" class="headerlink" title="判断是否是质数"></a>判断是否是质数</h3><p>质数又称素数，指在大于1的自然数中，除了1和该数自身外，无法被其他自然数整除的数（也可定义为只有1与该数本身两个正因数的数）</p>
+<p>注意，质数的定义是大于1，所以1不在考虑范围内。2=1*2，只有1和它本身两个因子，所以2是质素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isprime</span><span class="params">(m)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> m == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, int(m**<span class="number">0.5</span>) + <span class="number">1</span>):  <span class="comment"># 注意，一定要加1！   </span></span><br><span class="line">        <span class="keyword">if</span> m % i == <span class="number">0</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">True</span></span><br></pre></td></tr></table></figure>
+<h3 id="更相减损失术和辗转相除法求最大公约数"><a href="#更相减损失术和辗转相除法求最大公约数" class="headerlink" title="更相减损失术和辗转相除法求最大公约数"></a>更相减损失术和辗转相除法求最大公约数</h3><p><strong>原理</strong></p>
+<p>首先证明更相减损失术：a｜b，a｜c，则a｜(b+c) ：</p>
+<p>b=a×k（k∈Z），c=a×l（l∈Z） 则，b+c=ak+al=a（k+l），其中k+l∈Z 命题得证。</p>
+<p>也就是说gcd(b, c) = gcd(c+b, b) = gcd(c-b, b) = a。</p>
+<p>容易看出辗转相除法是更相减损失术的快速计算方法</p>
+<p><strong>代码</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gcd</span><span class="params">(m, n)</span>:</span></span><br><span class="line">  <span class="string">"""辗转相除法"""</span></span><br><span class="line">    a = max(m, n)</span><br><span class="line">    b = min(m, n)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> a % b == <span class="number">0</span>:</span><br><span class="line">        <span class="keyword">return</span> b</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> gcd(b, a % b)</span><br><span class="line"></span><br><span class="line">print(gcd(<span class="number">21</span>, <span class="number">28</span>))</span><br></pre></td></tr></table></figure>
+<p>应用最大公约数求最小公倍数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">min_multiple</span><span class="params">(m, n)</span>:</span></span><br><span class="line">    out = m * n / gcd(m, n)</span><br><span class="line">    <span class="keyword">return</span> int(out)</span><br></pre></td></tr></table></figure>
+<h2 id="数字拆分，有范围限制"><a href="#数字拆分，有范围限制" class="headerlink" title="数字拆分，有范围限制"></a>数字拆分，有范围限制</h2><p>这个问题其实是动态规划章节中【盘子放苹果问题】的变体，参加动态规划章节</p>
+<p>这篇博客说的很多 <a href="https://cloud.tencent.com/developer/article/1109283，但是下面一个博客更清晰" target="_blank" rel="noopener">https://cloud.tencent.com/developer/article/1109283，但是下面一个博客更清晰</a></p>
+<p><a href="https://www.cnblogs.com/radiumlrb/p/5797168.html" target="_blank" rel="noopener">https://www.cnblogs.com/radiumlrb/p/5797168.html</a>  并且给出了完整代码。</p>
+<blockquote>
+<p>将整数N分成K个整数的和且每个数大于等于A 小于等于B 求有多少种分法</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">breakup</span><span class="params">(number, k, a, b)</span>:</span>  </span><br><span class="line">  <span class="comment"># 把数字number分解成k个大于等于a小于等于b的整数，有可能分解数中没有a或者b</span></span><br><span class="line">		</span><br><span class="line">    <span class="comment"># 寻找递归出口</span></span><br><span class="line">    <span class="keyword">if</span> number &lt; a:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">if</span> k == <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    temp = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(a, b+<span class="number">1</span>):  <span class="comment"># ### 固定上界，循环下界</span></span><br><span class="line">      	<span class="comment"># 假设分解的数字中至少有一个i: 而其他分解的数字中可能有i也可能无i</span></span><br><span class="line">        <span class="comment"># 在下一轮循环中，当前的i值迭代加1了，这样循环遍历不同的i保证子问题不会重复</span></span><br><span class="line">        <span class="comment"># 即下一个循环中划分下界变成了i+1</span></span><br><span class="line">        temp += breakup(number-i, k<span class="number">-1</span>, i, b)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> temp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        m, k, a, b = map(int, input().split())</span><br><span class="line">        t = breakup(m, k, a, b)</span><br><span class="line">        print(t)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>C/C++实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Dynamics</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">int</span> k, <span class="keyword">int</span> <span class="built_in">min</span>)</span> <span class="comment">//将n分为k个整数 最小的大于等于min,最大不超过B</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(n &lt; <span class="built_in">min</span>) <span class="keyword">return</span> <span class="number">0</span>;<span class="comment">//当剩下的 比min小,则不符合要求 返回0</span></span><br><span class="line">    <span class="keyword">if</span>(k == <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> t = <span class="built_in">min</span>; t &lt;= B; t++)</span><br><span class="line">    &#123;</span><br><span class="line">     sum += Dynamics(n-t, k<span class="number">-1</span>, t);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>  sum;</span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实上述这个问题也可以用“将n划分成不大于m的划分法g(n, m)”这个问题的解来间接地解决，g(n, b) - g(n, a)</p>
+<h1 id="排列组合题"><a href="#排列组合题" class="headerlink" title="排列组合题"></a>排列组合题</h1><h2 id="路径走法"><a href="#路径走法" class="headerlink" title="路径走法"></a>路径走法</h2><blockquote>
+<p>请编写一个函数（允许增加子函数），计算n x m的棋盘格子（n为横向的格子数，m为竖向的格子数）沿着各自边缘线从左上角走到右下角，总共有多少种走法，要求不能走回头路，即：只能往右和往下走，不能往左和往上走。</p>
+</blockquote>
+<p>这个题有两个思路，一个用排列组合的数学角度，一个用递归的角度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">factorial</span><span class="params">(n)</span>:</span></span><br><span class="line">    dot = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>,n+<span class="number">1</span>):</span><br><span class="line">        dot = dot * i </span><br><span class="line">    <span class="keyword">return</span> dot</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        [n,m] = list(map(int,input().split()))</span><br><span class="line">        <span class="comment"># 一定需要走m+n步，从中选择m步是向下走的组合数，剩下n步都是向右走的</span></span><br><span class="line">        k = factorial(m+n)/(factorial(m)*factorial(n))</span><br><span class="line">        print(int(k))</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>用递归的角度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(n, m)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> m == <span class="number">1</span> <span class="keyword">or</span> n == <span class="number">1</span>:  <span class="comment"># 考虑递归的出口，格子只有一列或者一行的时候走法</span></span><br><span class="line">        <span class="keyword">return</span> m + n</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span>:  <span class="comment"># 每个阶数都有两个方向到达（n, m)</span></span><br><span class="line">        <span class="keyword">return</span> f(n - <span class="number">1</span>, m) + f(n, m - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        [n, m] = list(map(int, input().split()))</span><br><span class="line">        out = f(n, m)</span><br><span class="line">        print(int(out))</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<h2 id="跳台阶"><a href="#跳台阶" class="headerlink" title="跳台阶"></a>跳台阶</h2><h3 id="青蛙随意跳"><a href="#青蛙随意跳" class="headerlink" title="青蛙随意跳"></a>青蛙随意跳</h3><blockquote>
+<p>一只青蛙一次可以跳上1级台阶，也可以跳上2级……它也可以跳上n级。求该青蛙跳上一个n级的台阶总共有多少种跳法。</p>
+</blockquote>
+<p>排列组合角度解析：</p>
+<p>因为每一步都可以选择跳1～n个台阶，但是最后一个台阶必须跳上，所以一共有 $ 2^{n-1}$ 种跳法。</p>
+<p>或者通过递推关系式子推导：</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+\begin{array}{l}
+f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
+=f(n-1)+[f(n-2)+\ldots+f(1)+1] \\
+=f(n-1)+f(n-1) \\
+=2 * f(n-1) \\
+=2 *(n-1)
+\end{array}
+\end{equation}</script><p>递归方法/动态规划角度解析：略</p>
+<h3 id="青蛙会两种跳"><a href="#青蛙会两种跳" class="headerlink" title="青蛙会两种跳"></a>青蛙会两种跳</h3><blockquote>
+<p>一只青蛙一次可以跳上 1 级台阶，也可以跳上 2 级。求该青蛙跳上一个 n 级的台阶总共有多少种跳法</p>
+</blockquote>
+<p><strong>一般递归方法</strong>，n较大时计算量爆炸，python无法顺利出结果</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myjump</span><span class="params">(n)</span>:</span>  <span class="comment"># 表示到达n个台阶时有myjump(n)种方法</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">2</span> :</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> myjump(n<span class="number">-1</span>) + myjump(n<span class="number">-2</span>)  <span class="comment"># 当前问题拆解成了两个子问题</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># lru_cache可以缓解这个问题</span></span><br><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"><span class="meta">@functools.lru_cache(256)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">myjump</span><span class="params">(n)</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">2</span> :</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">return</span> myjump(n<span class="number">-1</span>) + myjump(n<span class="number">-2</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>从底向上的想法，更快，不会栈溢出</strong>，即动态规划方法升级版</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hejump</span><span class="params">(n)</span>:</span></span><br><span class="line">    f1 = <span class="number">1</span></span><br><span class="line">    f2 = <span class="number">2</span></span><br><span class="line">    sum = <span class="number">0</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>, n+<span class="number">1</span>):</span><br><span class="line">        sum = f1 + f2  <span class="comment"># </span></span><br><span class="line">        f1 = f2</span><br><span class="line">        f2 = sum</span><br><span class="line">    <span class="keyword">return</span> sum</span><br></pre></td></tr></table></figure>
+<p>print(hejump(100))<br>print(myjump(100))</p>
+<h1 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h1><h2 id="sorted-函数"><a href="#sorted-函数" class="headerlink" title="sorted() 函数"></a>sorted() 函数</h2><h3 id="字典排序"><a href="#字典排序" class="headerlink" title="字典排序"></a>字典排序</h3><p>使用 sorted() 函数对字典进行排序时，可以先使用<strong>d.items()</strong>把字典变成<strong>可迭代的对象</strong>，就变成了</p>
+<p>[(key1, value1), (key2, value2)…]，</p>
+<p>然后再将list中的元组按照第一个元素即key或者第二个value作为排序依据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sort_d &#x3D; sorted(d.items(), key&#x3D;lambda x: x[0])</span><br></pre></td></tr></table></figure>
+<p>sorted()中的key可以接受函数作为参数，此处接受了匿名lambda函数。</p>
+<p>注意，<font color="#00dd00">字典的key不单单可以是str类型，也可以是int类型</font>，但是根据key索引value时类型只能用对应的数据类型，如下面例子</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">myd &#x3D; &#123;&#39;tom&#39;: 2, 4: 5&#125;</span><br><span class="line"></span><br><span class="line">print(myd.get(4))  # 如果是print(myd.get(‘4’))错误，因为此时的key是int类型</span><br><span class="line">print(myd.get(&#39;tom&#39;))</span><br></pre></td></tr></table></figure>
+<h2 id="经典排序算法"><a href="#经典排序算法" class="headerlink" title="经典排序算法"></a>经典排序算法</h2><h3 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h3><h1 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h1><h2 id="斐波那契的兔子"><a href="#斐波那契的兔子" class="headerlink" title="斐波那契的兔子"></a>斐波那契的兔子</h2><blockquote>
+<p>有一对兔子，从出生后第3个月起每个月都生一对兔子（雄雌），小兔子长到第三个月后每个月又生一对兔子，假如兔子都不死，问每个月的兔子总数为多少？</p>
+</blockquote>
+<p>一定要注意处理边界值，所有的不能用递推公式求出的情况都是初始值，比如rabit_num(1) = abit_num(0) + abit_num(-1)数组索引为负，这种情况就不能用递推关系式，它应该是初始条件。  </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> functools</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面这个装饰器用来换成中间结果，用于重复计算时的加速</span></span><br><span class="line"><span class="meta">@functools.lru_cache(maxsize=256)  # Least-recently-used cache decorator</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rabit_num</span><span class="params">(n)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> n &lt;= <span class="number">2</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 一个月前兔子的数量 + 两个月前兔子（在这个月能够生兔子的那些兔子）的数量</span></span><br><span class="line">    <span class="keyword">return</span> rabit_num(n - <span class="number">1</span>) + rabit_num(n - <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        m = int(input())</span><br><span class="line"></span><br><span class="line">        print(rabit_num(m))</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<h1 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h1><p>动态规划与分治法类似，都是把大问题拆分成小问题，<strong>通过寻找大问题与小问题的递推关系</strong>，解决一个个小问题，最终达到解决原问题的效果。但不同的是，分治法在子问题和子子问题等上被重复计算了很多次，而动态规划则具有记忆性，<strong>通过填写表</strong>把所有已经解决的子问题答案纪录下来，在新问题里需要用到的子问题可以直接提取，避免了重复计算，从而节约了时间，所以在问题满足最优性原理之后，用动态规划解决问题的核心就在于填表，表填写完毕，最优解也就找到。</p>
+<h2 id="二维数组的动态规划"><a href="#二维数组的动态规划" class="headerlink" title="二维数组的动态规划"></a>二维数组的动态规划</h2><p><strong>定义数组元素的含义；找出数组元素间的关系；找出初始值</strong></p>
+<p><strong>搞清楚数组元素的含义，求解问题时一定要明确，我们的目标是把大问题分解成若干子问题来求解！</strong>领悟套路解题套路：<a href="https://zhuanlan.zhihu.com/p/91582909" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/91582909</a></p>
+<h3 id="盘子放苹果"><a href="#盘子放苹果" class="headerlink" title="盘子放苹果"></a>盘子放苹果</h3><blockquote>
+<p>题目描述 </p>
+<p>把M个同样的苹果放在N个同样的盘子里，允许有的盘子空着不放，问共有多少种不同的分法？（用K表示）5，1，1和1，5，1 是同一种分法。 </p>
+<p>输入 </p>
+<p>每个用例包含二个整数M和N。0&lt;=m&lt;=10，1&lt;=n&lt;=10。 </p>
+</blockquote>
+<p><strong>递归解法</strong></p>
+<p>对于下面递归出口的说明</p>
+<ol>
+<li><p>当n=1时，所有苹果都必须放在一个盘子里，所以返回１；</p>
+</li>
+<li><p>当没有苹果可放时，定义为１种放法；</p>
+</li>
+</ol>
+<p>　　　　递归的两条路，第一条n会逐渐减少，终会到达出口n==1;</p>
+<p> 　　　　第二条m会逐渐减少，因为n&gt;m时，我们会return count(m,m)　所以终会到达出口m==0</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">(m,n)</span>:</span> <span class="comment">#m为多少个苹果，n为多少个盘子</span></span><br><span class="line">    <span class="comment">#1. 盘子多，苹果少，即n&gt;m，count(m,n)=count(m,m)</span></span><br><span class="line">    <span class="comment">#2. 盘子少，苹果多，即n&lt;=m,又分两种情况：</span></span><br><span class="line">    <span class="comment">#  （1）有至少一个空盘子：count(m,n)=count(m,n-1)</span></span><br><span class="line">    <span class="comment">#  （2）没有空盘子：count(m,n)=count(m-n,n)  # 只要每个盘子先放一个就能保证</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 边界条件要考虑全面</span></span><br><span class="line">    <span class="keyword">if</span> m==<span class="number">0</span> <span class="keyword">or</span> n==<span class="number">1</span>:  <span class="comment"># m==0考虑的是count(0, n)的情况，恰好一个盘子放一个苹果</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">if</span> m&lt;n:</span><br><span class="line">        <span class="keyword">return</span> count(m,m)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> count(m,n<span class="number">-1</span>)+count(m-n,n) <span class="comment"># 没有空盘子事件的补事件是：至少一个空盘子</span></span><br><span class="line">         </span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        l=input().split()</span><br><span class="line">        m=int(l[<span class="number">0</span>])</span><br><span class="line">        n=int(l[<span class="number">1</span>])</span><br><span class="line">        print(count(m,n))</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p><strong>动态规划解法</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">put_apple</span><span class="params">(m, n)</span>:</span></span><br><span class="line"></span><br><span class="line">    dp = [[<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)] <span class="keyword">for</span> j <span class="keyword">in</span> range(m + <span class="number">1</span>)]</span><br><span class="line">		</span><br><span class="line">    <span class="comment"># python中的引用和拷贝：mutable values可以in-place更改内存内容，</span></span><br><span class="line">    <span class="comment"># 而immutable values不能原地更改，实际上是新生成了value然后返回赋值</span></span><br><span class="line">    <span class="comment"># str, tuple是不可更改的，list, dict等和用户定义的数据结构一般都是可改的</span></span><br><span class="line">    <span class="comment"># 下面生成list的方式其实存在内存共享的问题，直接在原始内存上发生了改变</span></span><br><span class="line">    <span class="comment"># dp = [[0] * (n + 1)] * (m + 1)  # 不能这样初始化！！</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>):  <span class="comment">#</span></span><br><span class="line">        dp[<span class="number">1</span>][j] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>):  <span class="comment">#  为了迎合之后的状态转移方程，比如dp[3-3][2]=dp[0][2]</span></span><br><span class="line">        dp[<span class="number">0</span>][j] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m + <span class="number">1</span>):</span><br><span class="line">        dp[i][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, m + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">2</span>, n + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> i &lt; j:</span><br><span class="line">                dp[i][j] = dp[i][i]</span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 两个子事件：至少有一个空盘子；没有空盘子</span></span><br><span class="line">                dp[i][j] = dp[i][j - <span class="number">1</span>] + dp[i - j][j]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dp[m][n]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        m, n = map(int, input().split())</span><br><span class="line">        t = put_apple(m, n)</span><br><span class="line">        print(t)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>如果题目变成不能有空盘子，那么我们仍然可以利用上面的代码，只是调用上面函数时变成count(m-n, n)即可，先每个盘子放一个苹果，其他的可以随便放，允许有空盘子。</p>
+<p>同时上面这个问题和下面这个问题等价：</p>
+<h3 id="正整数划分-或-没有空盘子的放苹果"><a href="#正整数划分-或-没有空盘子的放苹果" class="headerlink" title="正整数划分 或 没有空盘子的放苹果"></a>正整数划分 或 没有空盘子的放苹果</h3><blockquote>
+<p>把数字M划分成K个正整数和，有多少种划分方法？</p>
+</blockquote>
+<p>设dp [i] [j]代表把数字 i 划分成 j 个正整数的划分方法数，则这件事可以分解为两个子问题：<font color="#dd00dd">至少</font>有一个盘子放了一个1；所有的盘子放的数全部都大于1。那么dp[i] [j] = dp[i-1] [j-1]  +dp[i-j] [j]。 <strong>第二项正确的保障是根据我们对数组元素的定义来的</strong>，因为dp [i] [j] 表示每个盘子至少放1个苹果不能有空盘 （等价于分解数全部为正整数），所以我们先每个盘子放一个1，这样就保证剩下的苹果放入的时候dp[i-j] [j] 每个盘子又至少放了一个1.</p>
+<p>动态规划解法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">breakup</span><span class="params">(m, n)</span>:</span>  <span class="comment"># m个苹果，放入n个盘子，每个盘子不能为空</span></span><br><span class="line"></span><br><span class="line">    dp = [[<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)] <span class="keyword">for</span> j <span class="keyword">in</span> range(m + <span class="number">1</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>):</span><br><span class="line">        dp[<span class="number">0</span>][j] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m + <span class="number">1</span>):</span><br><span class="line">        dp[i][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> i &lt; j:</span><br><span class="line">                <span class="keyword">continue</span>  <span class="comment"># 不做任何处理，初始化为0了</span></span><br><span class="line">            <span class="keyword">elif</span> j == i:  <span class="comment"># 此时只有一种划分，一个盘子里必须有一个苹果</span></span><br><span class="line">                dp[i][j] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">              <span class="comment"># 两个子问题： 至少有一个分解数是1， 所有的分解数全部大于1</span></span><br><span class="line">                dp[i][j] = dp[i<span class="number">-1</span>][j<span class="number">-1</span>] + dp[i-j][j]  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dp[m][n]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        m, k = map(int, input().split())</span><br><span class="line">        t = breakup(m, k)</span><br><span class="line">        print(t)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<h3 id="正整数划分，要求划分出来的每个数都不大于k"><a href="#正整数划分，要求划分出来的每个数都不大于k" class="headerlink" title="正整数划分，要求划分出来的每个数都不大于k"></a>正整数划分，要求划分出来的每个数都不大于k</h3><blockquote>
+<p>整数m划分成最大数不超过n的若干整数之和的方案数</p>
+</blockquote>
+<p><strong>这个问题当n==m时就变成了“整数m划分成若干正整数之和的方案数”</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">put_apple</span><span class="params">(m, n)</span>:</span>  <span class="comment"># 把 m 划分成若干不大于 n 的若干正整数和的方案数</span></span><br><span class="line">    dp = [[<span class="number">0</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(n + <span class="number">1</span>)] <span class="keyword">for</span> j <span class="keyword">in</span> range(m + <span class="number">1</span>)]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>):  <span class="comment"># 为了迎合之后的状态转移方程，比如dp[3-3][3]=dp[0][3]，此时其实它本身3就是一个划分</span></span><br><span class="line">        dp[<span class="number">0</span>][j] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, m + <span class="number">1</span>):   <span class="comment"># 最大数不超过1的正整数只有一种划分，即 m个 1</span></span><br><span class="line">        dp[i][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n + <span class="number">1</span>):   <span class="comment"># 数字1的划分只有它本身一种划分</span></span><br><span class="line">        dp[<span class="number">1</span>][j] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, m + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">2</span>, n + <span class="number">1</span>):</span><br><span class="line">            <span class="keyword">if</span> i &lt; j:</span><br><span class="line">                dp[i][j] = dp[i][i]</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">              <span class="comment"># 至少有一个划分数等于j ; 所有划分数都小于于j</span></span><br><span class="line">                dp[i][j] = dp[i - j][j] + dp[i][j - <span class="number">1</span>]  </span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> dp[m][n]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        a, b = map(int, input().split())  <span class="comment"># b是允许一个盘子中放置的最大数</span></span><br><span class="line">        t = put_apple(a, b)</span><br><span class="line">        print(t)</span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br></pre></td></tr></table></figure>
+<p>从代码角度来看，和“把M个同样的苹果放在N个同样的盘子里，允许有的盘子空着不放”貌似是等价的</p>
+<h3 id="正整数划分，要求划分出来的每个数不能相同"><a href="#正整数划分，要求划分出来的每个数不能相同" class="headerlink" title="正整数划分，要求划分出来的每个数不能相同"></a>正整数划分，要求划分出来的每个数不能相同</h3><blockquote>
+<p>将n划分为若干个不同的正整数 ，注意：划分数不同</p>
+</blockquote>
+<p><u>这一题仍然可以参考上面的代码，在上一题如果k=m，则就是划分数可以相同时的方案数目</u>，只需要k设成这个数本身即可。设dp[i] [j] 表示把数字i划分成划分数不超过j的方案数，因此来找子问题。至少略有区别：</p>
+<p>分析：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dp[n][m]&#x3D; dp[n][m-1]+ dp[n-m][m-1]  其中dp[n][m]表示整数 n 划分成不同划分数的方案数，且每个划分数不大于 m。</span><br><span class="line"></span><br><span class="line">同样划分情况分为两种情况：</span><br><span class="line">　　a.划分中每个数都小于m,相当于每个数不大于 m-1,划分数为 dp[n][m-1].</span><br><span class="line">　　b.划分中有一个数为 m.在n中减去m,剩下相当对n-m进行划分，并且每一个数不大于m-1 （因为题目要求不能有相同数，所以剩下的划分不能再有m），故划分数为 dp[n-m][m-1]</span><br></pre></td></tr></table></figure>
+<h3 id="把数字n划分成若干个奇数-偶数的方案数"><a href="#把数字n划分成若干个奇数-偶数的方案数" class="headerlink" title="把数字n划分成若干个奇数/偶数的方案数"></a>把数字n划分成若干个奇数/偶数的方案数</h3><p>解法有些特殊，构造了两个二维数组，设<code>f[i][j]</code>表示将数<code>i</code>分成<code>j</code>个正奇数，<code>g[i][j]</code>表示将数i分成 j 个正偶数。这里没有限制划分成多少个，那么可能划分成1，2， 3，…, n个奇数，那么答案就是 <code>f[i][j]</code>把j从1开始遍历到n相加.</p>
+<p><a href="https://blog.csdn.net/qq_40691051/article/details/103216117" target="_blank" rel="noopener">https://blog.csdn.net/qq_40691051/article/details/103216117</a></p>
+<p><code>f[i][j]</code>和<code>g[i][j]</code>之间是有关系的，如果我们先从被划分的数 i 中拿出 j 个1，然后把剩下的 i - j 分解成 j 个正奇数的方案数应该和将数i分成 j 个正偶数的方案数相同，即 <code>g[i][j] = f[i-j][j]</code></p>
+<p><code>f[i][j]</code>可以分解成划分数包含1（即至少一个1）和不包含1这两个子问题，那么有 <code>f[i][j]=f[i-1][j] + g[i-j][j]</code>; 其中前者是在奇数划分时先拿出一个1保证至少划分数里有一个1，后者是偶数划分时先拿出j个1放入，这样保证之后划分数每个都会大于1（得益于<code>f[i][j]</code>数组元素的定义）</p>
+<font color="#dddd00">最后 `f[n][m]`即为所求</font>。边界条件还没弄清，<font color="#dddd00">下面代码没有经过充分测试</font>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">n, k = list(map(int, input().split()))</span><br><span class="line"></span><br><span class="line">f = [[<span class="number">0</span>] * (n+<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> range(n+<span class="number">1</span>)]  <span class="comment"># 若干个正奇数划分，最大划分成n个全是1的划分数</span></span><br><span class="line">g = [[<span class="number">0</span>] * (n+<span class="number">1</span>) <span class="keyword">for</span> i <span class="keyword">in</span> range(n+<span class="number">1</span>)]  <span class="comment"># 若干个正偶数划分</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(n+<span class="number">1</span>):</span><br><span class="line">    f[i][i] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">g[<span class="number">2</span>][<span class="number">1</span>] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">3</span>, n+<span class="number">1</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, i):</span><br><span class="line">        g[i][j] = f[i-j][j]</span><br><span class="line">        f[i][j] = f[i<span class="number">-1</span>][j<span class="number">-1</span>] + g[i-j][j]</span><br><span class="line"></span><br><span class="line">print(f[n][k])</span><br><span class="line">res = sum(f[n])</span><br><span class="line">print(res)</span><br></pre></td></tr></table></figure>
+<h3 id="棋盘格通过路径的数字之和"><a href="#棋盘格通过路径的数字之和" class="headerlink" title="棋盘格通过路径的数字之和"></a>棋盘格通过路径的数字之和</h3><blockquote>
+<p>给定一个包含非负整数的 m x n 网格，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小（经过的路径途中的单元格上的数字的和）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">举例：arr存储了m*n网格中每个单元上的数字</span><br><span class="line">输入:</span><br><span class="line">arr = [</span><br><span class="line">  [<span class="number">1</span>,<span class="number">3</span>,<span class="number">1</span>],</span><br><span class="line">  [<span class="number">1</span>,<span class="number">5</span>,<span class="number">1</span>],</span><br><span class="line">  [<span class="number">4</span>,<span class="number">2</span>,<span class="number">1</span>]</span><br><span class="line">]</span><br><span class="line">输出: <span class="number">7</span></span><br><span class="line">解释: 因为路径 <span class="number">1</span>→<span class="number">3</span>→<span class="number">1</span>→<span class="number">1</span>→<span class="number">1</span> 的总和最小。</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>解法</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 作者：jyd</span></span><br><span class="line"><span class="comment"># 链接：https://leetcode-cn.com/problems/minimum-path-sum/solution/zui-xiao-lu-jing-he-dong-tai-gui-hua-gui-fan-liu-c/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">arr = [</span><br><span class="line">    [<span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>],</span><br><span class="line">    [<span class="number">1</span>, <span class="number">5</span>, <span class="number">1</span>],</span><br><span class="line">    [<span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用了直接在arr位置上覆盖的方式节省内存空间，</span></span><br><span class="line"><span class="comment"># 因为我们只需要保留到达最后一个单元格经过数字之和</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minPathSum</span><span class="params">(grid: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(len(grid)):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(len(grid[<span class="number">0</span>])):</span><br><span class="line">            <span class="keyword">if</span> i == j == <span class="number">0</span>:  <span class="comment"># 就是起点，无需计算通过数字的和</span></span><br><span class="line">                <span class="keyword">continue</span></span><br><span class="line">            <span class="keyword">elif</span> i == <span class="number">0</span>:  <span class="comment"># 当只有上边是矩阵边界时, 只能从左面来</span></span><br><span class="line">                grid[i][j] = grid[i][j - <span class="number">1</span>] + grid[i][j]</span><br><span class="line">            <span class="keyword">elif</span> j == <span class="number">0</span>: <span class="comment"># 当只有左边是矩阵边界时： 只能从上面来</span></span><br><span class="line">                grid[i][j] = grid[i - <span class="number">1</span>][j] + grid[i][j]</span><br><span class="line">            <span class="keyword">else</span>:  <span class="comment"># 当左边和上边都不是矩阵边界时</span></span><br><span class="line">                grid[i][j] = min(grid[i - <span class="number">1</span>][j], grid[i][j - <span class="number">1</span>]) + grid[i][j]</span><br><span class="line">    <span class="keyword">return</span> grid[<span class="number">-1</span>][<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">t = minPathSum(arr)</span><br><span class="line">print(t)</span><br></pre></td></tr></table></figure>
+<h3 id="编辑距离"><a href="#编辑距离" class="headerlink" title="编辑距离"></a>编辑距离</h3><blockquote>
+<p>问题描述：<br>给定两个单词 word1 和 word2，计算出将 word1 转换成 word2 所使用的最少操作数 。<br>你可以对一个单词进行如下三种操作：<br>—-插入一个字符<br>—-删除一个字符<br>—-替换一个字符</p>
+</blockquote>
+<p><strong>解答</strong></p>
+<p>定义数组元素的含义，这一步看似简单其实对于问题的建模理解非常重要</p>
+<p><code>dp[i][j]</code> 代表着word1的<font color="#00dd00">前 i 个字符</font>转换成word2的<font color="#00dd00">前 j 个字符</font>所需要的最少操作步数，那么就出现了二维数组问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">minDistance</span><span class="params">(word1: str, word2: str)</span> -&gt; int:</span></span><br><span class="line">    n1 = len(word1)</span><br><span class="line">    n2 = len(word2)</span><br><span class="line">    <span class="comment"># 因为存在空字符串，所以存储矩阵大小应该是(n1+1) * (n2+1)</span></span><br><span class="line">    dp = [[<span class="number">0</span>] * (n2 + <span class="number">1</span>) <span class="keyword">for</span> _ <span class="keyword">in</span> range(n1 + <span class="number">1</span>)] </span><br><span class="line">    <span class="comment"># 第一行</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n2 + <span class="number">1</span>):</span><br><span class="line">        dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j<span class="number">-1</span>] + <span class="number">1</span></span><br><span class="line">    <span class="comment"># 第一列</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n1 + <span class="number">1</span>):</span><br><span class="line">        dp[i][<span class="number">0</span>] = dp[i<span class="number">-1</span>][<span class="number">0</span>] + <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n1 + <span class="number">1</span>):</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, n2 + <span class="number">1</span>):</span><br><span class="line">        		<span class="comment"># 一共两种大情况，具体四种小情况</span></span><br><span class="line">            <span class="keyword">if</span> word1[i<span class="number">-1</span>] == word2[j<span class="number">-1</span>]:  <span class="comment"># 已经相等，不需要改动了。注意这里的索引</span></span><br><span class="line">            <span class="comment"># 第 i 个字符对应下标是 i-1</span></span><br><span class="line">                dp[i][j] = dp[i<span class="number">-1</span>][j<span class="number">-1</span>]</span><br><span class="line">            <span class="keyword">else</span>: <span class="comment"># 删减字符或插入字符或更改字符</span></span><br><span class="line">                dp[i][j] = min(dp[i][j<span class="number">-1</span>], dp[i<span class="number">-1</span>][j], dp[i<span class="number">-1</span>][j<span class="number">-1</span>]) + <span class="number">1</span></span><br><span class="line">    <span class="comment">#print(dp)</span></span><br><span class="line">    <span class="keyword">return</span> dp[<span class="number">-1</span>][<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">t = minDistance(<span class="string">'iamoksklal'</span>, <span class="string">'thmsklat'</span>)</span><br><span class="line">print(t)</span><br></pre></td></tr></table></figure>
+<h3 id="完全背包问题"><a href="#完全背包问题" class="headerlink" title="完全背包问题"></a>完全背包问题</h3><p>非常好的一个讲解博客：<a href="https://www.cnblogs.com/christal-r/p/dynamic_programming.html" target="_blank" rel="noopener">https://www.cnblogs.com/christal-r/p/dynamic_programming.html</a></p>
+<blockquote>
+<p>有n 个物品，它们有各自的重量和价值，现有给定容量的背包，如何让背包里装入的物品具有最大的价值总和？</p>
+</blockquote>
+<p>定义状态变量（使用的数组元素的意义）<strong>V(i, j)</strong> 为当前包的容量为 j （也就是已经挑选的物品总重量不超过 j ），已经决策了前 i 个物品是否放入后的最佳策略所对应的<strong>价值</strong>。如果还不明白这个含义，那换一句表述：该状态变量表示在前 i 件物品中选择若干件放在可用容量为 j 的背包中（<strong>这个背包的容量指的是我们使用的背包最大容量，不一定把包装满</strong>），可以取得的最大价值。</p>
+<p><strong>求解</strong></p>
+<p>设包的最大容量为C，每一件物品的重量为 $w<em>{i}$，其价值为 $p</em>{i}$，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
+<ol>
+<li><p>包的容量小于该物品的重量 $\ j&lt;w_{i}$ ，此物品不能放入包。则此时对前 i 个物品处理的最佳策略对应的价值和前 i-1 个物品和包容量为 j 的决策结果的最优值相同，即  $\ V(i, j)= V(i-1, j)$</p>
+</li>
+<li><p>包的容量大于当前物品重量 $j&gt;=w<em>{i}$ ，包可以放下此物品。根据我们定义的状态变量<strong>V(i, j)</strong> 的含义，<font color="#dd00dd">当包容量为j时，最优策略可能并没有放入第i个物品，即不一定非要把包全部填满才能达到价值最大。</font>那么对于第i个物品，我们有两种可能的决策，放入和不放入。**也就是说 $V(i,j)$ 这个问题显然和 $V(i-1, j-w</em>{i})$ 和 $V(i-1, j)$这两个子问题有关**。不要忘记动态规划其实就是在<font color="#00dd00">逐步填写表，表填完了，最优解也就得到了。</font></p>
+<p>例如下图中，我们有3种物品，他们的重量和价格分别是1, 2, 3 kg和60, 100, 120，而包的最大容量为5。</p>
+<p><img src="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120007.png" alt="image-20200830103029967" style="zoom:50%;" /></p>
+<ul>
+<li><p>不放入当前的第 i 个商品的话 $V(i, j)= V(i-1, j)$；</p>
+</li>
+<li><p>放入当前第 i 个商品的话 $V(i, j)= V(i-1, j)+p_{i}$。</p>
+</li>
+</ul>
+<p>那么我们选择当前两种决策中最优的那个，即 $V(i, j)= max{V(i-1, j), V(i-1, j-w<em>{i})+p</em>{i}}$ 。而只有当 $V(i, j)= V(i-1, j-w<em>{i})+p</em>{i}$时，才有“取第 i 件物品”发生。</p>
+</li>
+</ol>
+<p>现在我们知道了最大价值，但还不知道由哪些商品组成，故要根据最优解回溯解的构成。</p>
+<p><strong>回溯</strong></p>
+<p>根据我们填表的过程可以方向得出我们取了哪些物品，回溯的算法描述摘录自上面的博客链接。</p>
+<ol>
+<li><p>V(i,j)=V(i-1,j)时，说明没有选择第i 个商品，则回到V(i-1,j)；</p>
+</li>
+<li><p>V(i,j)=V(i-1,j-w(i))+p(i)实时，说明装了第i个商品，该商品是最优解组成的一部分，随后我们得回到装该商品之前的最优策略对应的解，即回到V(i-1,j-w(i))；</p>
+</li>
+<li><p>一直遍历到i＝0结束为止，所有解的组成都会找到。</p>
+</li>
+</ol>
+<p><strong>代码：</strong></p>
+<h2 id="一维数组的动态规划"><a href="#一维数组的动态规划" class="headerlink" title="一维数组的动态规划"></a>一维数组的动态规划</h2><h3 id="剪绳子"><a href="#剪绳子" class="headerlink" title="剪绳子"></a>剪绳子</h3><blockquote>
+<p>给你一根长度为n的绳子，请把绳子剪成m段（m、n都是整数，n&gt;1并且m&gt;1），每一段的长度记为k[0],k[1],…k[m].请问k[0]xk[1]x…xk[m]可能 的最大乘积是多少?例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18.</p>
+</blockquote>
+<p>解析：这个问题和前面的背包问题有些不同，背包问题分解的子问题之和以前的解以及当前物品的决策有关。而剪绳子不光与之前切割过的绳子结果有关，剩余部分的绳子切割方式会一起决定切割分段的乘积结果。如果是利用动态规划的方式去做，我们考虑对于一个长度为n的绳子，假设切分后的最大乘积为f(n)，我们先来考虑第一刀，长度为n的绳子把它切成长度为i和n-i的两段（因为由题意至少切割一次），这两段各自的绳子切分最大值为f(i)和f(n-i)，如此一来就找了子问题分解，即 f(n) = max{f(i), f(n-i)}, 其中 1 &lt;= i &lt;=n-1. </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cutRope</span><span class="params">(number)</span>:</span></span><br><span class="line">    <span class="comment"># write code here</span></span><br><span class="line">    <span class="comment"># if number==1:</span></span><br><span class="line">    <span class="comment">#     return 0</span></span><br><span class="line">    <span class="comment"># elif number==2:</span></span><br><span class="line">    <span class="comment">#     return 1</span></span><br><span class="line">    <span class="comment"># elif number==3:</span></span><br><span class="line">    <span class="comment">#     return 2</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> number &lt;= <span class="number">3</span>:  <span class="comment"># 边缘情况，不能使用下面的状态转移方程</span></span><br><span class="line">        <span class="keyword">return</span> number - <span class="number">1</span></span><br><span class="line">    <span class="comment"># 初始化数组， 对应绳子长度为1, 2, 3</span></span><br><span class="line">    <span class="comment"># 绳子不断切割，当切割到长度为1,2,3时，不能继续切割，直接返回1,2.3</span></span><br><span class="line">    prod = [<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]  <span class="comment"># 【其实对于长度为1， 2，3的子绳子，不分是最大的】！！！。</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">4</span>, number + <span class="number">1</span>):</span><br><span class="line">        max = <span class="number">0</span>  <span class="comment"># 每一种长度的绳子的最优值</span></span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">1</span>, i // <span class="number">2</span> + <span class="number">1</span>):  <span class="comment"># 剪法遍历到中间点就行了，以后后面一半到方法与前面一半到剪法效果一样</span></span><br><span class="line">            pro = prod[j] * prod[i - j]</span><br><span class="line">            <span class="keyword">if</span> pro &gt; max:</span><br><span class="line">                max = pro</span><br><span class="line">        prod.append(max)  <span class="comment"># 记录长度的绳子的最优值</span></span><br><span class="line">    <span class="keyword">return</span> prod[number]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">print(cutRope(<span class="number">6</span>))</span><br></pre></td></tr></table></figure>
+<p>当然了，这道题也可以通过贪心的策略来解答 <a href="https://blog.csdn.net/lc199408/article/details/80929108" target="_blank" rel="noopener">https://blog.csdn.net/lc199408/article/details/80929108</a></p>
+<h3 id="最长上升子序列-LIS"><a href="#最长上升子序列-LIS" class="headerlink" title="最长上升子序列 (LIS)"></a>最长上升子序列 (LIS)</h3><p>举个例子：求A={2 7 1 5 6 4 3 8 9}的最长上升子序列。我们定义d(i) (i∈[1,n])来表示前i个数以A[i]结尾的最长上升子序列长度。</p>
+<p><a href="https://blog.csdn.net/lxt_Lucia/article/details/81206439" target="_blank" rel="noopener">https://blog.csdn.net/lxt_Lucia/article/details/81206439</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">alist = [<span class="number">2</span>, <span class="number">7</span>, <span class="number">1</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">8</span>, <span class="number">9</span>]</span><br><span class="line"></span><br><span class="line">dp = [<span class="number">1</span> <span class="keyword">for</span> i <span class="keyword">in</span> range(len(alist))]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, len(alist)):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> range(<span class="number">0</span>, i):</span><br><span class="line">        <span class="keyword">if</span> alist[i] &gt; alist[j]: <span class="comment"># 从前到后遍历并覆盖到达A[i]的最长上升子序列</span></span><br><span class="line">            dp[i] = max(dp[j] + <span class="number">1</span>, dp[i])  </span><br><span class="line"></span><br><span class="line">LIS_len = max(dp)</span><br><span class="line"></span><br><span class="line">print(LIS_len)</span><br></pre></td></tr></table></figure>
+<h1 id="DFS-和-BFS-—-图的遍历"><a href="#DFS-和-BFS-—-图的遍历" class="headerlink" title="DFS 和 BFS — 图的遍历"></a>DFS 和 BFS — 图的遍历</h1><h2 id="基础实现"><a href="#基础实现" class="headerlink" title="基础实现"></a>基础实现</h2><p>忘记在哪里看到的模板了…. 想起了再添加链接</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> collections <span class="keyword">import</span> deque  <span class="comment"># deque是双向队列</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, *args, **kwargs)</span>:</span></span><br><span class="line">        self.order = []  <span class="comment"># visited order 顶点已经访问过了，放入order</span></span><br><span class="line">        self.neighbor = &#123;&#125;  <span class="comment"># 存储图的数据结构</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_node</span><span class="params">(self, node)</span>:</span></span><br><span class="line">        <span class="string">"""适用于给出一个顶点和与之相邻的所有顶点是list数据结构"""</span></span><br><span class="line">        key, val = node</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(val, list):</span><br><span class="line">            print(<span class="string">'node value should be a list'</span>)</span><br><span class="line">            <span class="comment"># sys.exit('failed for wrong input')</span></span><br><span class="line"></span><br><span class="line">        self.neighbor[key] = val  <span class="comment"># 每个顶点都有可能与多个顶点相连</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_edges</span><span class="params">(self, n, edges: List[List[int]])</span>:</span></span><br><span class="line">        <span class="string">"""适用于给出图的顶点数目以及图中存在的所有边的数据结构"""</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> isinstance(edges[<span class="number">0</span>], list):</span><br><span class="line">            print(<span class="string">'edges value should be a list'</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">            self.neighbor[i] = []</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> _edge <span class="keyword">in</span> edges:  <span class="comment"># todo</span></span><br><span class="line">            self.neighbor[_edge[<span class="number">0</span>]].append(_edge[<span class="number">1</span>])</span><br><span class="line">            self.neighbor[_edge[<span class="number">1</span>]].append(_edge[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># #########################################</span></span><br><span class="line">    <span class="comment"># #################  BFS  #################</span></span><br><span class="line">    <span class="comment"># #########################################</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">breadth_first</span><span class="params">(self, root)</span>:</span>  <span class="comment"># root 为访问的起始顶点</span></span><br><span class="line">        <span class="keyword">if</span> root != <span class="literal">None</span>:</span><br><span class="line">            search_queue = deque()  <span class="comment"># 双向队列</span></span><br><span class="line">            search_queue.append(root)</span><br><span class="line"></span><br><span class="line">            visited = []</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">'root is None'</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> search_queue:</span><br><span class="line">            person = search_queue.popleft()  <span class="comment"># 下一层顶点放在了队列的右侧，而当前层的顶点会从左侧弹出</span></span><br><span class="line">            <span class="keyword">if</span> person <span class="keyword">not</span> <span class="keyword">in</span> self.order:</span><br><span class="line">                self.order.append(person)  <span class="comment"># 当前顶点已经访问过了，放入order</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 只有该顶点有子顶点才继续往下搜索，把它下一层的顶点放入队列</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">not</span> person <span class="keyword">in</span> visited) <span class="keyword">and</span> (person <span class="keyword">in</span> self.neighbor.keys()):</span><br><span class="line"></span><br><span class="line">                <span class="comment"># 向队列右侧添加该顶点的邻接顶点，而这些顶点处于下一层，应该在本层遍历后再考虑</span></span><br><span class="line">                search_queue += self.neighbor[person]</span><br><span class="line">                <span class="comment"># visited 保存了有孩子的所有父亲顶点</span></span><br><span class="line">                visited.append(person)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># #########################################</span></span><br><span class="line">    <span class="comment"># #################  DFS  #################</span></span><br><span class="line">    <span class="comment"># #########################################</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">depth_first</span><span class="params">(self, root)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> root != <span class="literal">None</span>:</span><br><span class="line">            search_queue = deque()</span><br><span class="line">            search_queue.append(root)</span><br><span class="line"></span><br><span class="line">            visited = []</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            print(<span class="string">'root is None'</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> search_queue:</span><br><span class="line">            person = search_queue.popleft()  <span class="comment"># 每次循环优先将节点弹出</span></span><br><span class="line">            <span class="keyword">if</span> person <span class="keyword">not</span> <span class="keyword">in</span> self.order:</span><br><span class="line">                self.order.append(person)</span><br><span class="line">            <span class="comment"># 只有该顶点有子顶点并且该顶点之前没有被访问过，才继续往下搜索，把它下一层的顶点放入队列</span></span><br><span class="line">            <span class="comment"># 这是因为对于一般的图，可能后面层的某个顶点又与该顶点有连接（有环），那么该顶点在那一层的循环中</span></span><br><span class="line">            <span class="comment"># 又再一次被加入 search_queue。不过此处的实现依然会把这个顶点弹出两次</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">not</span> person <span class="keyword">in</span> visited) <span class="keyword">and</span> (person <span class="keyword">in</span> self.neighbor.keys()):</span><br><span class="line">                tmp = self.neighbor[person]</span><br><span class="line">                tmp.reverse()  <span class="comment"># 为了配合后面appendleft, 从队列左侧依次插入</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">for</span> index <span class="keyword">in</span> tmp:</span><br><span class="line">                    search_queue.appendleft(index)</span><br><span class="line"></span><br><span class="line">                visited.append(person)</span><br><span class="line">                <span class="comment"># self.order.append(person)</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">clear</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.order = []</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">node_print</span><span class="params">(self)</span>:</span>  <span class="comment"># 依次打印访问的顶点内容</span></span><br><span class="line">        <span class="keyword">for</span> index <span class="keyword">in</span> self.order:</span><br><span class="line">            print(index, end=<span class="string">'  '</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    g = Graph()</span><br><span class="line">    g.add_node((<span class="string">'1_key'</span>, [<span class="string">'one_key'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>]))</span><br><span class="line">    g.add_node((<span class="string">'one_key'</span>, [<span class="string">'first_key'</span>, <span class="string">'two'</span>, <span class="string">'three'</span>]))</span><br><span class="line">    g.add_node((<span class="string">'first_key'</span>, [<span class="string">'1'</span>, <span class="string">'second'</span>, <span class="string">'third'</span>, <span class="string">'1_key'</span>]))</span><br><span class="line"></span><br><span class="line">    g.breadth_first(<span class="string">'1_key'</span>)</span><br><span class="line"></span><br><span class="line">    print(<span class="string">'breadth search first:'</span>)</span><br><span class="line">    print(<span class="string">'  '</span>, end=<span class="string">'  '</span>)</span><br><span class="line">    g.node_print()</span><br><span class="line">    g.clear()</span><br><span class="line"></span><br><span class="line">    print(<span class="string">'\n\ndepth search first:'</span>)</span><br><span class="line">    print(<span class="string">'  '</span>, end=<span class="string">'  '</span>)</span><br><span class="line">    g.depth_first(<span class="string">'1_key'</span>)</span><br><span class="line">    g.node_print()</span><br><span class="line">    print()</span><br></pre></td></tr></table></figure>
+<h2 id="若干典型例题"><a href="#若干典型例题" class="headerlink" title="若干典型例题"></a>若干典型例题</h2><h3 id="无环无向图连通分量的数目"><a href="#无环无向图连通分量的数目" class="headerlink" title="无环无向图连通分量的数目"></a>无环无向图连通分量的数目</h3><p>如果使用上述基础实现，可以怎么做：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">gg = Graph()</span><br><span class="line">   n = <span class="number">5</span></span><br><span class="line">   edges = [[<span class="number">0</span>, <span class="number">1</span>], [<span class="number">1</span>, <span class="number">2</span>], [<span class="number">2</span>, <span class="number">3</span>], [<span class="number">3</span>, <span class="number">4</span>]]</span><br><span class="line">   <span class="comment"># edges = [[0, 1], [1, 2], [3, 4]]</span></span><br><span class="line">   gg.add_edges(n, edges)</span><br><span class="line"></span><br><span class="line">   res = <span class="number">0</span></span><br><span class="line">   <span class="keyword">for</span> i <span class="keyword">in</span> range(n):</span><br><span class="line">       <span class="keyword">if</span> i <span class="keyword">not</span> <span class="keyword">in</span> gg.order:</span><br><span class="line">           res += <span class="number">1</span></span><br><span class="line">           gg.depth_first(i)</span><br><span class="line">   print(res)</span><br></pre></td></tr></table></figure>
+<h3 id="岛屿的数量"><a href="#岛屿的数量" class="headerlink" title="岛屿的数量"></a>岛屿的数量</h3><blockquote>
+<p>给你一个由 ‘1’（陆地）和 ‘0’（水）组成的的二维网格，请你计算网格中岛屿的数量。岛屿总是被水包围，并且每座岛屿只能由水平方向或竖直方向上相邻的陆地连接形成。每座岛屿只能由水平和/或竖直方向上相邻的陆地连接而成。</p>
+<p>输入:<br>[<br>[‘1’,’1’,’1’,’1’,’0’],<br>[‘1’,’1’,’0’,’1’,’0’],<br>[‘1’,’1’,’0’,’0’,’0’],<br>[‘0’,’0’,’0’,’0’,’0’]<br>]<br>输出: 1</p>
+<p>输入:<br>[<br>[‘1’,’1’,’0’,’0’,’0’],<br>[‘1’,’1’,’0’,’0’,’0’],<br>[‘0’,’0’,’1’,’0’,’0’],<br>[‘0’,’0’,’0’,’1’,’1’]<br>]<br>输出: 3</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span>  <span class="comment"># 四连通区域个数</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">numIslands</span><span class="params">(self, grid: List[List[str]])</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> grid: <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        row = len(grid)</span><br><span class="line">        col = len(grid[<span class="number">0</span>])</span><br><span class="line">        cnt = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(i, j)</span>:</span></span><br><span class="line">            <span class="string">"""</span></span><br><span class="line"><span class="string">            如何避免在方格中的重复遍历呢？答案是标记已经遍历过的格子。以岛屿问题为例，</span></span><br><span class="line"><span class="string">            我们需要在所有值为 1 的陆地格子上做 DFS 遍历。每走过一个陆地格子，</span></span><br><span class="line"><span class="string">            就把格子的值改为 2，这样当我们遇到 2 的时候，就知道这是遍历过的格子了。</span></span><br><span class="line"><span class="string">            也就是说，每个格子可能取三个值：</span></span><br><span class="line"><span class="string">            0 —— 海洋格子</span></span><br><span class="line"><span class="string">            1 —— 陆地格子（未遍历过）</span></span><br><span class="line"><span class="string">            2 —— 陆地格子（已遍历过）</span></span><br><span class="line"><span class="string">            链接：https://leetcode-cn.com/problems/number-of-islands/solution/dao-yu-lei-wen-ti-de-tong-yong-jie-fa-dfs-bian-li-/</span></span><br><span class="line"><span class="string">            """</span></span><br><span class="line">            grid[i][j] = <span class="string">"2"</span></span><br><span class="line">            <span class="keyword">for</span> x, y <span class="keyword">in</span> [[<span class="number">-1</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">-1</span>], [<span class="number">0</span>, <span class="number">1</span>]]:  <span class="comment"># 左右上下遍历</span></span><br><span class="line">                tmp_i = i + x</span><br><span class="line">                tmp_j = j + y</span><br><span class="line">                <span class="keyword">if</span> <span class="number">0</span> &lt;= tmp_i &lt; row <span class="keyword">and</span> <span class="number">0</span> &lt;= tmp_j &lt; col <span class="keyword">and</span> grid[tmp_i][tmp_j] == <span class="string">"1"</span>:</span><br><span class="line">                    dfs(tmp_i, tmp_j)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(row):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(col):</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="string">"1"</span>:  <span class="comment"># 从是岛屿的点出发，开始遍历四邻接区域</span></span><br><span class="line">                    dfs(i, j)</span><br><span class="line">                    cnt += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> cnt</span><br></pre></td></tr></table></figure>
+<h3 id="所有岛屿中面积最大的那个"><a href="#所有岛屿中面积最大的那个" class="headerlink" title="所有岛屿中面积最大的那个"></a>所有岛屿中面积最大的那个</h3><p>题解：<a href="https://leetcode-cn.com/problems/max-area-of-island/solution/" target="_blank" rel="noopener">https://leetcode-cn.com/problems/max-area-of-island/solution/</a></p>
+<p>是上一个问题的变体，记录下每个连通区域的面积即可，但是注意# python的形式参数传入过程有坑，数字对象不允许引用，只有可变数据结构才允许引用直接修改原始值，详情可见：</p>
+<p><a href="http://www.ityouknow.com/python/2020/01/07/python-function_parameter-112.html" target="_blank" rel="noopener">http://www.ityouknow.com/python/2020/01/07/python-function_parameter-112.html</a></p>
+<h3 id="所有岛屿中，周长最大的那个"><a href="#所有岛屿中，周长最大的那个" class="headerlink" title="所有岛屿中，周长最大的那个"></a>所有岛屿中，周长最大的那个</h3><blockquote>
+<p>输入:<br>[[0,1,0,0],<br> [1,1,1,0],<br> [0,1,0,0],<br> [1,1,0,0]]</p>
+<p>输出: 16</p>
+</blockquote>
+<p>解释: 它的周长是下面图片中的 16 个黄色的边：</p>
+<p><img src="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200917115650.png" alt="image-20200917115639749" style="zoom:33%;" /></p>
+<p><strong>分析</strong>：如果岛屿cell和水（0）相邻或者和边界相邻，那么就会多出一条边</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> typing <span class="keyword">import</span> List</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span>:</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.current_area = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">islandPerimeter</span><span class="params">(self, grid: List[List[int]])</span> -&gt; int:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> grid: <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">        row = len(grid)</span><br><span class="line">        col = len(grid[<span class="number">0</span>])</span><br><span class="line">        cnt = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        max_perimenter = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">dfs</span><span class="params">(i, j)</span>:</span></span><br><span class="line"></span><br><span class="line">            grid[i][j] = <span class="number">2</span></span><br><span class="line">            <span class="keyword">for</span> x, y <span class="keyword">in</span> [[<span class="number">-1</span>, <span class="number">0</span>], [<span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">-1</span>], [<span class="number">0</span>, <span class="number">1</span>]]:  <span class="comment"># 左右上下遍历</span></span><br><span class="line">                tmp_i = i + x</span><br><span class="line">                tmp_j = j + y</span><br><span class="line">                <span class="keyword">if</span> <span class="number">0</span> &lt;= tmp_i &lt; row <span class="keyword">and</span> <span class="number">0</span> &lt;= tmp_j &lt; col <span class="keyword">and</span> grid[tmp_i][tmp_j] == <span class="number">1</span>:</span><br><span class="line">                    dfs(tmp_i, tmp_j)</span><br><span class="line">                <span class="keyword">if</span> tmp_i &gt;= row <span class="keyword">or</span> tmp_i &lt; <span class="number">0</span>:</span><br><span class="line">                    self.current_area += <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> tmp_j &lt; <span class="number">0</span> <span class="keyword">or</span> tmp_j &gt;= col:</span><br><span class="line">                    self.current_area += <span class="number">1</span></span><br><span class="line">                <span class="keyword">if</span> <span class="number">0</span> &lt;= tmp_i &lt; row <span class="keyword">and</span> <span class="number">0</span> &lt;= tmp_j &lt; col <span class="keyword">and</span> grid[tmp_i][tmp_j] == <span class="number">0</span>:</span><br><span class="line">                    self.current_area += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(row):</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> range(col):</span><br><span class="line">                <span class="keyword">if</span> grid[i][j] == <span class="number">1</span>:  <span class="comment"># 从是岛屿的点出发，开始遍历四邻接区域</span></span><br><span class="line">                    self.current_area = <span class="number">0</span>  </span><br><span class="line">                    dfs(i, j)</span><br><span class="line">                    cnt += <span class="number">1</span></span><br><span class="line">                    max_perimenter = max(max_perimenter, self.current_area)</span><br><span class="line">        <span class="keyword">return</span> max_perimenter</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">s = Solution()</span><br><span class="line">arr=[[<span class="number">0</span>,<span class="number">1</span>]]</span><br><span class="line">res=s.islandPerimeter(arr)</span><br><span class="line">print(res)  <span class="comment"># &gt;&gt;&gt; 4</span></span><br></pre></td></tr></table></figure>
+<h1 id="小知识"><a href="#小知识" class="headerlink" title="小知识"></a>小知识</h1><h3 id="lambda函数"><a href="#lambda函数" class="headerlink" title="lambda函数"></a>lambda函数</h3><p>lambda函数也叫匿名函数，即没有具体名称的函数，它允许快速定义单行函数，类似于C语言的宏，可以用在任何需要函数的地方。这区别于def定义的函数。 lambda函数有一些应用，但常常可以被普通函数取代，例如下面的可以点定义def mutiply_2(x): return x <em> 2然后用mutiply_2 取代lambda x: x</em>2</p>
+<p><img src="https://raw.githubusercontent.com/hellojialee/PictureBed/master/img2bolg/20200831120017.png" alt=""></p>
+<h3 id="缓存中间结果用来加速计算"><a href="#缓存中间结果用来加速计算" class="headerlink" title="缓存中间结果用来加速计算"></a>缓存中间结果用来加速计算</h3><p>使用python中的lru_cache</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import functools</span><br><span class="line"></span><br><span class="line"># 下面这个装饰器用来换成中间结果，用于重复计算时的加速</span><br><span class="line">@functools.lru_cache(maxsize&#x3D;256)  # Least-recently-used cache decorator</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>Donate me via WeChatPay or AliPay.</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    Donate
+  </button>
+  <div id="qr" style="display: none;">
+      <div style="display: inline-block;">
+        <img src="/images/weixin_pay.jpg" alt="Jia Li WechatPay">
+        <p>WechatPay</p>
+      </div>
+      <div style="display: inline-block;">
+        <img src="/images/ali_pay.jpg" alt="Jia Li AliPay">
+        <p>AliPay</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Jia Li
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://hellojialee.github.io/2020/08/25/%E7%BC%96%E7%A8%8B%E5%88%B7%E9%A2%98/" title="编程刷题">https://hellojialee.github.io/2020/08/25/编程刷题/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BC%96%E7%A8%8B/" rel="tag"># 编程</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/28/Pytorch%E5%AE%9E%E7%94%A8%E6%8C%87%E5%8D%97/" rel="prev" title="Pytorch实用指南">
+      <i class="fa fa-chevron-left"></i> Pytorch实用指南
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <!-- Insert clustrmaps.com, the following single line is inserted by jialee-->
+      <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=a&t=n&d=QL-1Sagpgczc7G2fmX1QXKQOnj-EMUBDxB3pA6RxWIY'></script>
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#OJ系统使用"><span class="nav-number">1.</span> <span class="nav-text">OJ系统使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#输入输出"><span class="nav-number">1.1.</span> <span class="nav-text">输入输出</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stdin-readline输入"><span class="nav-number">1.1.1.</span> <span class="nav-text">stdin.readline输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#stdin-readlines一次性输入"><span class="nav-number">1.1.2.</span> <span class="nav-text">stdin.readlines一次性输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#list-map输入成int"><span class="nav-number">1.1.3.</span> <span class="nav-text">list map输入成int</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#input-函数循环输入"><span class="nav-number">1.1.4.</span> <span class="nav-text">input()函数循环输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#print-函数控制打印后不换号，而是输出空格"><span class="nav-number">1.1.5.</span> <span class="nav-text">print()函数控制打印后不换号，而是输出空格</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#循环输入带来的调试误区"><span class="nav-number">1.2.</span> <span class="nav-text">循环输入带来的调试误区</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#字符串题"><span class="nav-number">2.</span> <span class="nav-text">字符串题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ASCII码"><span class="nav-number">2.1.</span> <span class="nav-text">ASCII码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前缀后缀"><span class="nav-number">2.2.</span> <span class="nav-text">前缀后缀</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串计数"><span class="nav-number">2.3.</span> <span class="nav-text">字符串计数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最大回文字符子串"><span class="nav-number">2.4.</span> <span class="nav-text">最大回文字符子串</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#strip-和-split-区别"><span class="nav-number">2.5.</span> <span class="nav-text">strip() 和 split() 区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则模块re-split"><span class="nav-number">2.6.</span> <span class="nav-text">正则模块re.split</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字转换"><span class="nav-number">2.7.</span> <span class="nav-text">数字转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#进制转换函数-int-hex-oct"><span class="nav-number">2.7.1.</span> <span class="nav-text">进制转换函数 int(), hex(), oct()</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数论题"><span class="nav-number">3.</span> <span class="nav-text">数论题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#最大公约数和最小公倍数"><span class="nav-number">3.1.</span> <span class="nav-text">最大公约数和最小公倍数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#判断是否是质数"><span class="nav-number">3.1.1.</span> <span class="nav-text">判断是否是质数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更相减损失术和辗转相除法求最大公约数"><span class="nav-number">3.1.2.</span> <span class="nav-text">更相减损失术和辗转相除法求最大公约数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数字拆分，有范围限制"><span class="nav-number">3.2.</span> <span class="nav-text">数字拆分，有范围限制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#排列组合题"><span class="nav-number">4.</span> <span class="nav-text">排列组合题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#路径走法"><span class="nav-number">4.1.</span> <span class="nav-text">路径走法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#跳台阶"><span class="nav-number">4.2.</span> <span class="nav-text">跳台阶</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#青蛙随意跳"><span class="nav-number">4.2.1.</span> <span class="nav-text">青蛙随意跳</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#青蛙会两种跳"><span class="nav-number">4.2.2.</span> <span class="nav-text">青蛙会两种跳</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#排序"><span class="nav-number">5.</span> <span class="nav-text">排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sorted-函数"><span class="nav-number">5.1.</span> <span class="nav-text">sorted() 函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#字典排序"><span class="nav-number">5.1.1.</span> <span class="nav-text">字典排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经典排序算法"><span class="nav-number">5.2.</span> <span class="nav-text">经典排序算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#快排"><span class="nav-number">5.2.1.</span> <span class="nav-text">快排</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#递归"><span class="nav-number">6.</span> <span class="nav-text">递归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#斐波那契的兔子"><span class="nav-number">6.1.</span> <span class="nav-text">斐波那契的兔子</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#动态规划"><span class="nav-number">7.</span> <span class="nav-text">动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#二维数组的动态规划"><span class="nav-number">7.1.</span> <span class="nav-text">二维数组的动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#盘子放苹果"><span class="nav-number">7.1.1.</span> <span class="nav-text">盘子放苹果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正整数划分-或-没有空盘子的放苹果"><span class="nav-number">7.1.2.</span> <span class="nav-text">正整数划分 或 没有空盘子的放苹果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正整数划分，要求划分出来的每个数都不大于k"><span class="nav-number">7.1.3.</span> <span class="nav-text">正整数划分，要求划分出来的每个数都不大于k</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#正整数划分，要求划分出来的每个数不能相同"><span class="nav-number">7.1.4.</span> <span class="nav-text">正整数划分，要求划分出来的每个数不能相同</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把数字n划分成若干个奇数-偶数的方案数"><span class="nav-number">7.1.5.</span> <span class="nav-text">把数字n划分成若干个奇数&#x2F;偶数的方案数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#棋盘格通过路径的数字之和"><span class="nav-number">7.1.6.</span> <span class="nav-text">棋盘格通过路径的数字之和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑距离"><span class="nav-number">7.1.7.</span> <span class="nav-text">编辑距离</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完全背包问题"><span class="nav-number">7.1.8.</span> <span class="nav-text">完全背包问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一维数组的动态规划"><span class="nav-number">7.2.</span> <span class="nav-text">一维数组的动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#剪绳子"><span class="nav-number">7.2.1.</span> <span class="nav-text">剪绳子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最长上升子序列-LIS"><span class="nav-number">7.2.2.</span> <span class="nav-text">最长上升子序列 (LIS)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DFS-和-BFS-—-图的遍历"><span class="nav-number">8.</span> <span class="nav-text">DFS 和 BFS — 图的遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基础实现"><span class="nav-number">8.1.</span> <span class="nav-text">基础实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#若干典型例题"><span class="nav-number">8.2.</span> <span class="nav-text">若干典型例题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无环无向图连通分量的数目"><span class="nav-number">8.2.1.</span> <span class="nav-text">无环无向图连通分量的数目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#岛屿的数量"><span class="nav-number">8.2.2.</span> <span class="nav-text">岛屿的数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#所有岛屿中面积最大的那个"><span class="nav-number">8.2.3.</span> <span class="nav-text">所有岛屿中面积最大的那个</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#所有岛屿中，周长最大的那个"><span class="nav-number">8.2.4.</span> <span class="nav-text">所有岛屿中，周长最大的那个</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小知识"><span class="nav-number">9.</span> <span class="nav-text">小知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lambda函数"><span class="nav-number">9.0.1.</span> <span class="nav-text">lambda函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存中间结果用来加速计算"><span class="nav-number">9.0.2.</span> <span class="nav-text">缓存中间结果用来加速计算</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Jia Li"
+      src="/images/touxiang1.jpg">
+  <p class="site-author-name" itemprop="name">Jia Li</p>
+  <div class="site-description" itemprop="description">Be happy, be healthy!</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hellojialee" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hellojialee" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hellojialee@gmail.com" title="E-Mail → mailto:hellojialee@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/xiaojiajia007" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;xiaojiajia007" rel="noopener" target="_blank"><i class="fa fa-fw fa-codiepie"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/wu-ming-27-88-90" title="ZhiHu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;wu-ming-27-88-90" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jia Li</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="Symbols count total">121k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">1:50</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.0
+  </div>
+
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el: '#valine-comments',
+      verify: false,
+      notify: false,
+      appId: 'hcHrBNtFBdqhBMIhjL67LT0t-gzGzoHsz',
+      appKey: 'Pe1HEgFp3AUcNCQ7dpQ3HRE4',
+      placeholder: "欢迎讨论留言！",
+      avatar: 'mm',
+      meta: guest,
+      pageSize: '10' || 10,
+      visitor: true,
+      lang: '' || 'zh-cn',
+      path: location.pathname,
+      recordIP: false,
+      serverURLs: ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
