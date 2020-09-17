@@ -381,6 +381,19 @@ SrcX=(dstX+0.5)\* (srcWidth/dstWidth) -0.5
 
 模型进行设备移动时，模型中注册的参数(Parameter和buffer)会同时进行移动，比如使用model.cuda()之后注册的参数parameter和buffer会自动迁移到cuda上去，**而普通成员变量不会自动设备移动**。
 
+## 11. Tensor的缩放
+
+[一个讨论](https://discuss.pytorch.org/t/how-do-i-interpolate-directly-on-tensor/23081/3)
+
+使用functional.interpolate函数对Tensor进行缩放，注意，bicubic插值算法只能对4-D Tensor正常操作，如果是3-D操作，需要先扩展纬度之后再进行。下面例子中，hmps是一个shape=(N, C, H, W)的张量，bicubic默认会对<font color="#dddd00">最后两个维度进行缩放插值</font>，而batch size and channels (dim0, dim1)不变。即把张量的空间分辨率（长和宽）放大。
+
+```
+ sizeHW = (args.square_length, args.square_length)  # 设square_length是hmps的4倍
+ hmps1 = torch.nn.functional.interpolate(hmps, size=sizeHW, mode="bicubic")
+ hmps2 = torch.nn.functional.interpolate(hmps, scale_factor=4, mode="bicubic")
+ t = (hmps1==hmps2).all() >>> 将输出一个为True的Tensor
+```
+
 # pytorch训练数据准备
 
 ## 1\. DataLoader 类
@@ -392,7 +405,7 @@ SrcX=(dstX+0.5)\* (srcWidth/dstWidth) -0.5
  3. shuffle:：是否将数据打乱
  4. sampler： 样本抽样，后续会详细介绍
  5. num\_workers：使用多进程加载的进程数，0代表不使用多进程
- 6. collate\_fn： 如何将多个样本数据拼接成一个batch，一般使用默认的拼接方式即可
+ 6. collate\_fn： **如何将多个样本数据拼接成一个batch**，一般使用默认的拼接方式即可，即默认调用default_collate，但是如果数据异常往往无法自动处理而报错
  7. pin\_memory：是否将数据保存在pin memory区，pin memory中的数据转到GPU会快一些
  8. drop\_last：dataset中的数据个数可能不是batch\_size的整数倍，drop\_last为True会将多出来不足一个batch的数据丢弃
 
@@ -402,6 +415,14 @@ SrcX=(dstX+0.5)\* (srcWidth/dstWidth) -0.5
 
 > pin\_memory就是锁页内存，创建DataLoader时，设置pin\_memory=True，则意味着生成的Tensor数据最开始是属于内存中的锁页内存，这样将内存的Tensor转义到GPU的显存就会更快一些。
 > 主机中的内存，有两种存在方式，一是锁页，二是不锁页，锁页内存存放的内容在任何情况下都不会与主机的虚拟内存进行交换（注：虚拟内存就是硬盘），而不锁页内存在主机内存不足时，数据会存放在虚拟内存中。显卡中的显存全部是锁页内存,当计算机的内存充足的时候，可以设置pin\_memory=True。当系统卡住，或者交换内存使用过多的时候，设置pin\_memory=False。因为pin\_memory与电脑硬件性能有关，pytorch开发者不能确保每一个炼丹玩家都有高端设备，因此pin\_memory默认为False。
+
+### collate_fn的作用，和默认的default_collate
+
+ 这个函数的决定**如何将多个样本数据拼接成一个batch**，一般使用默认的拼接方式即可，即默认调用default_collate，它会自动地把\__getitem\__生成的单个张量，数字，字符串，列表，字典等进行串联拼接成batch的数据。但是如果数据异常往往无法自动处理而报错。比如如果我们读取图片失败，default_collate自动处理时就会报错：
+
+> TypeError: batch must contain tensors, numbers, dicts or lists; found <class 'NoneType'>
+
+这个时候需要靠我们自定义collate_fn，返回的batch数据会自定清理掉不合法的数据，并且我们还可以通过自己的collate_fn自由地对dataloader生产的batch数据做各种选择处理。
 
 ## 2\. 多进程读取HDF5文件支持的不好以及解决办法
 
@@ -829,7 +850,7 @@ total\_loss+=float(loss)
 
 摘录自：<https://zhuanlan.zhihu.com/p/91485607>
 
-我们都知道weight\_decay指的是权值衰减，（**注意：权值衰减不等价于在原损失的基础上加上一个L2惩罚项！具体说明见下面那条笔记**），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。
+我们都知道weight\_decay指的是权值衰减，（**注意：<font color="#dddd00">权值衰减不等价于在原损失的基础上加上一个L2惩罚项！</font> 具体说明见下面那条笔记**），使得模型趋向于选择更小的权重参数，起到正则化的效果。但是我经常会忽略掉这一项的存在，从而引发了意想不到的问题。
 
 这次的坑是这样的，在训练一个ResNet50的时候，网络的高层部分layer4暂时没有用到，因此也并不会有梯度回传，于是我就放心地将ResNet50的所有参数都传递给Optimizer进行更新了，想着layer4应该能保持原来的权重不变才对。但是实际上，尽管layer4没有梯度回传，但是weight\_decay的作用仍然存在，它使得layer4权值越来越小，趋向于0。后面需要用到layer4的时候，发现输出异常（接近于0），才注意到这个问题的存在。
 
@@ -855,7 +876,37 @@ total\_loss+=float(loss)
 
 <https://zhuanlan.zhihu.com/p/63982470>
 
-## 6\. torch.sqrt()在0处的左导数没有定义，会返回nan，换用 torch.norm()
+## 6. Pytorch中的优化器weight decay默认对bias(偏置)也起作用，不合理
+
+添加偏置是有必要的：
+
+https://zhuanlan.zhihu.com/p/158739701
+
+> 一般来说，我们只会对神经网络的**权值**进行正则操作，使得权值具有一定的稀疏性[21]或者控制其尺寸，使得其不至于幅度太大，减少模型的容量以减少过拟合的风险。同时，我们注意到神经网络中每一层的权值的作用是**调节每一层超平面的方向**（因为![[公式]](https://www.zhihu.com/equation?tex=%5Cmathbf%7Bw%7D)就是其法向量），因此只要比例一致，不会影响超平面的形状的。但是，我们必须注意到，每一层中的偏置是**调节每一层超平面的平移长度的**，如果你对偏置进行了正则，那么我们的![[公式]](https://www.zhihu.com/equation?tex=b)可能就会变得很小，或者很稀疏，这样就导致你的每一层的超平面只能局限于很小的一个范围内，使得模型的容量大大减少，一般会导致欠拟合[7]的现象。
+
+解决方法不止一种
+
+例如进行weight和bias参数过滤：https://www.cnblogs.com/lart/p/10672935.html
+
+```
+self.opti = optim.SGD(
+    [
+        # 不对bias参数执行weight decay操作，weight decay主要的作用就是通过对网络
+        # 层的参数（包括weight和bias）做约束（L2正则化会使得网络层的参数更加平滑）达
+        # 到减少模型过拟合的效果。
+        {'params': [param for name, param in self.net.named_parameters()
+                    if name[-4:] == 'bias'],
+         'lr': 2 * self.args['lr']},
+        {'params': [param for name, param in self.net.named_parameters()
+                    if name[-4:] != 'bias'],
+         'lr': self.args['lr'],
+         'weight_decay': self.args['weight_decay']}
+    ],
+```
+
+
+
+## 7\. torch.sqrt()在0处的左导数没有定义，会返回nan，换用 torch.norm()
 
 例如：
  \# https://github.com/pytorch/pytorch/issues/2421

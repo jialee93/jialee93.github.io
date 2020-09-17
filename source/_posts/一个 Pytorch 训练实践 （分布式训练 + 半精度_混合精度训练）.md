@@ -14,9 +14,9 @@ categories: 科研
 2. 'train\_parallel.py': signle training process on multiple GPUs using **Dataparallel** (包括不同GPU之间的负载均衡).
 3. 'train\_distributed.py' (**recommended**): multiple training processes on multiple GPUs using **Nvidia Apex** & **Distributed Training:**
 
-`python -m torch.distributed.launch --nproc_per_node=4 train_distributed.py`
-
 <!-- more -->
+
+`python -m torch.distributed.launch --nproc_per_node=4 train_distributed.py`
 
 ### 项目（完整代码）地址
 
