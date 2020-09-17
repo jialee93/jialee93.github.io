@@ -58,7 +58,7 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190529105226461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2019052910525070.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70">
 <meta property="article:published_time" content="2020-01-28T04:11:44.000Z">
-<meta property="article:modified_time" content="2020-08-30T12:53:12.759Z">
+<meta property="article:modified_time" content="2020-09-17T04:12:56.207Z">
 <meta property="article:author" content="Jia Li">
 <meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary">
@@ -246,7 +246,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-08-30 20:53:12" itemprop="dateModified" datetime="2020-08-30T20:53:12+08:00">2020-08-30</time>
+                <time title="Modified: 2020-09-17 12:12:56" itemprop="dateModified" datetime="2020-09-17T12:12:56+08:00">2020-09-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -325,7 +325,7 @@
 <li>L1使权重稀疏，L2使权重平滑，一句话总结就是：L1会趋向于产生少量的特征，而其他的特征都是0，而L2会选择更多的特征，这些特征都会接近于0</li>
 </ul>
 <hr>
-<h2 id="正则化理解之最大后验概率估计（MAP）"><a href="#正则化理解之最大后验概率估计（MAP）" class="headerlink" title="正则化理解之最大后验概率估计（MAP）"></a>正则化理解之最大后验概率估计（MAP）</h2><h3 id="在最大似然估计中1"><a href="#在最大似然估计中1" class="headerlink" title="在最大似然估计中1"></a>在最大似然估计中<sup><a href="#fn_1" id="reffn_1">1</a></sup></h3><p>设$X$、$y$为训练样本和相应的标签，$X=\left(x<em>{1}, x</em>{2}, \ldots, x_{n}\right)$ 是一组抽样数据，满足独立同分布假设（i.i.d），假设权重$w$是未知的参数，从而求得对数<strong>似然函数</strong>:</p>
+<h2 id="正则化理解之最大后验概率估计（MAP）"><a href="#正则化理解之最大后验概率估计（MAP）" class="headerlink" title="正则化理解之最大后验概率估计（MAP）"></a>正则化理解之最大后验概率估计（MAP）</h2><h3 id="在最大似然估计中1"><a href="#在最大似然估计中1" class="headerlink" title="在最大似然估计中1"></a>在最大似然估计中<sup><a href="#fn_1" id="reffn_1">1</a></sup></h3><p>设$X$、$y$为训练样本和相应的标签，$ X=\left(x<em>{1}, x</em>{2}, \ldots, x_{n}\right)$ 是一组抽样数据，满足独立同分布假设（i.i.d），假设权重$w$是未知的参数，从而求得对数<strong>似然函数</strong>:</p>
 <script type="math/tex; mode=display">
 \operatorname{MLP}=l(w)=\log [P(y | X ; w)]=\log \left[\prod_{i} P\left(y^{i} | x^{i} ; w\right)\right]</script><p>通过假设$y^{i}$的不同概率分布，即可得到不同的模型（即变成已知模型形式，拟合模型参数的问题，<font color="#000066">w的写法是前面加分号，表示它是某一固定参数值，而不是概率条件！</font>）。例如若假设 $y^{i} \sim N\left(w^{T} x^{i}, \sigma^{2}\right)$ 的高斯分布（$x^{i}$也是一系列随机向量，随机向量的每个分量都对$y^{i}$有影响，若随机向量的维度很大，可以认为$y^{i}$服从正态分布，而一般正态分布可以转化成标准正态分布求解），则有：</p>
 <script type="math/tex; mode=display">
@@ -339,7 +339,7 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
 <p><strong>这里补充一下周志华老师的西瓜书149页的知识：</strong></p>
 <p>概率学派认为参数虽然未知，但确实是客观存在的固定值，而贝叶斯学派则认为参数是未观察到的随机变量，其本身也有分布。因此可以先假定参数服从某个先验分布（没有观测到任何当前的数据前的先验知识），然后基于当前的观测值来计算参数的后验分布。</p>
 </blockquote>
-<h3 id="若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，"><a href="#若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，" class="headerlink" title="若假设$w{j}$的先验分布为0均值的高斯分布，即$w{j} \sim N\left(0, \sigma^{2}\right)$，"></a>若假设$w<em>{j}$的先验分布为0均值的高斯分布，即$w</em>{j} \sim N\left(0, \sigma^{2}\right)$，</h3><p>则有：</p>
+<h3 id="若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，"><a href="#若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，" class="headerlink" title="若假设 $ w{j}$的先验分布为0均值的高斯分布，即 $w{j} \sim N\left(0, \sigma^{2}\right)$，"></a>若假设 $ w<em>{j}$的先验分布为0均值的高斯分布，即 $w</em>{j} \sim N\left(0, \sigma^{2}\right)$，</h3><p>则有：</p>
 <script type="math/tex; mode=display">
 \log P(w)=\log \prod_{j} P\left(w_{j}\right)=\log \prod_{j}\left[\frac{1}{\sqrt{2 \pi} \sigma} e^{-\frac{\left(w_{j}\right)^{2}}{2 \sigma^{2}}}\right]=-\frac{1}{2 \sigma^{2}} \sum_{j} w_{j}^{2}+C^{\prime}</script><p><img src="https://img-blog.csdnimg.cn/20190529105226461.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3hpYW9qaWFqaWEwMDc=,size_16,color_FFFFFF,t_70" alt="高斯分布"><br>可以看到，在高斯分布下$\log{P(w)}$的效果等价于在代价函数中增加$L_{2}$正则项，也就是说<strong>在MAP中使用一个高斯分布的先验等价于在MLE中采用L2的正则</strong>。从上图可以看出$w$值取到0附近的概率特别大。也就是说我们提前先假设了$w$的解更容易取到0的附近。</p>
 <h3 id="若假设-w-j-服从均值为0、参数为a的拉普拉斯分布，即：-P-left-w-j-right-frac-1-2-a-e-frac-left-w-j-right-a"><a href="#若假设-w-j-服从均值为0、参数为a的拉普拉斯分布，即：-P-left-w-j-right-frac-1-2-a-e-frac-left-w-j-right-a" class="headerlink" title="若假设$w{j}$服从均值为0、参数为a的拉普拉斯分布，即：$P\left(w{j}\right)=\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}$"></a>若假设$w<em>{j}$服从均值为0、参数为a的拉普拉斯分布，即：$P\left(w</em>{j}\right)=\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}$</h3><p>则有：</p>
@@ -481,7 +481,7 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化理解之结构最小化"><span class="nav-number">1.</span> <span class="nav-text">正则化理解之结构最小化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先给出一个例子解释L1的作用可以使得模型获得稀疏解"><span class="nav-number">1.1.</span> <span class="nav-text">首先给出一个例子解释L1的作用可以使得模型获得稀疏解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作图说明"><span class="nav-number">1.2.</span> <span class="nav-text">作图说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化理解之最大后验概率估计（MAP）"><span class="nav-number">2.</span> <span class="nav-text">正则化理解之最大后验概率估计（MAP）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在最大似然估计中1"><span class="nav-number">2.1.</span> <span class="nav-text">在最大似然估计中1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在最大后验概率估计中"><span class="nav-number">2.2.</span> <span class="nav-text">在最大后验概率估计中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，"><span class="nav-number">2.3.</span> <span class="nav-text">若假设$w{j}$的先验分布为0均值的高斯分布，即$w{j} \sim N\left(0, \sigma^{2}\right)$，</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#若假设-w-j-服从均值为0、参数为a的拉普拉斯分布，即：-P-left-w-j-right-frac-1-2-a-e-frac-left-w-j-right-a"><span class="nav-number">2.4.</span> <span class="nav-text">若假设$w{j}$服从均值为0、参数为a的拉普拉斯分布，即：$P\left(w{j}\right)&#x3D;\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们得到对于-L-1-、-L-2-正则化的一种最大后验角度理解"><span class="nav-number">2.5.</span> <span class="nav-text">我们得到对于$L{1}$、$L{2}$正则化的一种最大后验角度理解</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化理解之结构最小化"><span class="nav-number">1.</span> <span class="nav-text">正则化理解之结构最小化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#首先给出一个例子解释L1的作用可以使得模型获得稀疏解"><span class="nav-number">1.1.</span> <span class="nav-text">首先给出一个例子解释L1的作用可以使得模型获得稀疏解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#作图说明"><span class="nav-number">1.2.</span> <span class="nav-text">作图说明</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则化理解之最大后验概率估计（MAP）"><span class="nav-number">2.</span> <span class="nav-text">正则化理解之最大后验概率估计（MAP）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在最大似然估计中1"><span class="nav-number">2.1.</span> <span class="nav-text">在最大似然估计中1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在最大后验概率估计中"><span class="nav-number">2.2.</span> <span class="nav-text">在最大后验概率估计中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#若假设-w-j-的先验分布为0均值的高斯分布，即-w-j-sim-N-left-0-sigma-2-right-，"><span class="nav-number">2.3.</span> <span class="nav-text">若假设 $ w{j}$的先验分布为0均值的高斯分布，即 $w{j} \sim N\left(0, \sigma^{2}\right)$，</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#若假设-w-j-服从均值为0、参数为a的拉普拉斯分布，即：-P-left-w-j-right-frac-1-2-a-e-frac-left-w-j-right-a"><span class="nav-number">2.4.</span> <span class="nav-text">若假设$w{j}$服从均值为0、参数为a的拉普拉斯分布，即：$P\left(w{j}\right)&#x3D;\frac{1}{2 a} e^{\frac{-\left|w_{j}\right|}{a}}$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们得到对于-L-1-、-L-2-正则化的一种最大后验角度理解"><span class="nav-number">2.5.</span> <span class="nav-text">我们得到对于$L{1}$、$L{2}$正则化的一种最大后验角度理解</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -510,7 +510,7 @@ P(w|X,y)=\frac { P(w,X,y) }{ P(X,y) } =\frac { P(X,y|w)P(w) }{ P(X,y) } =\frac {
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
