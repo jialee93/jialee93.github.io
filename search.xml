@@ -224,7 +224,7 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 </blockquote>
 <p>定义状态变量（使用的数组元素的意义）<strong>V(i, j)</strong> 为当前包的容量为 j （也就是已经挑选的物品总重量不超过 j ），已经决策了前 i 个物品是否放入后的最佳策略所对应的<strong>价值</strong>。如果还不明白这个含义，那换一句表述：该状态变量表示在前 i 件物品中选择若干件放在可用容量为 j 的背包中（<strong>这个背包的容量指的是我们使用的背包最大容量，不一定把包装满</strong>），可以取得的最大价值。</p>
 <p><strong>求解</strong></p>
-<p>设包的最大容量为C，每一件物品的重量为 $ w_{i} $ ，其价值为 $ p_{i} $ ，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
+<p>设包的最大容量为C，每一件物品的重量为 <span class="math inline">\(w_{i}\)</span> ，其价值为 <span class="math inline">\(p_{i}\)</span> ，下面寻找状态转移方程。对于当前第 i 个物品，我们决策是否应该把它放进包里，只有两种可能：</p>
 <ol type="1">
 <li><p>包的容量小于该物品的重量 <span class="math inline">\(j&lt;w_{i}\)</span> ，此物品不能放入包。则此时对前 i 个物品处理的最佳策略对应的价值和前 i-1 个物品和包容量为 j 的决策结果的最优值相同，即 <span class="math inline">\(\ V(i, j)= V(i-1, j)\)</span></p></li>
 <li><p>包的容量大于当前物品重量 <span class="math inline">\(j&gt;=w_{i}\)</span> ，包可以放下此物品。根据我们定义的状态变量<strong>V(i, j)</strong> 的含义，<font color="#dd00dd">当包容量为j时，最优策略可能并没有放入第i个物品，即不一定非要把包全部填满才能达到价值最大。</font>那么对于第i个物品，我们有两种可能的决策，放入和不放入。<strong>也就是说 $ V(i,j)$ 这个问题显然和 $ V(i-1, j-w_{i})$ 和 $ V(i-1, j)$ 这两个子问题有关</strong>。不要忘记动态规划其实就是在<font color="#00dd00">逐步填写表，表填完了，最优解也就得到了。</font></p>
@@ -234,7 +234,7 @@ f(n)=f(n-1)+f(n-2)+\ldots+f(1)+1 \\
 <li><p>不放入当前的第 i 个商品的话 <span class="math inline">\(V(i, j)= V(i-1, j)\)</span>；</p></li>
 <li><p>放入当前第 i 个商品的话 <span class="math inline">\(V(i, j)= V(i-1, j)+p_{i}\)</span>。</p></li>
 </ul>
-<p>那么我们选择当前两种决策中最优的那个，即 $ V(i, j)= max{V(i-1, j), V(i-1, j-w_{i})+p_{i}}$ 。而只有当 <span class="math inline">\(V(i, j)= V(i-1, j-w_{i})+p_{i}\)</span> 时，才有“取第 i 件物品”发生。</p></li>
+<p>那么我们选择当前两种决策中最优的那个，即 $ V(i, j)= max(V(i-1, j), V(i-1, j-w_{i})+p_{i})$ 。而只有当 <span class="math inline">\(V(i, j)= V(i-1, j-w_{i})+p_{i}\)</span> 时，才有“取第 i 件物品”发生。</p></li>
 </ol>
 <p>现在我们知道了最大价值，但还不知道由哪些商品组成，故要根据最优解回溯解的构成。</p>
 <p><strong>回溯</strong></p>
